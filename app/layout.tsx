@@ -6,7 +6,6 @@ import { NotebookSidebar } from "@/components/notebook/NotebookSidebar";
 import { CommandPalette } from "@/components/notebook/CommandPalette";
 import { EasterEggOverlay } from "@/components/ui/EasterEggOverlay";
 import { BootTerminalClient } from "@/components/system/BootTerminalClient";
-import { NotebookProvider } from "@/lib/context/NotebookContext";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -43,14 +42,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#0a0a0b] font-sans text-zinc-200 selection:bg-amber-300/30 selection:text-amber-100">
-        <NotebookProvider>
-          <BootTerminalClient />
-          <CustomCursor />
-          <NotebookSidebar />
-          <CommandPalette />
-          <EasterEggOverlay />
-          <div className="lg:pl-[220px]">{children}</div>
-        </NotebookProvider>
+        <BootTerminalClient />
+        <CustomCursor />
+        <NotebookSidebar />
+        <CommandPalette />
+        <EasterEggOverlay />
+        <div className="lg:pl-[220px]">{children}</div>
       </body>
     </html>
   );

@@ -7,13 +7,9 @@ import { GithubActivity } from "@/components/visualizations/GithubActivity";
 
 export function Activity() {
   return (
-    <section id="activity" className="relative px-6 py-24 md:py-32">
+    <section className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
-        <NotebookCell
-          cellId="8"
-          label="telemetry"
-          collapsedHint="52-Week GitHub activity, language breakdown & commit telemetry collapsed · Click to run cell"
-        >
+        <NotebookCell cellId="8">
           {(executed) => (
             <>
               <CodeBlock

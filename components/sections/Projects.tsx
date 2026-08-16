@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
@@ -28,14 +29,11 @@ const projectIcons: Record<string, React.ComponentType<{ className?: string }>> 
 };
 
 export function Projects() {
+  const [selected, setSelected] = useState<string | null>(null);
   return (
-    <section id="projects" className="relative px-6 py-24 md:py-32">
+    <section className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
-        <NotebookCell
-          cellId="5"
-          label="artifacts"
-          collapsedHint="5 Production AI projects & live training monitor collapsed · Click to run cell"
-        >
+        <NotebookCell cellId="5" threshold={0.08}>
           {(executed) => (
             <>
               <CodeBlock
@@ -52,8 +50,9 @@ export function Projects() {
                         key={p.id}
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15 + i * 0.08, duration: 0.4 }}
+                        transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
                         data-cursor="open"
+                        onClick={() => setSelected(p.id)}
                         className={`group relative overflow-hidden rounded-md border bg-zinc-950/40 transition-colors ${
                           isFeatured
                             ? "border-amber-400/30 md:col-span-2"
@@ -164,7 +163,7 @@ export function Projects() {
                   <span>{projects.length} projects executed.</span>
                   <span className="ml-auto text-zinc-600">
                     <ArrowUpRight className="inline h-3 w-3" />
-                    click any repo or demo to explore
+                    click any cell to inspect
                   </span>
                 </div>
               </OutputBlock>

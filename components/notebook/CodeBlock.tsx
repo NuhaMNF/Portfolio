@@ -56,10 +56,12 @@ export function TypedCode({
   const tokens = highlightPython(code);
   const chars = tokens.map((t) => Array.from(t.text)).flat();
   const tokenIndexForChar: number[] = [];
+  let charCursor = 0;
   for (let i = 0; i < tokens.length; i++) {
     for (let j = 0; j < tokens[i].text.length; j++) {
       tokenIndexForChar.push(i);
     }
+    charCursor += tokens[i].text.length;
   }
 
   return (

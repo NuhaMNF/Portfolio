@@ -2,111 +2,24 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { commands as staticCommands } from "@/lib/data";
+import { commands } from "@/lib/data";
 import { useCommandPalette } from "@/lib/hooks/useCommandPalette";
-import { useNotebook } from "@/lib/context/NotebookContext";
 
 export function CommandPalette() {
   const { open, setOpen } = useCommandPalette();
-  const { runAllCells, resetAll, runCell } = useNotebook();
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
 
-  const dynamicCommands = useMemo(() => {
-    return [
-      {
-        id: "cmd-run-all",
-        label: "run all notebook cells",
-        shortcut: "r a",
-        action: () => runAllCells(),
-      },
-      {
-        id: "cmd-reset-all",
-        label: "reset all cells to queued state",
-        shortcut: "r r",
-        action: () => resetAll(),
-      },
-      ...staticCommands.map((c) => ({
-        ...c,
-        action: () => {
-          if (c.id === "github") return window.open("https://github.com/nuhanizar", "_blank");
-          if (c.id === "linkedin") return window.open("https://linkedin.com/in/nuhanizar", "_blank");
-          if (c.id === "hire") {
-            const ev = new CustomEvent("nuha:hire");
-            window.dispatchEvent(ev);
-            return;
-          }
-          const el = document.getElementById(c.id);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        },
-      })),
-      {
-        id: "cmd-run-hero",
-        label: "run cell 1: introduce (hero)",
-        shortcut: "r 1",
-        action: () => runCell("1"),
-      },
-      {
-        id: "cmd-run-about",
-        label: "run cell 2: about profile",
-        shortcut: "r 2",
-        action: () => runCell("2"),
-      },
-      {
-        id: "cmd-run-skills",
-        label: "run cell 3: skills & radar",
-        shortcut: "r 3",
-        action: () => runCell("3"),
-      },
-      {
-        id: "cmd-run-exp",
-        label: "run cell 4: experience timeline",
-        shortcut: "r 4",
-        action: () => runCell("4"),
-      },
-      {
-        id: "cmd-run-projects",
-        label: "run cell 5: projects & telemetry",
-        shortcut: "r 5",
-        action: () => runCell("5"),
-      },
-      {
-        id: "cmd-run-research",
-        label: "run cell 6: research laboratory",
-        shortcut: "r 6",
-        action: () => runCell("6"),
-      },
-      {
-        id: "cmd-run-edu",
-        label: "run cell 7: education credentials",
-        shortcut: "r 7",
-        action: () => runCell("7"),
-      },
-      {
-        id: "cmd-run-act",
-        label: "run cell 8: github activity",
-        shortcut: "r 8",
-        action: () => runCell("8"),
-      },
-      {
-        id: "cmd-run-contact",
-        label: "run cell 9: connect terminal",
-        shortcut: "r 9",
-        action: () => runCell("9"),
-      },
-    ];
-  }, [runAllCells, resetAll, runCell]);
-
   const filtered = useMemo(() => {
-    if (!query) return dynamicCommands;
+    if (!query) return commands;
     const q = query.toLowerCase();
-    return dynamicCommands.filter(
+    return commands.filter(
       (c) =>
         c.label.toLowerCase().includes(q) ||
         c.id.toLowerCase().includes(q) ||
         c.shortcut.toLowerCase().includes(q)
     );
-  }, [query, dynamicCommands]);
+  }, [query]);
 
   useEffect(() => {
     setIndex(0);
@@ -119,16 +32,27 @@ export function CommandPalette() {
       if (e.key === "ArrowUp") setIndex((i) => Math.max(i - 1, 0));
       if (e.key === "Enter") {
         const cmd = filtered[index];
-        if (cmd) {
-          setOpen(false);
-          setQuery("");
-          cmd.action();
-        }
+        if (cmd) runCommand(cmd.id);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, filtered, index, setOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, filtered, index]);
+
+  function runCommand(id: string) {
+    setOpen(false);
+    setQuery("");
+    if (id === "github") return window.open("https://github.com/nuhanizar", "_blank");
+    if (id === "linkedin") return window.open("https://linkedin.com/in/nuhanizar", "_blank");
+    if (id === "hire") {
+      const ev = new CustomEvent("nuha:hire");
+      window.dispatchEvent(ev);
+      return;
+    }
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <AnimatePresence>
@@ -154,7 +78,7 @@ export function CommandPalette() {
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="search commands, run cells, or jump to section…"
+                placeholder="search commands or sections…"
                 className="flex-1 bg-transparent font-mono text-[14px] text-zinc-100 outline-none placeholder:text-zinc-600"
               />
               <span className="rounded border border-zinc-800 px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">
@@ -170,11 +94,7 @@ export function CommandPalette() {
               {filtered.map((c, i) => (
                 <button
                   key={c.id}
-                  onClick={() => {
-                    setOpen(false);
-                    setQuery("");
-                    c.action();
-                  }}
+                  onClick={() => runCommand(c.id)}
                   onMouseEnter={() => setIndex(i)}
                   className={`flex w-full items-center gap-3 rounded px-3 py-2 text-left font-mono text-[13px] transition-colors ${
                     i === index ? "bg-amber-500/10 text-amber-200" : "text-zinc-300 hover:bg-zinc-900"

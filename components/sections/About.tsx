@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
@@ -10,13 +10,9 @@ import { useEffect, useState } from "react";
 
 export function About() {
   return (
-    <section id="about" className="relative px-6 py-24 md:py-32">
+    <section className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
-        <NotebookCell
-          cellId="2"
-          label="identity"
-          collapsedHint="Identity matrix, bio & stats collapsed · Click to run cell"
-        >
+        <NotebookCell cellId="2">
           {(executed) => (
             <>
               <CodeBlock code={aboutDict} className="mt-4" />
@@ -41,7 +37,7 @@ export function About() {
                     </div>
                     <div className="mt-6 grid grid-cols-2 gap-3">
                       {stats.map((s, i) => (
-                        <CounterStat key={s.label} {...s} delay={0.2 + i * 0.08} />
+                        <CounterStat key={s.label} {...s} delay={0.4 + i * 0.1} />
                       ))}
                     </div>
                   </div>

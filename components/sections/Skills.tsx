@@ -8,23 +8,19 @@ import { SkillsConstellation } from "@/components/visualizations/SkillsConstella
 import { skills } from "@/lib/data";
 
 const skillsCode = `skills = {
-    "AI / ML": ["PyTorch", "TensorFlow", "Transformers", "LangChain"],
-    "Programming": ["Python", "TypeScript", "JavaScript", "Rust"],
-    "Backend": ["FastAPI", "Node.js", "PostgreSQL", "Redis"],
-    "Frontend": ["Next.js", "React", "Three.js", "Tailwind"],
-    "Data": ["Pandas", "NumPy", "dbt", "Airflow", "SQL"],
-    "Cloud": ["AWS", "Azure", "Docker", "Kubernetes"],
+    "AI / ML": ["PyTorch", "TensorFlow", "Transformers"],
+    "Programming": ["Python", "TypeScript", "JavaScript"],
+    "Backend": ["FastAPI", "Node.js", "PostgreSQL"],
+    "Frontend": ["Next.js", "React", "Three.js"],
+    "Data": ["Pandas", "NumPy", "SQL"],
+    "Cloud": ["AWS", "Azure", "Docker"],
 }`;
 
 export function Skills() {
   return (
-    <section id="skills" className="relative px-6 py-24 md:py-32">
+    <section className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
-        <NotebookCell
-          cellId="3"
-          label="capabilities"
-          collapsedHint="Capability radar, network constellation & tech inventory collapsed · Click to run cell"
-        >
+        <NotebookCell cellId="3">
           {(executed) => (
             <>
               <CodeBlock code={skillsCode} className="mt-4" />
