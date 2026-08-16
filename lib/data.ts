@@ -4,12 +4,13 @@ export const profile = {
   name: "Nuha Nizar",
   role: "Management & IT Undergraduate",
   initials: "NN",
-  email: "nuhanizar16@gmail.com",
+  avatar: "/profile.png",
+  email: "nuhanizar999@gmail.com",
   location: "University of Kelaniya, LK",
   tagline:
-    "An Undergraduate in Management & IT, eager to apply technical and data-focused skills in a professional setting. Passionate about data analysis, innovation, and solving problems through technology. Committed to growing into a role that combines management insight with data driven decision making.",
+    "Data analysis, software, and decisions from structured information.",
   github: "https://github.com/NuhaMNF",
-  linkedin: "https://linkedin.com/in/nuhanizar",
+  linkedin: "https://www.linkedin.com/in/nuha-n-024923348/",
   twitter: "",
 };
 
@@ -48,8 +49,8 @@ export const aboutDict = `nuha = {
 }`;
 
 export const aboutBio = [
-  "An Undergraduate in Management & IT, eager to apply technical and data-focused skills in a professional setting. Passionate about data analysis, innovation, and solving problems through technology.",
-  "Committed to growing into a role that combines management insight with data driven decision making.",
+  "Management & IT undergraduate at the University of Kelaniya. I like turning messy operational problems into structured data and working software.",
+  "Open to internships in data analysis and software development.",
 ];
 
 export const stats = [
@@ -59,34 +60,19 @@ export const stats = [
   { label: "languages", value: 3, suffix: "" },
 ];
 
-export const philosophy = [
-  { label: "data analysis", value: 92 },
-  { label: "software development", value: 88 },
-  { label: "database systems", value: 90 },
-  { label: "business & management", value: 94 },
-  { label: "technology & innovation", value: 95 },
-];
-
 export const skills = {
-  "Areas of Interest": [
-    "Data Analysis",
-    "Software Development",
-    "Database Systems",
-    "Business & Management",
-    "Technology & Innovation",
-  ],
-  "Languages & Paradigms": ["Java", "C++", "JavaScript", "OOP"],
+  "Languages": ["Java", "C++", "JavaScript", "OOP"],
   "Web & Backend": ["React.js", "Node.js", "REST API"],
-  "Database & Design": ["MySQL", "PostgreSQL", "Database Design"],
-  "Tools & Practices": ["Git & GitHub", "Debugging", "Team Collaboration"],
+  "Database": ["MySQL", "PostgreSQL", "Database Design"],
+  "Tools": ["Git & GitHub", "Debugging", "Team Collaboration"],
 };
 
 export const skillsRadar = [
-  { axis: "Data Analysis", value: 92 },
-  { axis: "Software Dev", value: 88 },
-  { axis: "Database Systems", value: 90 },
-  { axis: "Business & Mgmt", value: 94 },
-  { axis: "Innovation", value: 95 },
+  { axis: "Data Analysis", value: 80 },
+  { axis: "Software Dev", value: 80 },
+  { axis: "Database Systems", value: 80 },
+  { axis: "Business & Mgmt", value: 80 },
+  { axis: "Innovation", value: 80 },
 ];
 
 export const projects = [
@@ -98,11 +84,13 @@ export const projects = [
     year: 2025,
     category: "Full-Stack Web Application",
     description:
-      "A web-based task management system designed to help users efficiently create, organize, assign, track, and manage tasks. The system improves task organization and collaboration by providing a centralized platform for managing tasks and their progress.",
+      "A web app for creating, assigning, and tracking team tasks from one place — with comments, priorities, and a notification feed.",
     problem:
-      "Workplace productivity and team transparency suffered from fragmented communication and untracked task assignments across disparate tools.",
+      "Task updates lived in chats and spreadsheets, so ownership and due dates were easy to lose.",
     solution:
-      "Engineered a centralized web platform featuring an interactive React.js frontend, secure Node.js REST API, and PostgreSQL relational database with role-based assignment and live notifications.",
+      "I built a React frontend, Node.js REST API, and PostgreSQL database so a team can assign work, comment, and see what changed.",
+    role: "Designed and built the full stack.",
+    outcome: "One table for all tasks, with assignees, priority, comments, and a live activity feed.",
     architecture: [
       "React.js Single Page App (Vite / Tailwind / HSL Tokens)",
       "       │",
@@ -170,7 +158,7 @@ export const achievements = [
     event: "Trinova Youth Innovation Competition",
     org: "CINEC Campus",
     description:
-      "Selected among the Top 10 finalists at CINEC Campus. Pitched a 3D foot-scan and custom insole solution on stage as part of a collaboration with FRYM Intimates.",
+      "On stage at CINEC Campus I presented a 3D foot-scan workflow that produces custom-printed insoles, ordered through a mobile app, in collaboration with FRYM Intimates. The team placed in the Top 10.",
     images: [
       {
         id: "presentation",
@@ -193,7 +181,7 @@ export const achievements = [
     event: "IdeaSprint",
     org: "University of Kelaniya",
     description:
-      "Selected among the Top 10 finalists in an innovation-focused competition.",
+      "Selected among the Top 10 finalists in an innovation competition at the University of Kelaniya.",
   },
 ];
 

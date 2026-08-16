@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CommandPalette />
         <EasterEggOverlay />
         <ToastContainer />
-        <div className="relative z-[1] lg:pl-[296px] pb-[24px]">{children}</div>
+        <div className="relative z-[1] lg:pl-[296px] lg:pb-[24px]">{children}</div>
         <StatusBar />
       </body>
     </html>

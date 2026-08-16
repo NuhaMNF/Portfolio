@@ -10,6 +10,7 @@ import { useBackgroundMode } from "@/lib/backgroundMode";
 import { SoundToggle } from "@/components/ui/SoundToggle";
 import { playSwitch } from "@/lib/sound";
 import { copyEmailToClipboard } from "@/components/ui/ToastNotification";
+import Image from "next/image";
 
 /**
  * 2-Layered Inset Floating Sidebar:
@@ -81,9 +82,16 @@ export function NotebookExplorer() {
                     <span className="h-2 w-2 -mt-1 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
                   </motion.div>
 
-                  {/* Core Initials Monogram */}
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface)] font-mono text-[12px] font-bold text-[var(--accent)] shadow-xs">
-                    {profile.initials}
+                  {/* Core Avatar Photo */}
+                  <div className="relative h-8 w-8 overflow-hidden rounded-full border border-[var(--rule)] bg-[var(--surface)] shadow-xs ring-1 ring-[var(--accent)]/30">
+                    <Image
+                      src={profile.avatar}
+                      alt={profile.name}
+                      fill
+                      className="object-cover object-top"
+                      sizes="32px"
+                      priority
+                    />
                   </div>
                 </div>
 
@@ -168,7 +176,7 @@ export function NotebookExplorer() {
                   type="button"
                   onClick={() => copyEmailToClipboard(profile.email)}
                   data-cursor="view"
-                  title="Copy Email (nuhanizar16@gmail.com)"
+                  title={`Copy Email (${profile.email})`}
                   className="btn-glass flex h-8 flex-1 items-center justify-center rounded-lg text-[var(--fg-mute)] hover:text-[var(--fg)] transition-colors shadow-xs"
                 >
                   <Mail className="h-3.5 w-3.5" />
@@ -216,8 +224,14 @@ export function NotebookExplorer() {
                 {/* Top Header */}
                 <div className="flex items-center justify-between border-b border-[var(--rule-soft)] pb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--surface)] font-mono text-[11px] font-bold text-[var(--accent)] shadow-xs">
-                      {profile.initials}
+                    <div className="relative h-8 w-8 overflow-hidden rounded-full border border-[var(--rule)] bg-[var(--surface)] shadow-xs ring-1 ring-[var(--accent)]/30">
+                      <Image
+                        src={profile.avatar}
+                        alt={profile.name}
+                        fill
+                        className="object-cover object-top"
+                        sizes="32px"
+                      />
                     </div>
                     <div>
                       <div className="font-serif text-[14.5px] font-medium text-[var(--fg)]">

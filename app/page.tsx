@@ -6,16 +6,23 @@ import { Education } from "@/components/sections/Education";
 import { Achievements } from "@/components/sections/Achievements";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
+import { SectionDivider } from "@/components/ui/SectionDivider";
 
 export default function Home() {
   return (
     <main className="relative">
       <Hero />
+      <SectionDivider />
       <About />
+      <SectionDivider />
       <Skills />
+      <SectionDivider />
       <Projects />
+      <SectionDivider />
       <Education />
+      <SectionDivider />
       <Achievements />
+      <SectionDivider />
       <Contact />
       <Footer />
     </main>

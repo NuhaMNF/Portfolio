@@ -14,11 +14,14 @@ import {
   Bell,
 } from "lucide-react";
 import { GithubIcon } from "@/components/ui/BrandIcons";
+import { SchemaApiInspector } from "@/components/project/SchemaApiInspector";
+import { playSwitch } from "@/lib/sound";
 import Image from "next/image";
 
 export function Projects() {
   const [selected, setSelected] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<number>(0);
+  const [studioMode, setStudioMode] = useState<"ui" | "architecture">("ui");
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
   const project = projects[0];
@@ -80,12 +83,12 @@ export function Projects() {
         <div className="mb-14 grid grid-cols-1 gap-8 lg:grid-cols-[1.3fr_1fr]">
           <div>
             <h2 className="display text-[clamp(36px,5vw,68px)] leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
-              Centralized <span className="display-italic text-[var(--fg-soft)]">task orchestration</span> & collaboration platform.
+              A shared place to assign work, comment, and see what changed.
             </h2>
           </div>
           <div className="flex flex-col justify-end">
             <p className="text-[16px] leading-[1.75] text-[var(--fg-soft)]">
-              A full-stack web application designed to help teams create, organize, assign, and track engineering tasks with real-time audit notifications and PostgreSQL persistence.
+              {project.description}
             </p>
           </div>
         </div>
@@ -102,7 +105,7 @@ export function Projects() {
                 <span>·</span>
                 <span className="metric font-medium text-[var(--fg)]">{project.year}</span>
                 <span>·</span>
-                <span className="text-[var(--state-done)]">● Production Ready</span>
+                <span>Full-stack build</span>
               </div>
               <h3 className="mt-3 font-serif text-[clamp(28px,3.5vw,44px)] font-normal text-[var(--fg)]">
                 {project.title}
@@ -136,103 +139,163 @@ export function Projects() {
             </div>
           </div>
 
-          {/* Interactive Screen Preview Studio */}
-          <div className="mt-8">
-            {/* View Selector Tabs */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--rule-soft)] pb-3">
-              <div className="flex flex-wrap gap-2">
-                {views.map((v, idx) => {
-                  const Icon = v.icon;
-                  const isActive = activeTab === idx;
-                  return (
-                    <button
-                      key={v.id}
-                      type="button"
-                      onClick={() => setActiveTab(idx)}
-                      data-cursor="view"
-                      className={`inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-mono text-[12px] transition-all duration-200 ${
-                        isActive
-                          ? "border-[var(--accent)] bg-[var(--surface-2)] text-[var(--fg)] shadow-xs"
-                          : "border-transparent bg-transparent text-[var(--fg-mute)] hover:bg-[var(--surface-2)]/50 hover:text-[var(--fg)]"
-                      }`}
-                    >
-                      <Icon className={`h-3.5 w-3.5 ${isActive ? "text-[var(--accent)]" : "text-[var(--fg-faint)]"}`} />
-                      <span>{v.label}</span>
-                      <span className="rounded bg-[var(--surface)] px-1.5 py-0.2 text-[9px] uppercase tracking-wider text-[var(--fg-faint)]">
-                        {v.tag}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="rounded-xl border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-5">
+              <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">Role</div>
+              <p className="mt-2 text-[14px] leading-[1.65] text-[var(--fg-soft)]">{project.role}</p>
+            </div>
+            <div className="rounded-xl border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-5">
+              <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">Problem</div>
+              <p className="mt-2 text-[14px] leading-[1.65] text-[var(--fg-soft)]">{project.problem}</p>
+            </div>
+            <div className="rounded-xl border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-5">
+              <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">What shipped</div>
+              <p className="mt-2 text-[14px] leading-[1.65] text-[var(--fg-soft)]">{project.outcome}</p>
+            </div>
+          </div>
 
+          {/* Studio Mode Selector (UI Screenshots vs PostgreSQL & REST API Architecture) */}
+          <div className="mt-9 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--rule-soft)] pb-4">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  playSwitch();
+                  setStudioMode("ui");
+                }}
+                data-cursor="view"
+                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-mono text-[12px] font-medium transition-all ${
+                  studioMode === "ui"
+                    ? "border-[var(--accent)] bg-[var(--surface-2)] text-[var(--fg)] shadow-xs"
+                    : "border-transparent text-[var(--fg-mute)] hover:text-[var(--fg)] hover:bg-[var(--surface-2)]/40"
+                }`}
+              >
+                <Table className="h-3.5 w-3.5 text-[var(--accent)]" />
+                <span>UI Screen Studio</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  playSwitch();
+                  setStudioMode("architecture");
+                }}
+                data-cursor="view"
+                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-mono text-[12px] font-medium transition-all ${
+                  studioMode === "architecture"
+                    ? "border-[var(--accent)] bg-[var(--surface-2)] text-[var(--fg)] shadow-xs"
+                    : "border-transparent text-[var(--fg-mute)] hover:text-[var(--fg)] hover:bg-[var(--surface-2)]/40"
+                }`}
+              >
+                <Database className="h-3.5 w-3.5 text-[var(--accent)]" />
+                <span>PostgreSQL Schema & REST API</span>
+              </button>
+            </div>
+
+            {studioMode === "ui" && (
               <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-[var(--fg-faint)]">
                 <span>Click image to expand</span>
                 <Maximize2 className="h-3 w-3" />
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Browser Window Mockup Frame */}
-            <div className="mt-5 overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--bg-paper)] shadow-xl">
-              {/* Browser Window Bar */}
-              <div className="flex items-center justify-between border-b border-[var(--rule)] bg-[var(--surface)] px-4 py-2.5 font-mono text-[11px] text-[var(--fg-mute)]">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
-                  <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
-                  <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
+          {/* Dual Studio Content */}
+          <div className="mt-5">
+            {studioMode === "ui" ? (
+              <div>
+                {/* View Selector Tabs */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {views.map((v, idx) => {
+                    const Icon = v.icon;
+                    const isActive = activeTab === idx;
+                    return (
+                      <button
+                        key={v.id}
+                        type="button"
+                        onClick={() => setActiveTab(idx)}
+                        data-cursor="view"
+                        className={`inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 font-mono text-[12px] transition-all duration-200 ${
+                          isActive
+                            ? "border-[var(--accent)] bg-[var(--surface-2)] text-[var(--fg)] shadow-xs"
+                            : "border-transparent bg-transparent text-[var(--fg-mute)] hover:bg-[var(--surface-2)]/50 hover:text-[var(--fg)]"
+                        }`}
+                      >
+                        <Icon className={`h-3.5 w-3.5 ${isActive ? "text-[var(--accent)]" : "text-[var(--fg-faint)]"}`} />
+                        <span>{v.label}</span>
+                        <span className="rounded bg-[var(--surface)] px-1.5 py-0.2 text-[9px] uppercase tracking-wider text-[var(--fg-faint)]">
+                          {v.tag}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
-                <div className="rounded-md border border-[var(--rule-soft)] bg-[var(--surface-2)]/70 px-4 py-1 text-[11px] text-[var(--fg-soft)]">
-                  https://app.taskmanagement.local/workspace/tasks
-                </div>
-                <span className="metric text-[var(--accent)] font-medium text-[10px]">
-                  {String(activeTab + 1).padStart(2, "0")} / {String(views.length).padStart(2, "0")}
-                </span>
-              </div>
 
-              {/* Image Canvas with Fade Animation */}
-              <div
-                className="group relative aspect-[16/9] w-full cursor-zoom-in overflow-hidden bg-black/90"
-                onClick={() => setLightboxImg(views[activeTab].src)}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTab}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.28, ease: "easeOut" }}
-                    className="relative h-full w-full"
-                  >
-                    <Image
-                      src={views[activeTab].src}
-                      alt={views[activeTab].title}
-                      fill
-                      className="object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-                      sizes="(max-width: 1200px) 100vw, 1200px"
-                      priority
-                    />
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Floating Caption Overlay */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 md:p-5 backdrop-blur-xs">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-serif text-[15px] text-white font-medium">
-                        {views[activeTab].title}
-                      </div>
-                      <p className="font-mono text-[11.5px] text-white/75 mt-0.5">
-                        {views[activeTab].caption}
-                      </p>
+                {/* Browser Window Mockup Frame */}
+                <div className="overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--bg-paper)] shadow-xl">
+                  {/* Browser Window Bar */}
+                  <div className="flex items-center justify-between border-b border-[var(--rule)] bg-[var(--surface)] px-4 py-2.5 font-mono text-[11px] text-[var(--fg-mute)]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
+                      <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
+                      <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
                     </div>
-                    <span className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-black/50 px-3 py-1 font-mono text-[11px] text-white backdrop-blur-md">
-                      <Maximize2 className="h-3 w-3" />
-                      <span>Full View</span>
+                    <div className="rounded-md border border-[var(--rule-soft)] bg-[var(--surface-2)]/70 px-4 py-1 text-[11px] text-[var(--fg-soft)]">
+                      https://app.taskmanagement.local/workspace/tasks
+                    </div>
+                    <span className="metric text-[var(--accent)] font-medium text-[10px]">
+                      {String(activeTab + 1).padStart(2, "0")} / {String(views.length).padStart(2, "0")}
                     </span>
+                  </div>
+
+                  {/* Image Canvas with Fade Animation */}
+                  <div
+                    className="group relative aspect-[16/9] w-full cursor-zoom-in overflow-hidden bg-black/90"
+                    onClick={() => setLightboxImg(views[activeTab].src)}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.28, ease: "easeOut" }}
+                        className="relative h-full w-full"
+                      >
+                        <Image
+                          src={views[activeTab].src}
+                          alt={views[activeTab].title}
+                          fill
+                          className="object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                          sizes="(max-width: 1200px) 100vw, 1200px"
+                          priority
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Floating Caption Overlay */}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 md:p-5 backdrop-blur-xs">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-serif text-[15px] text-white font-medium">
+                            {views[activeTab].title}
+                          </div>
+                          <p className="font-mono text-[11.5px] text-white/75 mt-0.5">
+                            {views[activeTab].caption}
+                          </p>
+                        </div>
+                        <span className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-black/50 px-3 py-1 font-mono text-[11px] text-white backdrop-blur-md">
+                          <Maximize2 className="h-3 w-3" />
+                          <span>Full View</span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <SchemaApiInspector />
+            )}
           </div>
 
           {/* Deep-Dive Feature Breakdown Grid */}
@@ -241,9 +304,9 @@ export function Projects() {
               <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface)] text-[var(--accent)] mb-3.5">
                 <Layers className="h-4.5 w-4.5" />
               </div>
-              <h4 className="font-medium text-[15.5px] text-[var(--fg)]">Multi-Member Assignment</h4>
+              <h4 className="font-medium text-[15.5px] text-[var(--fg)]">Assign people to a task</h4>
               <p className="mt-2 text-[13.5px] leading-[1.65] text-[var(--fg-soft)]">
-                Assign tasks with role-based visibility (Project Manager, Collaborator), due date pickers, and dynamic priority tagging.
+                Pick a project manager or collaborator, set a due date, and tag priority as low, medium, or high.
               </p>
             </div>
 
@@ -251,9 +314,9 @@ export function Projects() {
               <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface)] text-[var(--accent)] mb-3.5">
                 <Bell className="h-4.5 w-4.5" />
               </div>
-              <h4 className="font-medium text-[15.5px] text-[var(--fg)]">Live Notification Center</h4>
+              <h4 className="font-medium text-[15.5px] text-[var(--fg)]">See what changed</h4>
               <p className="mt-2 text-[13.5px] leading-[1.65] text-[var(--fg-soft)]">
-                Instant audit feed tracking member status transitions, attachment uploads, and comment thread notifications.
+                A notification feed for assignments, status changes, comments, and uploads — so the team is not chasing chat history.
               </p>
             </div>
 
@@ -261,9 +324,9 @@ export function Projects() {
               <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface)] text-[var(--accent)] mb-3.5">
                 <Database className="h-4.5 w-4.5" />
               </div>
-              <h4 className="font-medium text-[15.5px] text-[var(--fg)]">PostgreSQL & REST API</h4>
+              <h4 className="font-medium text-[15.5px] text-[var(--fg)]">API and database</h4>
               <p className="mt-2 text-[13.5px] leading-[1.65] text-[var(--fg-soft)]">
-                Normalized database schemas, relational foreign key integrity, and secure Node.js backend endpoints with JWT authentication.
+                Node.js REST endpoints and a PostgreSQL schema for users, tasks, comments, and activity.
               </p>
             </div>
           </div>

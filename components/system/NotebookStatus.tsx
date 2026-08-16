@@ -11,9 +11,11 @@ import { SoundToggle } from "@/components/ui/SoundToggle";
 export function NotebookStatus() {
   return (
     <div className="fixed right-4 sm:right-6 md:right-8 top-3.5 sm:top-4 md:top-5 z-40 flex items-center gap-2 sm:gap-2.5 select-none">
-      <BackgroundModeToggle />
-      <KeyGlowPicker />
-      <SoundToggle variant="pill" />
+      <div className="hidden items-center gap-2 sm:gap-2.5 md:flex">
+        <BackgroundModeToggle />
+        <KeyGlowPicker />
+        <SoundToggle variant="pill" />
+      </div>
       <ThemeToggle variant="pill" />
     </div>
   );

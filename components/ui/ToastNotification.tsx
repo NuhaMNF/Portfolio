@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Copy, Sparkles, X } from "lucide-react";
 import { playSelect } from "@/lib/sound";
+import { profile } from "@/lib/data";
 
 export interface ToastMessage {
   id: string;
@@ -21,7 +22,7 @@ export function showToast(title: string, description?: string, icon: "check" | "
   );
 }
 
-export async function copyEmailToClipboard(email = "nuhanizar16@gmail.com") {
+export async function copyEmailToClipboard(email = profile.email) {
   try {
     if (navigator.clipboard) {
       await navigator.clipboard.writeText(email);

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEasterEgg } from "@/lib/hooks/useEasterEgg";
+import { profile } from "@/lib/data";
 
 export function EasterEggOverlay() {
   const [open, setOpen] = useState(false);
@@ -35,7 +36,7 @@ export function EasterEggOverlay() {
             <div className="mt-3 text-emerald-300">Permission granted.</div>
             <div className="text-amber-300">Good decision.</div>
             <div className="mt-3 text-zinc-500">
-              // routing handshake to nuha@nizar.dev
+              // routing handshake to {profile.email}
             </div>
             <button
               onClick={() => setOpen(false)}

@@ -537,7 +537,7 @@ html[data-theme="light"] .status-bar {
   z-index: 30;
   background: var(--bg-deep);
   border-top: 1px solid var(--rule);
-  display: flex;
+  display: none;
   align-items: center;
   padding: 0 16px;
   font-family: var(--font-mono);
@@ -545,6 +545,12 @@ html[data-theme="light"] .status-bar {
   color: var(--fg-mute);
   letter-spacing: 0.04em;
   backdrop-filter: blur(12px);
+}
+
+@media (min-width: 1024px) {
+  .status-bar {
+    display: flex;
+  }
 }
 
 .status-bar-segment {

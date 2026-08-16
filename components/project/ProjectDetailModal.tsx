@@ -18,6 +18,8 @@ type Project = {
   problem: string;
   solution: string;
   architecture: string;
+  role?: string;
+  outcome?: string;
   tech: string[];
   repo: string;
   demo: string | null;
