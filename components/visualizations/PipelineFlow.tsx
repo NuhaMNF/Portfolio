@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 /**
  * PipelineFlow — DATA → PROCESS → MODEL → RESULT.
@@ -20,6 +20,7 @@ const STAGES = [
 export function PipelineFlow({ running }: { running: boolean }) {
   const [active, setActive] = useState(-1);
   const [particles, setParticles] = useState<Array<{ id: number; stage: number }>>([]);
+  const particleIdRef = useRef(0);
 
   useEffect(() => {
     if (!running) {
@@ -28,13 +29,13 @@ export function PipelineFlow({ running }: { running: boolean }) {
       return;
     }
     let mounted = true;
-    let pId = 0;
     const tick = () => {
       if (!mounted) return;
       setActive((a) => (a + 1) % (STAGES.length * 2));
       setParticles((p) => {
         const next = p.filter((x) => x.stage < STAGES.length - 1).map((x) => ({ ...x, stage: x.stage + 1 }));
-        return [...next, { id: pId++, stage: 0 }];
+        particleIdRef.current += 1;
+        return [...next, { id: particleIdRef.current, stage: 0 }];
       });
     };
     tick();

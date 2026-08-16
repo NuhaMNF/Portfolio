@@ -169,7 +169,7 @@ function ProjectEntry({
             <button
               data-cursor="open"
               onClick={onOpen}
-              className="inline-flex items-center gap-2 border border-[var(--rule)] bg-[var(--surface)] px-4 py-2 font-mono text-[12px] text-[var(--fg-soft)] transition-colors hover:border-[var(--accent)]/40 hover:text-[var(--accent)]"
+              className="btn-glass inline-flex items-center gap-2 px-4 py-2 font-mono text-[12px] text-[var(--fg-soft)]"
             >
               <span>open notebook</span>
               <span className="text-[10px] text-[var(--fg-faint)]">→</span>

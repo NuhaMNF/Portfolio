@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import { useTheme } from "@/lib/hooks/useTheme";
 import {
   gridForViewport,
   KEY_D,
@@ -19,6 +20,10 @@ const REST_COLOR = new THREE.Color("#07060c");
 const GRAD_LEFT = new THREE.Color("#4f7dff");
 const GRAD_MID = new THREE.Color("#c026d3");
 const GRAD_RIGHT = new THREE.Color("#fb7185");
+const LIGHT_GRAD_LEFT = new THREE.Color("#3d6ae8");
+const LIGHT_GRAD_MID = new THREE.Color("#7c4db8");
+const LIGHT_GRAD_RIGHT = new THREE.Color("#c45a6a");
+const LIGHT_CLEAR = "#f6f4f0";
 const INFLUENCE_RADIUS_FULL = 0.95;
 const INFLUENCE_RADIUS_MEDIUM = 1.85;
 const INFLUENCE_RADIUS_WEAK = 2.9;
@@ -80,18 +85,19 @@ function useCoarsePointer() {
   );
 }
 
-function makeKeyMaterial() {
+function makeKeyMaterial(light: boolean) {
   return new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
-    side: THREE.DoubleSide,
+        side: THREE.DoubleSide,
     toneMapped: false,
     uniforms: {
       uHalf: { value: new THREE.Vector3(KEY_W * 0.5, KEY_H * 0.5, KEY_D * 0.5) },
       uRest: { value: REST_COLOR.clone() },
-      uLeft: { value: GRAD_LEFT.clone() },
-      uMid: { value: GRAD_MID.clone() },
-      uRight: { value: GRAD_RIGHT.clone() },
+      uLeft: { value: (light ? LIGHT_GRAD_LEFT : GRAD_LEFT).clone() },
+      uMid: { value: (light ? LIGHT_GRAD_MID : GRAD_MID).clone() },
+      uRight: { value: (light ? LIGHT_GRAD_RIGHT : GRAD_RIGHT).clone() },
+      uLight: { value: light ? 1 : 0 },
     },
     vertexShader: /* glsl */ `
       attribute float aInfluence;
@@ -113,31 +119,41 @@ function makeKeyMaterial() {
       uniform vec3 uLeft;
       uniform vec3 uMid;
       uniform vec3 uRight;
+      uniform float uLight;
       varying vec3 vLocal;
       varying float vInf;
       varying float vHue;
       void main() {
         vec3 faceDist = uHalf - abs(vLocal);
         float second = max(min(faceDist.x, faceDist.y), min(max(faceDist.x, faceDist.y), faceDist.z));
-        float edge = 1.0 - smoothstep(0.0, 0.04, second);
+        float edge = 1.0 - smoothstep(0.0, mix(0.04, 0.038, uLight), second);
         vec3 accent = vHue < 0.5
           ? mix(uLeft, uMid, vHue * 2.0)
           : mix(uMid, uRight, (vHue - 0.5) * 2.0);
-        float glow = smoothstep(0.08, 0.72, vInf);
-        vec3 fill = mix(uRest * 0.35, accent * 0.22, glow);
-        vec3 rim = mix(uRest, accent, glow);
+        float glow = smoothstep(0.04, mix(0.62, 0.5, uLight), vInf);
+        vec3 paper = vec3(0.965, 0.957, 0.941);
+        vec3 rest = mix(uRest, paper, uLight);
+        vec3 fillD = mix(uRest * 0.35, accent * 0.22, glow);
+        vec3 fillL = mix(paper, accent * 0.92, 0.82);
+        vec3 fill = mix(fillD, fillL, uLight);
+        vec3 rimD = mix(rest, accent, glow);
+        vec3 rimL = mix(accent, vec3(0.18, 0.2, 0.32), 0.12);
+        vec3 rim = mix(rimD, rimL, uLight);
         vec3 rgb = mix(fill, rim, edge);
         float top = smoothstep(uHalf.y * 0.2, uHalf.y, vLocal.y);
-        rgb += accent * top * glow * 0.55;
-        rgb *= 0.22 + glow * 2.15;
-        float alpha = mix(0.06 + glow * 0.08, 0.16 + glow * 0.8, edge);
+        rgb += accent * top * glow * mix(0.55, 0.35, uLight);
+        rgb *= mix(0.22 + glow * 2.15, 0.85 + glow * 0.55, uLight);
+        float aFill = mix(0.06 + glow * 0.08, glow * 0.42, uLight);
+        float aEdge = mix(0.16 + glow * 0.8, glow * 0.98, uLight);
+        float alpha = mix(aFill, aEdge, edge);
+        if (alpha < 0.02) discard;
         gl_FragColor = vec4(rgb, alpha);
       }
     `,
   });
 }
 
-function makeGlowTexture() {
+function makeGlowTexture(light: boolean) {
   const size = 128;
   const canvas = document.createElement("canvas");
   canvas.width = size;
@@ -145,9 +161,15 @@ function makeGlowTexture() {
   const g = canvas.getContext("2d");
   if (!g) return null;
   const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  grad.addColorStop(0, "rgba(240, 171, 252, 0.95)");
-  grad.addColorStop(0.22, "rgba(232, 121, 249, 0.4)");
-  grad.addColorStop(1, "rgba(168, 85, 247, 0)");
+  if (light) {
+    grad.addColorStop(0, "rgba(90, 130, 230, 0.85)");
+    grad.addColorStop(0.28, "rgba(124, 77, 184, 0.35)");
+    grad.addColorStop(1, "rgba(196, 90, 106, 0)");
+  } else {
+    grad.addColorStop(0, "rgba(240, 171, 252, 0.95)");
+    grad.addColorStop(0.22, "rgba(232, 121, 249, 0.4)");
+    grad.addColorStop(1, "rgba(168, 85, 247, 0)");
+  }
   g.fillStyle = grad;
   g.fillRect(0, 0, size, size);
   const tex = new THREE.CanvasTexture(canvas);
@@ -156,10 +178,12 @@ function makeGlowTexture() {
 }
 
 export function BoxFieldCanvas() {
+  const theme = useTheme();
+  const light = theme === "light";
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-0"
+      className="pointer-events-none fixed inset-0 z-0 h-full w-full"
     >
       <Canvas
         orthographic
@@ -174,17 +198,18 @@ export function BoxFieldCanvas() {
         }}
         onCreated={({ camera, gl }) => {
           camera.lookAt(0, 0, 0);
-          gl.setClearColor("#000000", 1);
+          gl.setClearColor(light ? LIGHT_CLEAR : "#000000", 1);
         }}
       >
-        <BoxFieldScene />
+        <ThemeSync light={light} />
+        <BoxFieldScene light={light} />
         <EffectComposer multisampling={0}>
           <Bloom
             mipmapBlur
-            intensity={1.15}
-            luminanceThreshold={0.22}
-            luminanceSmoothing={0.35}
-            radius={0.82}
+            intensity={light ? 0.7 : 1.15}
+            luminanceThreshold={light ? 0.28 : 0.22}
+            luminanceSmoothing={0.45}
+            radius={light ? 0.62 : 0.82}
           />
         </EffectComposer>
       </Canvas>
@@ -192,7 +217,15 @@ export function BoxFieldCanvas() {
   );
 }
 
-function BoxFieldScene() {
+function ThemeSync({ light }: { light: boolean }) {
+  const gl = useThree((s) => s.gl);
+  useLayoutEffect(() => {
+    gl.setClearColor(light ? LIGHT_CLEAR : "#000000", 1);
+  }, [gl, light]);
+  return null;
+}
+
+function BoxFieldScene({ light }: { light: boolean }) {
   const reduced = useReducedMotion();
   const coarse = useCoarsePointer();
   const activeRef = useRef(true);
@@ -254,14 +287,22 @@ function BoxFieldScene() {
 
   return (
     <>
-      <StarPoints />
-      <KeyField specs={specs} reduced={reduced} />
-      <CursorGlow reduced={reduced} />
+      <StarPoints light={light} />
+      <KeyField specs={specs} reduced={reduced} light={light} />
+      <CursorGlow reduced={reduced} light={light} />
     </>
   );
 }
 
-function KeyField({ specs, reduced }: { specs: KeySpec[]; reduced: boolean }) {
+function KeyField({
+  specs,
+  reduced,
+  light,
+}: {
+  specs: KeySpec[];
+  reduced: boolean;
+  light: boolean;
+}) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const simRef = useRef<{
     infl: Float32Array;
@@ -282,7 +323,10 @@ function KeyField({ specs, reduced }: { specs: KeySpec[]; reduced: boolean }) {
     return geo;
   }, [specs]);
 
-  const material = useMemo(() => makeKeyMaterial(), []);
+  const material = useMemo(() => {
+    const mat = makeKeyMaterial(light);
+    return mat;
+  }, [light]);
 
   useEffect(() => {
     return () => {
@@ -323,7 +367,9 @@ function KeyField({ specs, reduced }: { specs: KeySpec[]; reduced: boolean }) {
 
     for (let i = 0; i < specs.length; i++) {
       const spec = specs[i];
-      const target = active ? computeInfluence(Math.hypot(spec.x - cx, spec.z - cz)) : 0;
+      const target = active
+        ? computeInfluence(Math.hypot(spec.x - cx, spec.z - cz))
+        : 0;
       if (reduced) {
         infl[i] = target;
         vel[i] = 0;
@@ -360,11 +406,11 @@ function KeyField({ specs, reduced }: { specs: KeySpec[]; reduced: boolean }) {
   );
 }
 
-function CursorGlow({ reduced }: { reduced: boolean }) {
+function CursorGlow({ reduced, light }: { reduced: boolean; light: boolean }) {
   const group = useRef<THREE.Group>(null);
   const mat = useRef<THREE.SpriteMaterial>(null);
   const sphereMat = useRef<THREE.MeshBasicMaterial>(null);
-  const tex = useMemo(() => makeGlowTexture(), []);
+  const tex = useMemo(() => makeGlowTexture(light), [light]);
   const opacity = useRef(0);
 
   useFrame((_, dt) => {
@@ -379,8 +425,8 @@ function CursorGlow({ reduced }: { reduced: boolean }) {
       KEY_H * 0.5 + KEY_LIFT + 0.28,
       smoothCursor.z
     );
-    if (mat.current) mat.current.opacity = 0.95 * o;
-    if (sphereMat.current) sphereMat.current.opacity = o;
+    if (mat.current) mat.current.opacity = (light ? 0.72 : 0.95) * o;
+    if (sphereMat.current) sphereMat.current.opacity = (light ? 0.7 : 1) * o;
   });
 
   return (
@@ -389,14 +435,14 @@ function CursorGlow({ reduced }: { reduced: boolean }) {
         <sphereGeometry args={[0.16, 20, 20]} />
         <meshBasicMaterial
           ref={sphereMat}
-          color="#f5d0fe"
+          color={light ? "#5b7ce8" : "#f5d0fe"}
           transparent
           opacity={0}
           toneMapped={false}
         />
       </mesh>
       {tex && (
-        <sprite scale={[1.9, 1.9, 1]} renderOrder={2}>
+        <sprite scale={light ? [2.2, 2.2, 1] : [1.9, 1.9, 1]} renderOrder={2}>
           <spriteMaterial
             ref={mat}
             map={tex}
@@ -412,7 +458,7 @@ function CursorGlow({ reduced }: { reduced: boolean }) {
   );
 }
 
-function StarPoints() {
+function StarPoints({ light }: { light: boolean }) {
   const geometry = useMemo(() => {
     const count = 140;
     const positions = new Float32Array(count * 3);
@@ -434,6 +480,8 @@ function StarPoints() {
   useEffect(() => {
     return () => geometry.dispose();
   }, [geometry]);
+
+  if (light) return null;
 
   return (
     <points geometry={geometry} frustumCulled={false}>

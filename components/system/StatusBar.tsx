@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 /**
  * Bottom IDE-style status bar. Tracks kernel state, runtime, cell count.
@@ -57,6 +58,9 @@ export function StatusBar() {
         <span>runtime: {runtime}</span>
       </div>
       <div className="status-bar-segment status-bar-segment--right">
+        <ThemeToggle compact />
+      </div>
+      <div className="status-bar-segment">
         <span className="hidden sm:inline">utf-8</span>
       </div>
       <div className="status-bar-segment">

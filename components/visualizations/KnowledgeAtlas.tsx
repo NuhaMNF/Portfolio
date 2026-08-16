@@ -83,8 +83,8 @@ export function KnowledgeAtlas() {
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "transition-colors duration-300",
-              filter === f ? "text-[var(--accent)]" : "text-[var(--fg-faint)] hover:text-[var(--fg-soft)]"
+              "btn-glass px-2 py-0.5 transition-colors duration-300",
+              filter === f ? "btn-glass--accent" : "text-[var(--fg-faint)]"
             )}
           >
             {filter === f && <span className="mr-1">●</span>}

@@ -359,17 +359,17 @@ export const activity = {
 
 // Sidebar navigation
 export const navItems = [
-  { id: "hero", cellId: "1", label: "introduce" },
-  { id: "about", cellId: "2", label: "about" },
-  { id: "skills", cellId: "3", label: "capabilities" },
-  { id: "thinking", cellId: "3.5", label: "thinking" },
-  { id: "experience", cellId: "4", label: "experience" },
-  { id: "ai_lab", cellId: "4.5", label: "ai_lab" },
-  { id: "projects", cellId: "5", label: "projects" },
-  { id: "research", cellId: "6", label: "research" },
-  { id: "education", cellId: "7", label: "education" },
-  { id: "activity", cellId: "8", label: "activity" },
-  { id: "contact", cellId: "9", label: "connect" },
+  { id: "hero", cellId: "01", label: "introduce", tag: "py", type: "code", isSub: false },
+  { id: "about", cellId: "02", label: "about", tag: "md", type: "md", isSub: false },
+  { id: "skills", cellId: "03", label: "capabilities", tag: "py", type: "code", isSub: false },
+  { id: "thinking", cellId: "3.5", label: "thinking", tag: "note", type: "note", isSub: true },
+  { id: "experience", cellId: "04", label: "experience", tag: "log", type: "code", isSub: false },
+  { id: "ai_lab", cellId: "4.5", label: "ai_lab", tag: "lab", type: "lab", isSub: true },
+  { id: "projects", cellId: "05", label: "projects", tag: "sys", type: "code", isSub: false },
+  { id: "research", cellId: "06", label: "research", tag: "doc", type: "md", isSub: false },
+  { id: "education", cellId: "07", label: "education", tag: "edu", type: "md", isSub: false },
+  { id: "activity", cellId: "08", label: "activity", tag: "git", type: "code", isSub: false },
+  { id: "contact", cellId: "09", label: "connect", tag: "io", type: "code", isSub: false },
 ];
 
 export const bootSequence = [
@@ -405,7 +405,7 @@ export const commands = [
   { id: "help", label: "show help", shortcut: "?" },
   { id: "restart", label: "restart kernel", shortcut: "r" },
   { id: "surprise", label: "surprise me", shortcut: "🎲" },
-  { id: "theme", label: "toggle theme (soon)", shortcut: "t" },
+  { id: "theme", label: "toggle theme", shortcut: "t" },
 ];
 
 export const personalityAnnotations: Array<{ id: string; section: string; text: string; tone?: "warm" | "wry" | "quiet" }> = [

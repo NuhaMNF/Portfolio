@@ -98,7 +98,7 @@ export function Contact() {
                       data-cursor="run"
                       onClick={submit}
                       disabled={isRunning}
-                      className="inline-flex items-center gap-2 border border-[var(--accent)]/40 bg-[var(--accent)]/10 px-4 py-2 font-mono text-[12px] text-[var(--accent)] transition-colors hover:bg-[var(--accent)]/15 disabled:opacity-50"
+                      className="btn-glass btn-glass--accent inline-flex items-center gap-2 px-4 py-2 font-mono text-[12px] disabled:opacity-50"
                     >
                       <Send className="h-3 w-3" />
                       {phase === "delivered" ? "✓ sent" : isRunning ? "▸ executing..." : "execute"}

@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useCellObserver } from "@/lib/hooks/useCellObserver";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
 import { ExecutionPrompt } from "./ExecutionPrompt";
-import { Play, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NotebookCellProps {
@@ -18,86 +16,124 @@ interface NotebookCellProps {
   ) => React.ReactNode;
   threshold?: number;
   manualRun?: boolean;
-  /** Compact variant for cells that don't need full visual weight */
   variant?: "default" | "compact" | "wide";
+  label?: string;
 }
 
 /**
- * Notebook cell with tactile feel: paper surface, layer lines, cell markers.
+ * Notebook cell with Streaming Auto-Execution on Scroll.
+ * Automatically executes as the user scrolls into view and provides instant interactive re-runs.
  */
 export function NotebookCell({
   cellId,
   className,
   children,
-  threshold = 0.18,
-  manualRun = true,
+  threshold = 0.1,
   variant = "default",
+  label,
 }: NotebookCellProps) {
-  const { ref, executed } = useCellObserver<HTMLDivElement>(threshold);
-  const status: "queued" | "running" | "done" = !executed ? "queued" : "running";
-  const [run, setRun] = useState(false);
-  const runCell = () => setRun(true);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [status, setStatus] = useState<"queued" | "running" | "done">("queued");
+  const [isRerunning, setIsRerunning] = useState(false);
+  const executedRef = useRef(false);
+
+  const executeCell = useCallback((isManual = false) => {
+    setStatus("running");
+    if (isManual) setIsRerunning(true);
+    window.dispatchEvent(new CustomEvent("nuha:kernel-busy"));
+
+    const timer = setTimeout(() => {
+      setStatus("done");
+      setIsRerunning(false);
+      executedRef.current = true;
+      window.dispatchEvent(new CustomEvent("nuha:cell-executed"));
+      window.dispatchEvent(new CustomEvent("nuha:kernel-idle"));
+    }, isManual ? 280 : 180);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node || executedRef.current) return;
+
+    // Check if element is already in viewport on initial load
+    const rect = node.getBoundingClientRect();
+    const isVisibleInitially =
+      rect.top < window.innerHeight * 0.95 && rect.bottom > 0;
+
+    if (isVisibleInitially) {
+      executeCell(false);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !executedRef.current) {
+            executeCell(false);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold, rootMargin: "0px 0px -8% 0px" }
+    );
+
+    io.observe(node);
+    return () => io.disconnect();
+  }, [threshold, executeCell]);
+
+  const runCell = () => {
+    executeCell(true);
+  };
+
+  const executed = status === "done" || status === "running";
+  const run = executed;
 
   return (
     <section
-      ref={ref}
+      ref={containerRef}
       id={cellId.includes(".") ? undefined : cellId}
       data-cell={cellId}
-      className={cn("relative", className)}
+      className={cn("relative group/cell", className)}
     >
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
-        <ExecutionPrompt cellId={cellId} status={status} />
-
-        <div
-          className={cn(
-            "mt-4",
-            variant === "wide" && "relative"
-          )}
-        >
-          {children(executed, status, manualRun ? run : true, manualRun ? runCell : () => setRun(true))}
+        {/* Cell Execution Bar */}
+        <div className="mb-3 flex items-center justify-between border-b border-[var(--rule-soft)] pb-2.5">
+          <ExecutionPrompt
+            cellId={cellId}
+            status={status}
+            label={label}
+            onRerun={runCell}
+          />
         </div>
 
-        {manualRun && executed && (
-          <AnimatePresence>
+        {/* Cell Content Area */}
+        <div
+          className={cn(
+            "relative transition-all duration-300",
+            variant === "wide" && "relative",
+            isRerunning && "opacity-90"
+          )}
+        >
+          {/* Telemetry scanline animation during rerun */}
+          {isRerunning && (
             <motion.div
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="mt-5 flex items-center gap-3"
-            >
-              <button
-                onClick={runCell}
-                data-cursor="run"
-                className={cn(
-                  "group inline-flex items-center gap-2 border px-3.5 py-1.5 font-mono text-[12px] transition-colors duration-300",
-                  run
-                    ? "border-[var(--rule)] text-[var(--fg-mute)] hover:border-[var(--accent)]"
-                    : "border-[var(--rule)] text-[var(--fg-soft)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                )}
-              >
-                {run ? (
-                  <>
-                    <CheckCircle2 className="h-3 w-3 text-[var(--state-done)]" />
-                    <span>executed</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-3 w-3 fill-current" />
-                    <span>run cell</span>
-                    <span className="ml-1 text-[10px] text-[var(--fg-faint)]">shift+⏎</span>
-                  </>
-                )}
-              </button>
-              <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[var(--fg-faint)]">
-                {run ? "output expanded" : "click to expand output"}
-              </span>
-            </motion.div>
-          </AnimatePresence>
-        )}
+              initial={{ x: "-100%" }}
+              animate={{ x: "100%" }}
+              transition={{ duration: 0.28, ease: "linear" }}
+              className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[2px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-80"
+            />
+          )}
+
+          {children(executed, status, run, runCell)}
+        </div>
       </motion.div>
     </section>
   );

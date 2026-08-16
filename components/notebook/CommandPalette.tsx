@@ -78,7 +78,10 @@ export function CommandPalette() {
       window.dispatchEvent(new CustomEvent("nuha:run"));
       return;
     }
-    if (id === "theme") return;
+    if (id === "theme") {
+      window.dispatchEvent(new Event("nuha:toggle-theme"));
+      return;
+    }
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -129,7 +132,7 @@ export function CommandPalette() {
                 <button
                   onClick={() => setShowHelp(false)}
                   data-cursor="view"
-                  className="mt-5 border border-[var(--rule)] bg-[var(--surface)] px-3 py-1.5 text-[var(--fg-soft)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  className="btn-glass mt-5 px-3 py-1.5 font-mono text-[12px] text-[var(--fg-soft)]"
                 >
                   back
                 </button>

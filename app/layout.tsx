@@ -10,6 +10,7 @@ import { BootTerminalClient } from "@/components/system/BootTerminalClient";
 import { StatusBar } from "@/components/system/StatusBar";
 import { RunNuha } from "@/components/system/RunNuha";
 import { BoxFieldBackground } from "@/components/ui/BoxFieldBackground";
+import { ThemeController } from "@/components/system/ThemeController";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -54,9 +55,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
+      data-theme="dark"
+      style={{ colorScheme: "dark" }}
       className={`${inter.variable} ${mono.variable} ${display.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full bg-black font-sans text-[var(--fg)] selection:bg-amber-300/30 selection:text-amber-100">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("nuha-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body
+        className="min-h-full bg-[var(--bg)] font-sans text-[var(--fg)] selection:bg-[var(--accent)]/25 selection:text-[var(--fg)]"
+        suppressHydrationWarning
+      >
+        <ThemeController />
         <BoxFieldBackground />
         <CoordRails />
         <BootTerminalClient />

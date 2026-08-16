@@ -102,7 +102,7 @@ export function ProjectDetailModal({
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="ml-3 inline-flex h-7 w-7 items-center justify-center border border-[var(--rule)] text-[var(--fg-mute)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                className="btn-glass ml-3 inline-flex h-7 w-7 items-center justify-center text-[var(--fg-mute)]"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -231,7 +231,7 @@ export function ProjectDetailModal({
                           target="_blank"
                           rel="noreferrer"
                           data-cursor="view"
-                          className="inline-flex items-center gap-1.5 border border-[var(--rule)] bg-[var(--surface)] px-3 py-1.5 text-[var(--fg-soft)] transition-colors hover:border-[var(--accent)]/40 hover:text-[var(--accent)]"
+                          className="btn-glass inline-flex items-center gap-1.5 px-3 py-1.5 text-[var(--fg-soft)]"
                         >
                           {l.label === "github" ? <GithubIcon className="h-3 w-3" /> : <ExternalLink className="h-3 w-3" />}
                           {l.label}

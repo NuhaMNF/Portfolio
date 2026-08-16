@@ -40,7 +40,7 @@ export function EasterEggOverlay() {
             <button
               onClick={() => setOpen(false)}
               data-cursor="view"
-              className="mt-5 rounded border border-zinc-800 bg-zinc-900/60 px-3 py-1.5 text-[12px] text-zinc-200 hover:bg-zinc-900"
+              className="btn-glass mt-5 px-3 py-1.5 font-mono text-[12px] text-[var(--fg)]"
             >
               close
             </button>

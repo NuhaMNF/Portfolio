@@ -174,7 +174,7 @@ function Identity({ reduced }: { reduced: boolean }) {
         <a
           href="#projects"
           data-cursor="view"
-          className="group inline-flex min-h-11 items-center gap-2 border border-[var(--accent)]/45 bg-[var(--accent-glow)] px-5 font-mono text-[12.5px] text-[var(--accent)] transition-colors duration-300 hover:border-[var(--accent)] hover:bg-[var(--accent)]/15"
+          className="btn-glass btn-glass--accent group inline-flex min-h-11 items-center gap-2 px-5 font-mono text-[12.5px]"
         >
           <span>view experiments</span>
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -311,7 +311,7 @@ function CodeCell({
             type="button"
             data-cursor="run"
             onClick={onRerun}
-            className="group inline-flex min-h-10 items-center gap-2 border border-[var(--accent)]/40 bg-[var(--accent-glow)] px-3.5 font-mono text-[12px] text-[var(--accent)] transition-colors duration-300 hover:border-[var(--accent)]"
+            className="btn-glass btn-glass--accent group inline-flex min-h-10 items-center gap-2 px-3.5 font-mono text-[12px]"
           >
             <Play className="h-3 w-3 fill-current" />
             <span>{done ? "rerun" : "run cell"}</span>
@@ -320,7 +320,7 @@ function CodeCell({
             type="button"
             data-cursor="view"
             onClick={() => window.dispatchEvent(new CustomEvent("nuha:run"))}
-            className="inline-flex min-h-10 items-center gap-2 border border-[var(--rule)] bg-[var(--surface)] px-3.5 font-mono text-[12px] text-[var(--fg-soft)] transition-colors duration-300 hover:border-[var(--accent)]/40 hover:text-[var(--accent)]"
+            className="btn-glass inline-flex min-h-10 items-center gap-2 px-3.5 font-mono text-[12px] text-[var(--fg-soft)]"
           >
             <span>run_nuha()</span>
             <span className="text-[10px] text-[var(--fg-faint)]">⌘⏎</span>
@@ -353,7 +353,7 @@ function SocialLink({
       rel={external ? "noreferrer" : undefined}
       data-cursor="view"
       aria-label={label}
-      className="inline-flex h-11 w-11 items-center justify-center border border-[var(--rule)] text-[var(--fg-mute)] transition-colors duration-300 hover:border-[var(--accent)]/40 hover:text-[var(--accent)]"
+      className="btn-glass inline-flex h-11 w-11 items-center justify-center text-[var(--fg-mute)]"
     >
       {children}
     </a>
