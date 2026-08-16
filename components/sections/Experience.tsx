@@ -9,9 +9,13 @@ import { Briefcase, MapPin, Calendar } from "lucide-react";
 
 export function Experience() {
   return (
-    <section className="relative px-6 py-24 md:py-32">
+    <section id="experience" className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
-        <NotebookCell cellId="4" threshold={0.12}>
+        <NotebookCell
+          cellId="4"
+          label="timeline"
+          collapsedHint="Experience history & roles collapsed · Click to run cell"
+        >
           {(executed) => (
             <>
               <CodeBlock
@@ -24,8 +28,8 @@ export function Experience() {
                     <motion.div
                       key={job.role + job.company}
                       initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: executed ? 1 : 0, x: executed ? 0 : -8 }}
-                      transition={{ delay: 0.2 + i * 0.18, duration: 0.5 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.15 + i * 0.1, duration: 0.4 }}
                       className="overflow-hidden rounded-md border border-zinc-800/60 bg-zinc-950/30"
                     >
                       <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800/40 bg-zinc-900/40 px-4 py-2 font-mono text-[11px]">
@@ -100,4 +104,3 @@ export function Experience() {
     </section>
   );
 }
-

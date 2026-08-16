@@ -16,13 +16,17 @@ export function Contact() {
   function submit() {
     if (!form.name || !form.email || !form.message) return;
     setState("submitting");
-    setTimeout(() => setState("sent"), 1400);
+    setTimeout(() => setState("sent"), 1200);
   }
 
   return (
     <section id="contact" className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
-        <NotebookCell cellId="9">
+        <NotebookCell
+          cellId="9"
+          label="rpc"
+          collapsedHint="Connect terminal & contact form collapsed · Click to run cell"
+        >
           {(executed) => (
             <>
               <CodeBlock

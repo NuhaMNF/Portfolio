@@ -16,10 +16,14 @@ const researchCode = `research = [
 
 export function Research() {
   return (
-    <section className="relative px-6 py-24 md:py-32">
+    <section id="research" className="relative px-6 py-24 md:py-32">
       <div className="absolute inset-0 -z-10 opacity-[0.04] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
       <div className="mx-auto max-w-5xl">
-        <NotebookCell cellId="6">
+        <NotebookCell
+          cellId="6"
+          label="laboratory"
+          collapsedHint="4 Peer-reviewed papers & exploratory studies collapsed · Click to run cell"
+        >
           {(executed) => (
             <>
               <CodeBlock code={researchCode} className="mt-4" />
@@ -35,7 +39,7 @@ export function Research() {
                       data-cursor="open"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+                      transition={{ delay: 0.15 + i * 0.08, duration: 0.4 }}
                       className="group relative overflow-hidden rounded-md border border-zinc-800/60 bg-zinc-950/40 p-5 transition-colors hover:border-zinc-700"
                     >
                       <div className="absolute inset-0 -z-10 opacity-[0.05] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:16px_16px]" />

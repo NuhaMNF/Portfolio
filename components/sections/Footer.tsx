@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
 
 export function Footer() {

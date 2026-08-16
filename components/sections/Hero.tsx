@@ -1,20 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TypedCode } from "@/components/notebook/CodeBlock";
 import { heroClassCode, profile } from "@/lib/data";
-import { Play, ArrowRight, Mail } from "lucide-react";
+import { Play, ArrowRight, Mail, FastForward, Terminal } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
+import { useNotebook } from "@/lib/context/NotebookContext";
+import { ExecutionPrompt } from "@/components/notebook/ExecutionPrompt";
 
 export function Hero() {
-  const [run, setRun] = useState(false);
-  const [done, setDone] = useState(false);
+  const { cellStates, runCell, runAllCells, allExecuted, setActiveCell } =
+    useNotebook();
+  const status = cellStates["1"] || "idle";
+  const executed = status === "done";
+  const running = status === "running";
 
-  useEffect(() => {
-    const t = setTimeout(() => setRun(true), 600);
-    return () => clearTimeout(t);
-  }, []);
+  const handleRunHero = () => {
+    setActiveCell("1");
+    runCell("1", 700);
+  };
 
   return (
     <section id="hero" className="relative min-h-[100svh] pt-24 md:pt-32">
@@ -22,44 +26,74 @@ export function Hero() {
       <div className="absolute inset-x-0 top-0 -z-10 h-[60vh] bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.08),transparent_60%)]" />
 
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mb-6 flex items-center gap-3 font-mono text-[12px]">
-          <span className="text-zinc-500">In</span>
-          <span className="text-zinc-600">[</span>
-          <span className="text-amber-300">1</span>
-          <span className="text-zinc-600">]:</span>
-          <span
-            className={`rounded px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] ${
-              run
-                ? "bg-amber-500/10 text-amber-300"
-                : "bg-zinc-900/80 text-zinc-500"
-            }`}
-          >
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  run ? "bg-amber-300 animate-pulse" : "bg-zinc-600"
-                }`}
-              />
-              {run ? "executed" : "queued"}
-            </span>
-          </span>
+        {/* Cell Header */}
+        <div className="mb-4">
+          <ExecutionPrompt
+            cellId="1"
+            status={status}
+            label="initialize"
+            onRun={handleRunHero}
+          />
         </div>
 
+        {/* Python Code Block */}
         <TypedCode
           code={heroClassCode}
-          speed={run ? 12 : 9999}
-          start={run}
-          onDone={() => setDone(true)}
-          className="mb-8"
+          speed={running ? 10 : 9999}
+          start={running || executed}
+          className="mb-6 shadow-xl"
         />
 
+        {/* Collapsed Initial State Prompt */}
+        {!executed && !running && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 flex flex-col gap-4 rounded-lg border border-amber-400/30 bg-amber-400/[0.04] p-5 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 font-mono text-[13px] font-semibold text-amber-200">
+                <Terminal className="h-4 w-4 text-amber-300" />
+                <span>Interactive Computational Notebook</span>
+              </div>
+              <p className="font-mono text-[12px] text-zinc-400">
+                Click <span className="text-amber-300 font-medium">Run Cell</span> or press{" "}
+                <kbd className="rounded bg-zinc-800 px-1.5 py-0.5 text-zinc-200">Shift + Enter</kbd> to
+                execute and reveal portfolio content.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2 sm:pt-0">
+              <button
+                onClick={handleRunHero}
+                data-cursor="run"
+                className="inline-flex items-center gap-2 rounded-md border border-amber-300/50 bg-amber-300/20 px-4 py-2 font-mono text-[13px] font-medium text-amber-100 shadow-md transition-all hover:bg-amber-300/30 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Play className="h-4 w-4 fill-current text-amber-300" />
+                Run Cell [1]
+              </button>
+
+              <button
+                onClick={() => runAllCells()}
+                data-cursor="run"
+                className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900/80 px-3.5 py-2 font-mono text-[12px] text-zinc-300 transition-colors hover:border-zinc-600 hover:text-zinc-100"
+              >
+                <FastForward className="h-3.5 w-3.5 text-emerald-400" />
+                Run All Cells
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Output Block Out[1] */}
         <AnimatePresence>
-          {done && (
+          {executed && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6 }}
-              className="space-y-6"
+              initial={{ opacity: 0, y: 12, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-6 overflow-hidden"
             >
               <div className="flex items-center gap-2 font-mono text-[12px]">
                 <span className="text-zinc-500">Out[</span>
@@ -71,7 +105,8 @@ export function Hero() {
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="rounded-md border border-zinc-800/60 bg-zinc-900/20 p-6 md:p-8 backdrop-blur-sm"
               >
                 <div className="font-mono text-[12px] uppercase tracking-[0.2em] text-emerald-300">
                   {"// > nuha.introduce()"}
@@ -92,86 +127,74 @@ export function Hero() {
                 <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
                   {profile.tagline}
                 </p>
-              </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="flex flex-wrap items-center gap-3 pt-2"
-              >
-                <button
-                  data-cursor="run"
-                  onClick={() => {
-                    setRun(false);
-                    setDone(false);
-                    setTimeout(() => setRun(true), 50);
-                  }}
-                  className="group inline-flex items-center gap-2 rounded-md border border-amber-300/40 bg-amber-300/10 px-4 py-2 font-mono text-[13px] text-amber-200 transition-colors hover:bg-amber-300/20"
-                >
-                  <Play className="h-3.5 w-3.5 fill-current" />
-                  Run Cell
-                </button>
-                <a
-                  href="#projects"
-                  data-cursor="view"
-                  className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900/60 px-4 py-2 font-mono text-[13px] text-zinc-200 transition-colors hover:bg-zinc-900"
-                >
-                  View Projects
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </a>
-                <a
-                  href="#about"
-                  data-cursor="view"
-                  className="inline-flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/40 px-4 py-2 font-mono text-[13px] text-zinc-300 transition-colors hover:bg-zinc-900"
-                >
-                  About Me
-                </a>
-                <div className="ml-2 flex items-center gap-1">
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  {!allExecuted && (
+                    <button
+                      onClick={() => runAllCells()}
+                      data-cursor="run"
+                      className="group inline-flex items-center gap-2 rounded-md border border-emerald-400/40 bg-emerald-400/10 px-4 py-2 font-mono text-[13px] text-emerald-200 transition-all hover:bg-emerald-400/20"
+                    >
+                      <FastForward className="h-3.5 w-3.5 text-emerald-300" />
+                      Run All Remaining Cells
+                    </button>
+                  )}
                   <a
-                    href={profile.github}
-                    target="_blank"
-                    rel="noreferrer"
+                    href="#projects"
                     data-cursor="view"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/40 text-zinc-300 transition-colors hover:text-amber-300"
-                    aria-label="GitHub"
+                    className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900/60 px-4 py-2 font-mono text-[13px] text-zinc-200 transition-colors hover:bg-zinc-900"
                   >
-                    <GithubIcon className="h-4 w-4" />
+                    View Projects
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </a>
                   <a
-                    href={profile.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
+                    href="#about"
                     data-cursor="view"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/40 text-zinc-300 transition-colors hover:text-amber-300"
-                    aria-label="LinkedIn"
+                    className="inline-flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/40 px-4 py-2 font-mono text-[13px] text-zinc-300 transition-colors hover:bg-zinc-900"
                   >
-                    <LinkedinIcon className="h-4 w-4" />
+                    About Me
                   </a>
-                  <a
-                    href={`mailto:${profile.email}`}
-                    data-cursor="view"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/40 text-zinc-300 transition-colors hover:text-amber-300"
-                    aria-label="Email"
-                  >
-                    <Mail className="h-4 w-4" />
-                  </a>
+                  <div className="ml-auto flex items-center gap-1.5">
+                    <a
+                      href={profile.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-cursor="view"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/40 text-zinc-300 transition-colors hover:text-amber-300"
+                      aria-label="GitHub"
+                    >
+                      <GithubIcon className="h-4 w-4" />
+                    </a>
+                    <a
+                      href={profile.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-cursor="view"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/40 text-zinc-300 transition-colors hover:text-amber-300"
+                      aria-label="LinkedIn"
+                    >
+                      <LinkedinIcon className="h-4 w-4" />
+                    </a>
+                    <a
+                      href={`mailto:${profile.email}`}
+                      data-cursor="view"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/40 text-zinc-300 transition-colors hover:text-amber-300"
+                      aria-label="Email"
+                    >
+                      <Mail className="h-4 w-4" />
+                    </a>
+                  </div>
                 </div>
-              </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-6 font-mono text-[11px] text-zinc-500"
-              >
-                <span className="flex items-center gap-2">
-                  <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-                  kernel: idle
-                </span>
-                <span>mem: 84% free</span>
-                <span>uptime: 1.4y</span>
-                <span className="hidden md:inline">last commit: 2h ago</span>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-6 font-mono text-[11px] text-zinc-500 border-t border-zinc-800/40 mt-6">
+                  <span className="flex items-center gap-2">
+                    <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+                    kernel: idle
+                  </span>
+                  <span>mem: 84% free</span>
+                  <span>uptime: 1.4y</span>
+                  <span className="hidden md:inline">last commit: 2h ago</span>
+                </div>
               </motion.div>
             </motion.div>
           )}
