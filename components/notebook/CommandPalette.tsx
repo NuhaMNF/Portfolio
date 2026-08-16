@@ -5,24 +5,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { commands } from "@/lib/data";
 import { useCommandPalette } from "@/lib/hooks/useCommandPalette";
 
+const GHOST = "try: help, projects, hire, surprise";
+
 export function CommandPalette() {
   const { open, setOpen } = useCommandPalette();
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
+  const [showHelp, setShowHelp] = useState(false);
 
   const filtered = useMemo(() => {
     if (!query) return commands;
     const q = query.toLowerCase();
     return commands.filter(
-      (c) =>
-        c.label.toLowerCase().includes(q) ||
-        c.id.toLowerCase().includes(q) ||
-        c.shortcut.toLowerCase().includes(q)
+      (c) => c.label.toLowerCase().includes(q) || c.id.toLowerCase().includes(q) || c.shortcut.toLowerCase().includes(q)
     );
   }, [query]);
 
   useEffect(() => {
     setIndex(0);
+    setShowHelp(false);
   }, [query, open]);
 
   useEffect(() => {
@@ -46,10 +47,23 @@ export function CommandPalette() {
     if (id === "github") return window.open("https://github.com/nuhanizar", "_blank");
     if (id === "linkedin") return window.open("https://linkedin.com/in/nuhanizar", "_blank");
     if (id === "hire") {
-      const ev = new CustomEvent("nuha:hire");
-      window.dispatchEvent(ev);
+      window.dispatchEvent(new CustomEvent("nuha:hire"));
       return;
     }
+    if (id === "help") {
+      setShowHelp(true);
+      setOpen(true);
+      return;
+    }
+    if (id === "restart") {
+      window.dispatchEvent(new CustomEvent("nuha:restart"));
+      return;
+    }
+    if (id === "surprise") {
+      window.dispatchEvent(new CustomEvent("nuha:surprise"));
+      return;
+    }
+    if (id === "theme") return;
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -72,40 +86,56 @@ export function CommandPalette() {
             onClick={(e) => e.stopPropagation()}
             className="mt-[14vh] w-[min(640px,92vw)] overflow-hidden rounded-lg border border-zinc-800 bg-[#0c0c0e]/95 shadow-2xl"
           >
-            <div className="flex items-center gap-2 border-b border-zinc-800 px-4 py-3">
-              <span className="font-mono text-[12px] text-zinc-500">$</span>
-              <input
-                autoFocus
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="search commands or sections…"
-                className="flex-1 bg-transparent font-mono text-[14px] text-zinc-100 outline-none placeholder:text-zinc-600"
-              />
-              <span className="rounded border border-zinc-800 px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">
-                ESC
-              </span>
-            </div>
-            <div className="max-h-[50vh] overflow-y-auto p-2">
-              {filtered.length === 0 && (
-                <div className="px-3 py-4 font-mono text-[12px] text-zinc-500">
-                  no commands match "{query}"
+            {showHelp ? (
+              <div className="p-5 font-mono text-[12px]">
+                <div className="mb-3 text-zinc-500">// available commands</div>
+                <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+                  {commands.map((c) => (
+                    <div key={c.id} className="flex items-center gap-2 text-zinc-300">
+                      <span className="text-zinc-600">›</span>
+                      <span>{c.label}</span>
+                      <span className="ml-auto text-zinc-600">{c.shortcut}</span>
+                    </div>
+                  ))}
                 </div>
-              )}
-              {filtered.map((c, i) => (
-                <button
-                  key={c.id}
-                  onClick={() => runCommand(c.id)}
-                  onMouseEnter={() => setIndex(i)}
-                  className={`flex w-full items-center gap-3 rounded px-3 py-2 text-left font-mono text-[13px] transition-colors ${
-                    i === index ? "bg-amber-500/10 text-amber-200" : "text-zinc-300 hover:bg-zinc-900"
-                  }`}
-                >
-                  <span className="text-zinc-600">›</span>
-                  <span className="flex-1">{c.label}</span>
-                  <span className="text-[10px] text-zinc-600">{c.shortcut}</span>
+                <button onClick={() => setShowHelp(false)} className="mt-4 rounded border border-zinc-800 bg-zinc-900/60 px-2 py-1 text-zinc-300 hover:bg-zinc-900">
+                  back
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 border-b border-zinc-800 px-4 py-3">
+                  <span className="font-mono text-[12px] text-zinc-500">$</span>
+                  <input
+                    autoFocus
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder={query ? "" : GHOST}
+                    className="flex-1 bg-transparent font-mono text-[14px] text-zinc-100 outline-none placeholder:text-zinc-600 placeholder:italic"
+                  />
+                  <span className="rounded border border-zinc-800 px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">ESC</span>
+                </div>
+                <div className="max-h-[50vh] overflow-y-auto p-2">
+                  {filtered.length === 0 && (
+                    <div className="px-3 py-4 font-mono text-[12px] text-zinc-500">no commands match "{query}"</div>
+                  )}
+                  {filtered.map((c, i) => (
+                    <button
+                      key={c.id}
+                      onClick={() => runCommand(c.id)}
+                      onMouseEnter={() => setIndex(i)}
+                      className={`flex w-full items-center gap-3 rounded px-3 py-2 text-left font-mono text-[13px] transition-colors ${
+                        i === index ? "bg-amber-500/10 text-amber-200" : "text-zinc-300 hover:bg-zinc-900"
+                      }`}
+                    >
+                      <span className="text-zinc-600">›</span>
+                      <span className="flex-1">{c.label}</span>
+                      <span className="text-[10px] text-zinc-600">{c.shortcut}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
             <div className="flex items-center justify-between border-t border-zinc-800 px-4 py-2 font-mono text-[10px] text-zinc-500">
               <span>↑ ↓ navigate</span>
               <span>↵ execute</span>
