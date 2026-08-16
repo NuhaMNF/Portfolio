@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExecutionHistory } from "./ExecutionHistory";
+import { navItems } from "@/lib/data";
 
 /**
  * Notebook Explorer — the persistent research notebook sidebar.
@@ -30,7 +31,9 @@ export function NotebookExplorer() {
           <div className="mt-5 space-y-1 font-mono text-[10.5px] text-[var(--fg-mute)]">
             <div className="flex items-center justify-between">
               <span>cells</span>
-              <span className="metric text-[var(--fg-soft)]">08</span>
+              <span className="metric text-[var(--fg-soft)]">
+                {String(navItems.length).padStart(2, "0")}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span>outputs</span>
@@ -48,10 +51,11 @@ export function NotebookExplorer() {
 
           <div className="my-6 h-px bg-[var(--rule)]" />
 
-          {/* Notebook outline */}
-          <ExecutionHistory />
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <ExecutionHistory />
+          </div>
 
-          <div className="mt-auto space-y-3 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--fg-faint)]">
+          <div className="mt-4 space-y-3 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--fg-faint)]">
             <div className="flex items-center gap-2">
               <span className="text-[var(--fg-mute)]">⌘ K</span>
               <span>command palette</span>
@@ -94,14 +98,16 @@ export function NotebookExplorer() {
               exit={{ x: -260 }}
               transition={{ type: "spring", stiffness: 220, damping: 26 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-[280px] border-r border-[var(--rule)] bg-[var(--bg-paper)] p-6"
+              className="flex h-full w-[280px] flex-col border-r border-[var(--rule)] bg-[var(--bg-paper)] p-6"
             >
               <div className="mb-4 flex items-baseline gap-2 font-mono text-[11px]">
                 <span className="state-dot state-dot--done" />
                 <span>NUHA_NIZAR</span>
                 <span className="text-[var(--fg-faint)]">.ipynb</span>
               </div>
-              <ExecutionHistory />
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                <ExecutionHistory onNavigate={() => setOpen(false)} />
+              </div>
             </motion.div>
           </motion.div>
         )}

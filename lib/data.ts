@@ -6,7 +6,7 @@ export const profile = {
   initials: "NN",
   email: "nuha@nizar.dev",
   location: "Bengaluru, IN",
-  tagline: "Turning ideas, data and algorithms into intelligent experiences.",
+  tagline: "I turn research into systems that learn — and systems into products that feel inevitable.",
   github: "https://github.com/nuhanizar",
   linkedin: "https://linkedin.com/in/nuhanizar",
   twitter: "https://twitter.com/nuhanizar",

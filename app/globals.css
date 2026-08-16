@@ -405,6 +405,20 @@ body {
   font-feature-settings: "ss01", "ss02";
 }
 
+.hero-display {
+  font-family: var(--font-display);
+  font-weight: 350;
+  letter-spacing: -0.052em;
+  line-height: 0.78;
+  font-feature-settings: "ss01", "ss02";
+  font-variation-settings: "opsz" 144, "SOFT" 40, "WONK" 1;
+}
+
+.hero-code .code-frame {
+  border: 0;
+  background: transparent;
+}
+
 .display-italic {
   font-family: var(--font-display);
   font-style: italic;

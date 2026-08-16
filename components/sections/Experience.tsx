@@ -18,7 +18,7 @@ for cell in experience:
 
 export function Experience() {
   return (
-    <section className="relative px-6 py-28 md:py-36 lg:px-12">
+    <section id="experience" className="relative px-6 py-28 md:py-36 lg:px-12">
       <div className="mx-auto max-w-[1320px]">
         <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div>

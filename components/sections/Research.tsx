@@ -17,7 +17,7 @@ const researchCode = `research = [
 
 export function Research() {
   return (
-    <section className="relative px-6 py-28 md:py-36 lg:px-12">
+    <section id="research" className="relative px-6 py-28 md:py-36 lg:px-12">
       <div className="mx-auto max-w-[1320px]">
         <ExperimentBlock number="06" title="Research" status="peer-reviewed · exploratory" />
 
