@@ -3,14 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Sparkles,
   Heart,
   X,
-  Compass,
-  Trophy,
-  Copy,
-  Zap,
-  HelpCircle,
   RotateCw,
   Flame,
   Music,
@@ -19,18 +13,25 @@ import {
   Crown,
   CheckCircle2,
   XCircle,
-  Settings,
-  Smile,
+  Send,
 } from "lucide-react";
 import { profile } from "@/lib/data";
 import { playDroidChirp, playSelect, playSwitch } from "@/lib/sound";
-import { copyEmailToClipboard, showToast } from "./ToastNotification";
+import { BYTE_GREETING, BYTE_STARTER_CHIPS, replyToByte, type ByteAction } from "@/lib/byteChat";
+import { copyEmailToClipboard } from "./ToastNotification";
 import { useActiveSection } from "@/lib/hooks/useActiveSection";
 
 type EyeEmotion = "normal" | "happy" | "blink" | "curious" | "sleep" | "love" | "party";
 type Accessory = "none" | "cap" | "sunglasses" | "crown";
 type VisorColor = "amber" | "cyan" | "magenta" | "emerald" | "rainbow";
-type DialogTab = "commands" | "tricks" | "trivia" | "wardrobe";
+type DialogTab = "chat" | "tricks" | "trivia" | "wardrobe";
+
+type ChatMsg = {
+  id: string;
+  from: "user" | "byte";
+  text: string;
+  chips?: string[];
+};
 
 interface TriviaQuestion {
   question: string;
@@ -72,7 +73,12 @@ const SECTION_TIPS: Record<string, string> = {
 
 export function RoboPet() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<DialogTab>("commands");
+  const [activeTab, setActiveTab] = useState<DialogTab>("chat");
+  const [messages, setMessages] = useState<ChatMsg[]>([
+    { id: "boot", from: "byte", text: BYTE_GREETING, chips: BYTE_STARTER_CHIPS },
+  ]);
+  const [draft, setDraft] = useState("");
+  const [chatBusy, setChatBusy] = useState(false);
   const [emotion, setEmotion] = useState<EyeEmotion>("normal");
   const [accessory, setAccessory] = useState<Accessory>("none");
   const [visorColor, setVisorColor] = useState<VisorColor>("amber");
@@ -95,6 +101,8 @@ export function RoboPet() {
 
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const danceBeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const typeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const chatLogRef = useRef<HTMLDivElement>(null);
   const { id: currentSection } = useActiveSection();
 
   // Reset idle timer
@@ -133,6 +141,7 @@ export function RoboPet() {
       window.removeEventListener("mousemove", handleMouseMove);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       if (danceBeatRef.current) clearInterval(danceBeatRef.current);
+      if (typeTimerRef.current) clearTimeout(typeTimerRef.current);
     };
   }, []);
 
@@ -229,6 +238,76 @@ export function RoboPet() {
     }, 4400);
   };
 
+  const applyByteAction = (action?: ByteAction) => {
+    if (!action) return;
+    if (action.type === "scroll") {
+      document.getElementById(action.id)?.scrollIntoView({ behavior: "smooth" });
+    } else if (action.type === "copyEmail") {
+      void copyEmailToClipboard(profile.email);
+    } else if (action.type === "open") {
+      window.open(action.url, "_blank", "noopener,noreferrer");
+    } else if (action.type === "trick") {
+      if (action.name === "roll") handleBarrelRoll();
+      else if (action.name === "boost") handleJetBoost();
+      else handleDance();
+    } else if (action.type === "pet") {
+      handlePet();
+    } else if (action.type === "tour") {
+      setTourEnabled(action.enabled);
+    }
+  };
+
+  const speakByte = (reply: ReturnType<typeof replyToByte>) => {
+    const id = `b-${Date.now()}`;
+    const reduceMotion =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    setEmotion(reply.emotion);
+    playDroidChirp(
+      reply.emotion === "love" ? "love" : reply.emotion === "party" ? "dance" : "happy",
+    );
+
+    if (reduceMotion) {
+      setMessages((m) => [...m, { id, from: "byte", text: reply.text, chips: reply.chips }]);
+      applyByteAction(reply.action);
+      setChatBusy(false);
+      return;
+    }
+
+    setMessages((m) => [...m, { id, from: "byte", text: "", chips: reply.chips }]);
+    let i = 0;
+    const tick = () => {
+      i += 1;
+      setMessages((m) =>
+        m.map((msg) => (msg.id === id ? { ...msg, text: reply.text.slice(0, i) } : msg)),
+      );
+      if (i < reply.text.length) {
+        typeTimerRef.current = setTimeout(tick, 11);
+      } else {
+        applyByteAction(reply.action);
+        setChatBusy(false);
+      }
+    };
+    typeTimerRef.current = setTimeout(tick, 220);
+  };
+
+  const sendChat = (raw: string) => {
+    const text = raw.trim();
+    if (!text || chatBusy) return;
+    resetIdle();
+    setDraft("");
+    setChatBusy(true);
+    setActiveTab("chat");
+    setMessages((m) => [...m, { id: `u-${Date.now()}`, from: "user", text }]);
+    speakByte(replyToByte(text));
+  };
+
+  useEffect(() => {
+    const el = chatLogRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [messages, chatBusy]);
+
   // Trivia answer submission
   const handleAnswerTrivia = (index: number) => {
     setSelectedAnswer(index);
@@ -276,6 +355,10 @@ export function RoboPet() {
       ? "bg-gradient-to-r from-pink-400 via-yellow-400 to-cyan-400 shadow-[0_0_8px_#38bdf8]"
       : "bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]";
 
+  const latestChips = chatBusy
+    ? undefined
+    : [...messages].reverse().find((m) => m.from === "byte" && m.chips?.length)?.chips;
+
   return (
     <motion.div
       drag
@@ -291,6 +374,7 @@ export function RoboPet() {
             exit={{ opacity: 0, y: 12, scale: 0.92 }}
             transition={{ type: "spring", stiffness: 380, damping: 26 }}
             className="absolute bottom-20 right-0 w-[330px] max-w-[90vw] overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--surface)]/95 p-4 shadow-2xl backdrop-blur-2xl ring-1 ring-white/15"
+            onPointerDown={(e) => e.stopPropagation()}
           >
             {/* Header & Tabs */}
             <div className="flex items-center justify-between border-b border-[var(--rule-soft)] pb-3">
@@ -298,6 +382,9 @@ export function RoboPet() {
                 <span className="flex h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse" />
                 <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--accent)]">
                   Byte · AI Droid
+                </span>
+                <span className="rounded-full border border-[var(--rule-soft)] px-1.5 py-0.5 font-mono text-[8.5px] uppercase tracking-wider text-[var(--fg-faint)]">
+                  local
                 </span>
               </div>
               <button
@@ -319,15 +406,15 @@ export function RoboPet() {
                   type="button"
                   onClick={() => {
                     playSelect(1);
-                    setActiveTab("commands");
+                    setActiveTab("chat");
                   }}
                   className={`rounded-lg px-2.5 py-1 font-mono text-[10.5px] font-medium transition-colors ${
-                    activeTab === "commands"
+                    activeTab === "chat"
                       ? "bg-[var(--surface-2)] text-[var(--accent)]"
                       : "text-[var(--fg-mute)] hover:text-[var(--fg)]"
                   }`}
                 >
-                  Actions
+                  Chat
                 </button>
                 <button
                   type="button"
@@ -374,66 +461,85 @@ export function RoboPet() {
               </div>
             )}
 
-            {/* Droid Speech Text Bubble */}
-            <div className="my-3 text-[13px] leading-[1.6] text-[var(--fg)]">
-              {speech || "Hi there! I'm Byte, Nuha's robotic assistant. Choose a tab or drag me around!"}
-            </div>
+            {isOpen && activeTab !== "chat" && (
+              <div className="my-3 text-[13px] leading-[1.6] text-[var(--fg)]">
+                {speech || "Hi there! I'm Byte, Nuha's robotic assistant. Ask me in Chat, or pick a tab."}
+              </div>
+            )}
+            {!isOpen && speech && (
+              <div className="my-3 text-[13px] leading-[1.6] text-[var(--fg)]">{speech}</div>
+            )}
 
-            {/* TAB 1: COMMANDS & SHORTCUTS */}
-            {activeTab === "commands" && isOpen && (
-              <div className="space-y-1.5 border-t border-[var(--rule-soft)] pt-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = document.getElementById("projects");
-                    el?.scrollIntoView({ behavior: "smooth" });
-                    setSpeech("Navigating to Task Management System! 🚀");
-                    playDroidChirp("happy");
-                  }}
-                  data-cursor="view"
-                  className="flex w-full items-center justify-between rounded-lg border border-[var(--rule-soft)] bg-[var(--surface-2)]/60 px-3 py-2 text-left font-mono text-[11px] text-[var(--fg-soft)] hover:border-[var(--accent)]/40 hover:text-[var(--fg)] transition-colors"
+            {/* TAB 1: LOCAL CHAT */}
+            {activeTab === "chat" && isOpen && (
+              <div className="mt-3 flex flex-col gap-2">
+                <div
+                  ref={chatLogRef}
+                  role="log"
+                  aria-live="polite"
+                  aria-label="Byte conversation"
+                  className="flex max-h-[220px] flex-col gap-2 overflow-y-auto pr-0.5"
                 >
-                  <span className="flex items-center gap-2">
-                    <Compass className="h-3.5 w-3.5 text-[var(--accent)]" />
-                    <span>View Flagship Project</span>
-                  </span>
-                  <span className="text-[10px] text-[var(--fg-faint)]">#projects</span>
-                </button>
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`max-w-[92%] rounded-2xl px-3 py-2 text-[12.5px] leading-[1.55] ${
+                        msg.from === "user"
+                          ? "ml-auto rounded-br-md bg-[var(--accent)]/15 text-[var(--fg)]"
+                          : "rounded-bl-md border border-[var(--rule-soft)] bg-[var(--surface-2)]/70 text-[var(--fg)]"
+                      }`}
+                    >
+                      {msg.text || (chatBusy && msg.from === "byte" ? "…" : "")}
+                    </div>
+                  ))}
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = document.getElementById("achievements");
-                    el?.scrollIntoView({ behavior: "smooth" });
-                    setSpeech("Showing IdeaSprint & Trinova Awards! 🏆");
-                    playDroidChirp("happy");
-                  }}
-                  data-cursor="view"
-                  className="flex w-full items-center justify-between rounded-lg border border-[var(--rule-soft)] bg-[var(--surface-2)]/60 px-3 py-2 text-left font-mono text-[11px] text-[var(--fg-soft)] hover:border-[var(--accent)]/40 hover:text-[var(--fg)] transition-colors"
-                >
-                  <span className="flex items-center gap-2">
-                    <Trophy className="h-3.5 w-3.5 text-[var(--accent)]" />
-                    <span>Competition Awards</span>
-                  </span>
-                  <span className="text-[10px] text-[var(--fg-faint)]">Top 10</span>
-                </button>
+                {!chatBusy && latestChips && latestChips.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {latestChips.map((chip) => (
+                          <button
+                            key={chip}
+                            type="button"
+                            onClick={() => sendChat(chip)}
+                            data-cursor="view"
+                            className="rounded-full border border-[var(--rule-soft)] bg-[var(--surface-2)]/50 px-2.5 py-1 font-mono text-[10px] text-[var(--fg-mute)] transition-colors hover:border-[var(--accent)]/40 hover:text-[var(--fg)]"
+                          >
+                            {chip}
+                          </button>
+                        ))}
+                    </div>
+                  )}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    copyEmailToClipboard(profile.email);
-                    setSpeech("Copied Nuha's email to your clipboard! ✉️");
-                    playDroidChirp("happy");
+                <form
+                  className="flex items-center gap-1.5 border-t border-[var(--rule-soft)] pt-2"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    sendChat(draft);
                   }}
-                  data-cursor="view"
-                  className="flex w-full items-center justify-between rounded-lg border border-[var(--rule-soft)] bg-[var(--surface-2)]/60 px-3 py-2 text-left font-mono text-[11px] text-[var(--fg-soft)] hover:border-[var(--accent)]/40 hover:text-[var(--fg)] transition-colors"
                 >
-                  <span className="flex items-center gap-2">
-                    <Copy className="h-3.5 w-3.5 text-[var(--accent)]" />
-                    <span>Copy Nuha&apos;s Email</span>
-                  </span>
-                  <span className="text-[10px] text-[var(--fg-faint)]">1-Click</span>
-                </button>
+                  <label htmlFor="byte-chat-input" className="sr-only">
+                    Message Byte
+                  </label>
+                  <input
+                    id="byte-chat-input"
+                    type="text"
+                    value={draft}
+                    disabled={chatBusy}
+                    autoComplete="off"
+                    placeholder={chatBusy ? "Byte is typing…" : "Ask about Nuha…"}
+                    onChange={(e) => setDraft(e.target.value)}
+                    className="h-9 min-w-0 flex-1 rounded-xl border border-[var(--rule-soft)] bg-[var(--surface-2)]/60 px-3 font-sans text-[16px] text-[var(--fg)] outline-none placeholder:text-[var(--fg-faint)] focus:border-[var(--accent)]/50 md:text-[13px]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={chatBusy || !draft.trim()}
+                    aria-label="Send message"
+                    data-cursor="view"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--rule-soft)] bg-[var(--accent)]/15 text-[var(--accent)] transition-opacity disabled:opacity-40"
+                  >
+                    <Send className="h-3.5 w-3.5" />
+                  </button>
+                </form>
               </div>
             )}
 
@@ -774,7 +880,7 @@ export function RoboPet() {
           playDroidChirp("happy");
         }}
         data-cursor="view"
-        title="Byte: Drag me around or click for tricks & trivia!"
+        title="Byte: drag me, or click to chat"
       >
         {/* Ambient Pulsing Aura */}
         <div
