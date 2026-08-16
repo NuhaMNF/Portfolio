@@ -54,7 +54,8 @@ export function TypedCode({
   start?: boolean;
 }) {
   const tokens = highlightPython(code);
-  const chars = tokens.map((t) => Array.from(t.text)).flat();
+  const chars = tokens.flatMap((t) => Array.from(t.text));
+  const tokenIndexForChar = tokens.flatMap((t, i) => Array.from(t.text).map(() => i));
 
   return (
     <motion.div
