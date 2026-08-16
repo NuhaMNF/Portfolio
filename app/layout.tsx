@@ -9,6 +9,7 @@ import { EasterEggOverlay } from "@/components/ui/EasterEggOverlay";
 import { BootTerminalClient } from "@/components/system/BootTerminalClient";
 import { StatusBar } from "@/components/system/StatusBar";
 import { RunNuha } from "@/components/system/RunNuha";
+import { BoxFieldBackground } from "@/components/ui/BoxFieldBackground";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -55,7 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${inter.variable} ${mono.variable} ${display.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-paper bg-paper-vignette font-sans text-[var(--fg)] selection:bg-amber-300/30 selection:text-amber-100">
+      <body className="min-h-full bg-black font-sans text-[var(--fg)] selection:bg-amber-300/30 selection:text-amber-100">
+        <BoxFieldBackground />
         <CoordRails />
         <BootTerminalClient />
         <CustomCursor />
@@ -64,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CommandPalette />
         <EasterEggOverlay />
         <RunNuha />
-        <div className="lg:pl-[260px] pb-[24px]">{children}</div>
+        <div className="relative z-[1] lg:pl-[260px] pb-[24px]">{children}</div>
         <StatusBar />
       </body>
     </html>

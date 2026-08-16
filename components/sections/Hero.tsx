@@ -37,9 +37,9 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[100svh] flex-col justify-center pt-16 pb-24 md:pt-20 md:pb-28"
+      className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-16 pb-24 md:pt-20 md:pb-28"
     >
-      <div className="mx-auto w-full max-w-[1320px] px-6 lg:px-12">
+      <div className="relative z-[1] mx-auto w-full max-w-[1320px] px-6 lg:px-12">
         <div className="grid grid-cols-1 items-center gap-x-16 gap-y-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.9fr)]">
           <Identity reduced={reduced} />
           <CodeCell
@@ -60,7 +60,7 @@ export function Hero() {
         initial={reduced ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.1, duration: 0.8, ease: EASE }}
-        className="absolute inset-x-0 bottom-8 mx-auto flex max-w-[1320px] items-center gap-3 px-6 font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)] transition-colors hover:text-[var(--fg-mute)] lg:px-12"
+        className="absolute inset-x-0 bottom-8 z-[1] mx-auto flex max-w-[1320px] items-center gap-3 px-6 font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)] transition-colors hover:text-[var(--fg-mute)] lg:px-12"
       >
         <span className="block-cursor h-2.5 w-[5px]" />
         <span>next cell · about</span>

@@ -4,7 +4,7 @@ import { profile } from "@/lib/data";
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-[var(--rule)] bg-[var(--bg)] px-6 py-12 lg:px-12">
+    <footer className="relative border-t border-[var(--rule)] px-6 py-12 lg:px-12">
       <div className="mx-auto max-w-[1320px]">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
