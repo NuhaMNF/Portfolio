@@ -5,19 +5,41 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
+import { CodeAnnotation } from "@/components/notebook/CodeAnnotation";
 import { profile } from "@/lib/data";
 import { Send, Mail, CheckCircle2, Terminal } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 
+type Phase = "idle" | "compiling" | "validating" | "routing" | "delivered";
+
+const PHASES: Array<{ id: Phase; label: string; ms: number }> = [
+  { id: "compiling", label: "compiling message...", ms: 200 },
+  { id: "validating", label: "validating inputs...", ms: 300 },
+  { id: "routing", label: "routing to nuha@nizar.dev...", ms: 400 },
+  { id: "delivered", label: "✓ message delivered. <Response 200>", ms: 500 },
+];
+
 export function Contact() {
-  const [state, setState] = useState<"idle" | "submitting" | "sent">("idle");
+  const [phase, setPhase] = useState<Phase>("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [elapsed, setElapsed] = useState(0);
 
   function submit() {
     if (!form.name || !form.email || !form.message) return;
-    setState("submitting");
-    setTimeout(() => setState("sent"), 1400);
+    let start = performance.now();
+    setPhase("compiling");
+    setElapsed(0);
+    let acc = 0;
+    PHASES.forEach((p, i) => {
+      acc += p.ms;
+      setTimeout(() => {
+        setPhase(p.id);
+        setElapsed(Math.round(performance.now() - start));
+      }, acc);
+    });
   }
+
+  const isRunning = phase !== "idle" && phase !== "delivered";
 
   return (
     <section id="contact" className="relative px-6 py-24 md:py-32">
@@ -40,35 +62,19 @@ export function Contact() {
                       <span className="text-amber-300"> intelligent.</span>
                     </h3>
                     <p className="mt-3 text-[14px] leading-relaxed text-zinc-400">
-                      Open to research collaborations, AI platform work, and
-                      lifetime friendships with people who care about their craft.
+                      Open to research collaborations, AI platform work, and lifetime friendships with people who care about their craft.
                     </p>
+                    <CodeAnnotation id="p6" className="mt-3" align="left" />
                     <div className="mt-6 space-y-2 font-mono text-[12px]">
-                      <a
-                        href={`mailto:${profile.email}`}
-                        data-cursor="view"
-                        className="flex items-center gap-3 rounded border border-zinc-800/60 bg-zinc-900/40 px-3 py-2 text-zinc-300 transition-colors hover:border-amber-300/40 hover:text-amber-200"
-                      >
+                      <a href={`mailto:${profile.email}`} data-cursor="view" className="flex items-center gap-3 rounded border border-zinc-800/60 bg-zinc-900/40 px-3 py-2 text-zinc-300 transition-colors hover:border-amber-300/40 hover:text-amber-200">
                         <Mail className="h-3.5 w-3.5 text-amber-300" />
                         {profile.email}
                       </a>
-                      <a
-                        href={profile.github}
-                        target="_blank"
-                        rel="noreferrer"
-                        data-cursor="view"
-                        className="flex items-center gap-3 rounded border border-zinc-800/60 bg-zinc-900/40 px-3 py-2 text-zinc-300 transition-colors hover:border-amber-300/40 hover:text-amber-200"
-                      >
+                      <a href={profile.github} target="_blank" rel="noreferrer" data-cursor="view" className="flex items-center gap-3 rounded border border-zinc-800/60 bg-zinc-900/40 px-3 py-2 text-zinc-300 transition-colors hover:border-amber-300/40 hover:text-amber-200">
                         <GithubIcon className="h-3.5 w-3.5 text-amber-300" />
                         github.com/nuhanizar
                       </a>
-                      <a
-                        href={profile.linkedin}
-                        target="_blank"
-                        rel="noreferrer"
-                        data-cursor="view"
-                        className="flex items-center gap-3 rounded border border-zinc-800/60 bg-zinc-900/40 px-3 py-2 text-zinc-300 transition-colors hover:border-amber-300/40 hover:text-amber-200"
-                      >
+                      <a href={profile.linkedin} target="_blank" rel="noreferrer" data-cursor="view" className="flex items-center gap-3 rounded border border-zinc-800/60 bg-zinc-900/40 px-3 py-2 text-zinc-300 transition-colors hover:border-amber-300/40 hover:text-amber-200">
                         <LinkedinIcon className="h-3.5 w-3.5 text-amber-300" />
                         linkedin.com/in/nuhanizar
                       </a>
@@ -81,51 +87,59 @@ export function Contact() {
                       <span className="text-zinc-500">send_message(</span>
                     </div>
                     <div className="space-y-3">
-                      <Field
-                        label="name"
-                        value={form.name}
-                        onChange={(v) => setForm({ ...form, name: v })}
-                      />
-                      <Field
-                        label="email"
-                        value={form.email}
-                        onChange={(v) => setForm({ ...form, email: v })}
-                      />
-                      <Field
-                        label="message"
-                        value={form.message}
-                        onChange={(v) => setForm({ ...form, message: v })}
-                        multiline
-                      />
+                      <Field label="name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
+                      <Field label="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
+                      <Field label="message" value={form.message} onChange={(v) => setForm({ ...form, message: v })} multiline />
                     </div>
                     <div className="mt-4 flex items-center justify-between">
                       <span className="font-mono text-[11px] text-zinc-500">)</span>
                       <button
                         data-cursor="run"
                         onClick={submit}
-                        disabled={state !== "idle"}
+                        disabled={isRunning}
                         className="inline-flex items-center gap-2 rounded-md border border-amber-300/40 bg-amber-300/10 px-4 py-2 font-mono text-[13px] text-amber-200 transition-colors hover:bg-amber-300/20 disabled:opacity-50"
                       >
                         <Send className="h-3.5 w-3.5" />
-                        {state === "submitting" ? "Executing..." : "Execute"}
+                        {phase === "delivered" ? "✓ Sent" : isRunning ? "▸ Executing..." : "▶ Execute"}
                       </button>
                     </div>
                   </div>
                 </div>
 
                 <AnimatePresence>
-                  {state === "sent" && (
+                  {phase !== "idle" && (
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
-                      className="mt-6 flex items-center gap-3 rounded-md border border-emerald-500/30 bg-emerald-500/[0.06] p-4 font-mono text-[12px] text-emerald-200"
+                      className="mt-4 rounded-md border border-zinc-800/80 bg-[#0a0a0b] p-4 font-mono text-[12px]"
                     >
-                      <CheckCircle2 className="h-4 w-4" />
-                      <div>
-                        <div className="text-zinc-300">Out[9]:</div>
-                        <div>Message sent successfully. &lt;Response 200&gt;</div>
-                      </div>
+                      {isRunning && (
+                        <div className="flex items-center gap-2 text-zinc-300">
+                          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber-300" />
+                          <span>
+                            {phase === "compiling"
+                              ? "compiling message..."
+                              : phase === "validating"
+                              ? "validating inputs..."
+                              : "routing to nuha@nizar.dev..."}
+                          </span>
+                          <span className="ml-auto text-zinc-500">{elapsed}ms</span>
+                        </div>
+                      )}
+                      {phase === "delivered" && (
+                        <div>
+                          <div className="flex items-center gap-2 text-emerald-300">
+                            <CheckCircle2 className="h-4 w-4" />
+                            <span>message delivered. &lt;Response 200&gt;</span>
+                            <span className="ml-auto text-zinc-500">{elapsed}ms</span>
+                          </div>
+                          <div className="mt-2 text-amber-300">
+                            {">>>"} return
+                            <span className="text-emerald-300"> "Let&apos;s build something intelligent."</span>
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -138,25 +152,14 @@ export function Contact() {
   );
 }
 
-function Field({
-  label,
-  value,
-  onChange,
-  multiline,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  multiline?: boolean;
-}) {
+function Field({ label, value, onChange, multiline }: { label: string; value: string; onChange: (v: string) => void; multiline?: boolean }) {
   return (
     <label className="block">
       <span className="font-mono text-[11px] text-zinc-500">
-        {label} ={" "}
-        <span className="text-emerald-300">
-          "{value || `your ${label}`}"
-        </span>
-        ,
+        <span className="text-sky-300">{label}</span>
+        {" = "}
+        <span className="text-emerald-300">"{value || `your ${label}`}"</span>
+        <span className="text-zinc-500">,</span>
       </span>
       {multiline ? (
         <textarea
