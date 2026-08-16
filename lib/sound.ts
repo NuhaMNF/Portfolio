@@ -181,3 +181,50 @@ export function playByteChirp(kind: "wake" | "talk" | "copy") {
   }
   playTone(610 + Math.random() * 90, "triangle", 0.028, 0.028);
 }
+
+/** Expressive R2-D2 style Droid Chirps & Squeaks */
+export function playDroidChirp(
+  type: "happy" | "trick" | "boost" | "trivia_win" | "surprise" | "love" | "dance" | "dance_beat",
+) {
+  if (isSoundMuted()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    if (type === "happy") {
+      playTone(587.33, "sine", 0.05, 0.06);
+      setTimeout(() => playTone(783.99, "sine", 0.06, 0.07), 40);
+      setTimeout(() => playTone(1046.5, "sine", 0.09, 0.08), 80);
+    } else if (type === "trick") {
+      playTone(280, "sine", 0.08, 0.04, true);
+      setTimeout(() => playTone(523.25, "triangle", 0.06, 0.06), 60);
+      setTimeout(() => playTone(784, "sine", 0.1, 0.07), 140);
+      setTimeout(() => playTone(1046, "sine", 0.12, 0.05), 240);
+    } else if (type === "boost") {
+      playTone(110, "sine", 0.22, 0.06, true);
+      setTimeout(() => playTone(196, "triangle", 0.14, 0.05, true), 80);
+      setTimeout(() => playTone(392, "sine", 0.1, 0.06), 180);
+      setTimeout(() => playTone(659, "sine", 0.12, 0.07), 280);
+      setTimeout(() => playTone(880, "sine", 0.16, 0.06), 400);
+    } else if (type === "trivia_win") {
+      playTone(523.25, "triangle", 0.08, 0.08);
+      setTimeout(() => playTone(659.25, "triangle", 0.08, 0.08), 70);
+      setTimeout(() => playTone(783.99, "triangle", 0.08, 0.09), 140);
+      setTimeout(() => playTone(1046.5, "sine", 0.22, 0.1), 210);
+    } else if (type === "surprise") {
+      playTone(900, "sine", 0.04, 0.06);
+      setTimeout(() => playTone(1200, "sine", 0.05, 0.06), 30);
+    } else if (type === "love") {
+      playTone(659.25, "sine", 0.09, 0.07);
+      setTimeout(() => playTone(880, "sine", 0.14, 0.08), 60);
+    } else if (type === "dance") {
+      playTone(392, "triangle", 0.05, 0.07);
+      setTimeout(() => playTone(523, "triangle", 0.05, 0.06), 90);
+      setTimeout(() => playTone(659, "sine", 0.07, 0.07), 170);
+      setTimeout(() => playTone(784, "sine", 0.1, 0.06), 250);
+    } else if (type === "dance_beat") {
+      playTone(330, "triangle", 0.035, 0.055);
+      setTimeout(() => playTone(494, "sine", 0.04, 0.05), 70);
+    }
+  } catch {}
+}

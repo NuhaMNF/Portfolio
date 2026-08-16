@@ -5,12 +5,12 @@ export const profile = {
   role: "Management & IT Undergraduate",
   initials: "NN",
   avatar: "/profile.png",
-  email: "nuhanizar999@gmail.com",
+  email: "nuhanizar16@gmail.com",
   location: "University of Kelaniya, LK",
   tagline:
     "Data analysis, software, and decisions from structured information.",
   github: "https://github.com/NuhaMNF",
-  linkedin: "https://www.linkedin.com/in/nuha-n-024923348/",
+  linkedin: "https://www.linkedin.com/in/nuha-nizar-a81925348?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   twitter: "",
 };
 

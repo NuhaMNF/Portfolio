@@ -325,7 +325,7 @@ export function Contact() {
                     LinkedIn
                   </div>
                   <div className="text-[15px] font-medium text-[var(--fg)] transition-colors group-hover:text-[var(--accent)]">
-                    linkedin.com/in/nuhanizar
+                    linkedin.com/in/nuha-nizar-a81925348
                   </div>
                 </div>
               </div>
