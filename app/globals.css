@@ -97,3 +97,14 @@ code,
 pre {
   font-family: var(--font-mono);
 }
+
+/* Horizontal scroll snap for code blocks on mobile */
+.code-scroll {
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+/* Prevent horizontal page overflow */
+html, body {
+  overflow-x: hidden;
+}

@@ -16,7 +16,7 @@ export function CodeBlock({ code, className, variant = "default", language = "py
   return (
     <div
       className={cn(
-        "relative overflow-x-auto rounded-md border border-zinc-800/80 bg-[#0e0e10]/95",
+        "code-scroll relative overflow-x-auto rounded-md border border-zinc-800/80 bg-[#0e0e10]/95",
         "font-mono text-[13px] leading-[1.65]",
         variant === "default" ? "p-4 md:p-5" : "p-3",
         className
