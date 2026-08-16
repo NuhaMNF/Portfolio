@@ -4,14 +4,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
+import { CodeAnnotation } from "@/components/notebook/CodeAnnotation";
 import { BarMeter } from "@/components/ui/BarMeter";
 import { aboutDict, aboutBio, philosophy, stats } from "@/lib/data";
 import { useEffect, useState } from "react";
 
 export function About() {
   return (
-    <section className="relative px-6 py-24 md:py-32">
+    <section id="about" className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
+        <CodeAnnotation id="p2" className="mb-3 block" align="left" />
         <NotebookCell cellId="2">
           {(executed) => (
             <>

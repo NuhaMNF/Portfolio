@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
+import { CodeAnnotation } from "@/components/notebook/CodeAnnotation";
 import { research } from "@/lib/data";
 import { Microscope, BookOpen, FlaskConical, Sigma, ArrowUpRight } from "lucide-react";
 
@@ -24,6 +25,7 @@ export function Research() {
             <>
               <CodeBlock code={researchCode} className="mt-4" />
               <OutputBlock cellId="6" visible={executed} tone="default">
+                <CodeAnnotation id="p3" variant="block" className="mb-4" align="left" />
                 <div className="mb-4 flex items-center gap-2 font-mono text-[12px] text-zinc-500">
                   <FlaskConical className="h-3.5 w-3.5" />
                   research_lab.ipynb — peer-reviewed work & exploratory studies
