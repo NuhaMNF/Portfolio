@@ -26,11 +26,11 @@ export function Contact() {
 
   function submit() {
     if (!form.name || !form.email || !form.message) return;
-    let start = performance.now();
+    const start = performance.now();
     setPhase("compiling");
     setElapsed(0);
     let acc = 0;
-    PHASES.forEach((p, i) => {
+    PHASES.forEach((p) => {
       acc += p.ms;
       setTimeout(() => {
         setPhase(p.id);
