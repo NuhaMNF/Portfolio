@@ -5,10 +5,15 @@ import { motion } from "framer-motion";
 import { skillsGraph } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
+/**
+ * KnowledgeAtlas — replaces the network graph with a research-style tree.
+ * Center node = nuha. Domain rings = capability areas. Tool leaves.
+ * Hover reveals tool labels; isolated filter via click.
+ */
 const FILTERS = ["all", "ai", "ml", "sw", "web", "data", "cloud", "research"] as const;
 type Filter = (typeof FILTERS)[number];
 
-interface GraphNode {
+interface Node {
   id: string;
   label: string;
   x: number;
@@ -18,19 +23,19 @@ interface GraphNode {
   isDomain?: boolean;
 }
 
-export function SkillsGraph() {
+export function KnowledgeAtlas() {
   const [filter, setFilter] = useState<Filter>("all");
   const [hover, setHover] = useState<string | null>(null);
 
   const w = 720;
-  const h = 480;
+  const h = 460;
   const cx = w / 2;
   const cy = h / 2;
-  const domainR = 165;
-  const toolR = 65;
+  const domainR = 175;
+  const toolR = 72;
 
   const points = useMemo(() => {
-    const arr: GraphNode[] = [];
+    const arr: Node[] = [];
     arr.push({ id: "nuha", label: skillsGraph.center.label, x: cx, y: cy, group: "nuha", isCenter: true });
     skillsGraph.domains.forEach((d, di) => {
       const a = (Math.PI * 2 * di) / skillsGraph.domains.length - Math.PI / 2;
@@ -46,7 +51,7 @@ export function SkillsGraph() {
       });
     });
     return arr;
-  }, [cx, cy, domainR, toolR]);
+  }, [cx, cy]);
 
   const edges = useMemo(() => {
     const e: Array<{ a: string; b: string }> = [];
@@ -58,7 +63,7 @@ export function SkillsGraph() {
     return e;
   }, [points]);
 
-  const isDim = (p: GraphNode) => {
+  const isDim = (p: Node) => {
     if (filter === "all") return false;
     if (p.isCenter) return false;
     if (p.id === filter || p.group === filter) return false;
@@ -66,35 +71,37 @@ export function SkillsGraph() {
   };
 
   return (
-    <div className="rounded-md border border-zinc-800/60 bg-zinc-900/30 p-5">
-      <div className="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-        <span>fig. 2 — knowledge graph</span>
-        <span className="text-amber-300">{points.length} nodes</span>
+    <div className="border border-[var(--rule)] bg-[var(--bg-paper)] p-6">
+      <div className="mb-3 flex items-baseline justify-between font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+        <span>fig. 02 — knowledge atlas</span>
+        <span className="metric text-[var(--accent)]">{points.length} nodes</span>
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-1.5">
+      <div className="mb-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
         {FILTERS.map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "rounded border border-zinc-800 bg-zinc-950/60 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors",
-              filter === f ? "border-amber-300/50 text-amber-200" : "text-zinc-400 hover:text-zinc-100"
+              "transition-colors duration-300",
+              filter === f ? "text-[var(--accent)]" : "text-[var(--fg-faint)] hover:text-[var(--fg-soft)]"
             )}
           >
+            {filter === f && <span className="mr-1">●</span>}
             {f}
           </button>
         ))}
       </div>
 
-      <div className="relative aspect-[720/480] w-full">
+      <div className="relative aspect-[720/460] w-full">
         <svg viewBox={`0 0 ${w} ${h}`} className="h-full w-full">
           {edges.map((e, i) => {
             const a = points.find((p) => p.id === e.a);
             const b = points.find((p) => p.id === e.b);
             if (!a || !b) return null;
             const dim = isDim(a) || isDim(b);
-            const active = !dim && (hover === a.id || hover === b.id || filter !== "all");
+            const active =
+              !dim && (hover === a.id || hover === b.id || filter !== "all");
             return (
               <motion.line
                 key={`${e.a}->${e.b}`}
@@ -102,10 +109,10 @@ export function SkillsGraph() {
                 y1={a.y}
                 x2={b.x}
                 y2={b.y}
-                stroke={active ? "#fbbf24" : "#3f3f46"}
-                strokeWidth={active ? 1.2 : 0.8}
+                stroke={active ? "var(--accent)" : "var(--rule)"}
+                strokeWidth={active ? 1 : 0.6}
                 strokeDasharray="3 4"
-                opacity={dim ? 0.15 : 0.8}
+                opacity={dim ? 0.1 : active ? 0.85 : 0.5}
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.8, delay: i * 0.01 }}
@@ -115,25 +122,39 @@ export function SkillsGraph() {
           {points.map((p, i) => {
             const dim = isDim(p);
             const active = hover === p.id || (!dim && filter !== "all" && (p.id === filter || p.group === filter));
-            const r = p.isCenter ? 22 : p.isDomain ? 14 : 5;
+            const r = p.isCenter ? 24 : p.isDomain ? 14 : 4;
             return (
               <motion.g
                 key={p.id}
                 initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: dim ? 0.2 : 1, scale: 1 }}
-                transition={{ delay: i * 0.02, duration: 0.4 }}
+                animate={{ opacity: dim ? 0.18 : 1, scale: 1 }}
+                transition={{ delay: i * 0.018, duration: 0.4 }}
                 onMouseEnter={() => setHover(p.id)}
                 onMouseLeave={() => setHover(null)}
               >
-                <circle cx={p.x} cy={p.y} r={r} fill={p.isCenter ? "#fbbf24" : active ? "#fbbf24" : "#10b981"} />
-                {p.isCenter && <circle cx={p.x} cy={p.y} r={r + 8} fill="none" stroke="#fbbf24" opacity={0.3} />}
+                {p.isCenter && (
+                  <>
+                    <circle cx={p.x} cy={p.y} r={r + 18} fill="none" stroke="var(--accent)" strokeOpacity={0.2} strokeDasharray="2 4" />
+                    <circle cx={p.x} cy={p.y} r={r + 8} fill="none" stroke="var(--accent)" strokeOpacity={0.4} />
+                  </>
+                )}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={r}
+                  fill={p.isCenter ? "var(--accent)" : active ? "var(--accent)" : "var(--fg-faint)"}
+                />
                 <text
                   x={p.x}
                   y={p.y + r + 12}
                   textAnchor="middle"
-                  className="fill-zinc-300 font-mono pointer-events-none"
-                  fontSize={p.isDomain ? 11 : 9}
-                  style={{ textTransform: p.isDomain ? "uppercase" : "none", letterSpacing: "0.1em" }}
+                  fontSize={p.isDomain ? 10 : 9}
+                  fontFamily="var(--font-mono)"
+                  fill={dim ? "var(--fg-ghost)" : active ? "var(--accent)" : "var(--fg-soft)"}
+                  style={{
+                    textTransform: p.isDomain ? "uppercase" : "none",
+                    letterSpacing: p.isDomain ? "0.16em" : "0.02em",
+                  }}
                   opacity={dim ? 0.3 : 1}
                 >
                   {p.label}
@@ -142,9 +163,6 @@ export function SkillsGraph() {
             );
           })}
         </svg>
-      </div>
-      <div className="mt-3 font-mono text-[10px] text-zinc-500">
-        click a filter to isolate a subtree — hover to inspect nodes
       </div>
     </div>
   );

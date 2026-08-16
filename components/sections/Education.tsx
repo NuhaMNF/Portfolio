@@ -5,21 +5,41 @@ import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
 import { education } from "@/lib/data";
-import { GraduationCap, Sigma, BookText } from "lucide-react";
+
+const educationCode = `education = [
+    { "degree": "M.S. Computer Science", "institution": "IISc Bangalore" },
+    { "degree": "B.E. Computer Science", "institution": "NIT Trichy" },
+]`;
 
 export function Education() {
   return (
-    <section className="relative px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-5xl">
+    <section className="relative px-6 py-28 md:py-36 lg:px-12">
+      <div className="mx-auto max-w-[1320px]">
+        <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <div className="mb-3 flex items-center gap-3 font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
+              <span>In</span>
+              <span>[</span>
+              <span className="metric text-[var(--accent)]">07</span>
+              <span>]</span>
+              <span className="ml-2 text-[var(--fg-faint)]">·</span>
+              <span className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
+                foundations
+              </span>
+            </div>
+            <h2 className="display text-[clamp(40px,5.5vw,72px)] leading-[0.96] tracking-[-0.035em] text-[var(--fg)]">
+              <span className="display-italic">Foundations.</span>{" "}
+              <span className="text-[var(--fg-soft)]">The roots of the runtime.</span>
+            </h2>
+          </div>
+        </div>
+
         <NotebookCell cellId="7">
           {(executed, status, run) => (
             <>
-              <CodeBlock
-                code={`education = [\n    { "degree": "M.S. Computer Science", "institution": "IISc Bangalore" },\n    { "degree": "B.E. Computer Science", "institution": "NIT Trichy" },\n]`}
-                className="mt-4"
-              />
+              <CodeBlock code={educationCode} className="mt-2" />
               <OutputBlock cellId="7" visible={run} tone="default">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
                   {education.map((edu, i) => (
                     <motion.div
                       key={edu.institution}
@@ -27,43 +47,32 @@ export function Education() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 + i * 0.12, duration: 0.5 }}
-                      className="relative overflow-hidden rounded-md border border-zinc-800/60 bg-zinc-950/40 p-5"
+                      className="border-l border-[var(--rule)] pl-6"
                     >
-                      <div className="absolute inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:20px_20px]" />
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/80 text-amber-300">
-                          <GraduationCap className="h-4 w-4" />
-                        </span>
-                        <div>
-                          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300">
-                            {edu.period}
-                          </div>
-                          <h3 className="text-lg font-semibold text-zinc-50">
-                            {edu.degree}
-                          </h3>
-                        </div>
+                      <div className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                        {edu.period}
                       </div>
-                      <div className="mt-3 font-mono text-[12px] text-zinc-300">
+                      <h3 className="display mt-3 text-[clamp(28px,3.2vw,40px)] leading-[1] tracking-[-0.02em] text-[var(--fg)]">
+                        {edu.degree}
+                      </h3>
+                      <div className="mt-2 text-[15px] text-[var(--fg-soft)]">
                         {edu.institution}
                       </div>
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {edu.focus.map((f) => (
-                          <span
-                            key={f}
-                            className="rounded border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 font-mono text-[11px] text-zinc-300"
-                          >
-                            {f}
+                      <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 font-mono text-[12px] text-[var(--fg-mute)]">
+                        {edu.focus.map((f, idx) => (
+                          <span key={f} className="flex items-center gap-3">
+                            <span>{f}</span>
+                            {idx < edu.focus.length - 1 && (
+                              <span className="text-[var(--fg-ghost)]">·</span>
+                            )}
                           </span>
                         ))}
                       </div>
-                      <div className="mt-4 flex items-center gap-2 border-t border-zinc-800/60 pt-3 font-mono text-[11px] text-zinc-400">
-                        <BookText className="h-3 w-3 text-amber-300" />
-                        <span className="text-zinc-500">thesis:</span>
-                        <span className="text-zinc-300">{edu.thesis}</span>
-                      </div>
-                      <div className="mt-2 font-mono text-[11px] text-zinc-500">
-                        <Sigma className="mr-1 inline h-3 w-3" />
-                        GPA: 9.{2 + i}.4 / 10.0
+                      <div className="mt-5 border-t border-[var(--rule)] pt-3 text-[13px] leading-[1.6] text-[var(--fg-mute)]">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                          thesis:{" "}
+                        </span>
+                        {edu.thesis}
                       </div>
                     </motion.div>
                   ))}

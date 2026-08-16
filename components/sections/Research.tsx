@@ -4,88 +4,90 @@ import { motion } from "framer-motion";
 import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
-import { CodeAnnotation } from "@/components/notebook/CodeAnnotation";
+import { ExperimentBlock } from "@/components/notebook/ExperimentBlock";
+import { Annotation } from "@/components/notebook/Annotation";
 import { research } from "@/lib/data";
-import { Microscope, BookOpen, FlaskConical, Sigma, ArrowUpRight } from "lucide-react";
 
 const researchCode = `research = [
-    "Machine Learning",
-    "Generative AI",
-    "Computer Vision",
-    "Natural Language Processing",
+    "Sample-Efficient Reinforcement Learning",
+    "Latent Diffusion for Cross-Modal Generation",
+    "Layout-Aware Document Transformers",
+    "Evaluating RAG Agents at Scale",
 ]`;
 
 export function Research() {
   return (
-    <section className="relative px-6 py-24 md:py-32">
-      <div className="absolute inset-0 -z-10 opacity-[0.04] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
-      <div className="mx-auto max-w-5xl">
+    <section className="relative px-6 py-28 md:py-36 lg:px-12">
+      <div className="mx-auto max-w-[1320px]">
+        <ExperimentBlock number="06" title="Research" status="peer-reviewed · exploratory" />
+
+        <div className="mt-10 mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_1fr]">
+          <h3 className="display text-[clamp(28px,3vw,40px)] leading-[1.1] tracking-[-0.02em] text-[var(--fg)]">
+            <span className="display-italic">Papers</span> read like novels, kept like field notes.
+          </h3>
+          <Annotation offset="slight" tone="warm" prefix="#">
+            curious about everything that learns
+          </Annotation>
+        </div>
+
         <NotebookCell cellId="6">
           {(executed, status, run) => (
             <>
-              <CodeBlock code={researchCode} className="mt-4" />
+              <CodeBlock code={researchCode} className="mt-2" />
               <OutputBlock cellId="6" visible={run} tone="default">
-                <CodeAnnotation id="p3" variant="block" className="mb-4" align="left" />
-                <div className="mb-4 flex items-center gap-2 font-mono text-[12px] text-zinc-500">
-                  <FlaskConical className="h-3.5 w-3.5" />
-                  research_lab.ipynb — peer-reviewed work & exploratory studies
-                </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-12">
                   {research.map((r, i) => (
                     <motion.article
                       key={r.title}
-                      data-cursor="open"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
-                      className="group relative overflow-hidden rounded-md border border-zinc-800/60 bg-zinc-950/40 p-5 transition-colors hover:border-zinc-700"
+                      transition={{ delay: 0.15 + i * 0.12, duration: 0.5 }}
+                      className="grid grid-cols-1 gap-6 border-t border-[var(--rule)] pt-6 md:grid-cols-[100px_1fr_180px]"
                     >
-                      <div className="absolute inset-0 -z-10 opacity-[0.05] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:16px_16px]" />
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1.5 rounded bg-zinc-900/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-300">
-                          <Microscope className="h-3 w-3" />
+                      <div className="font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
+                        <span className="metric text-[var(--accent)]">
+                          paper.{String(i + 1).padStart(2, "0")}
+                        </span>
+                        <div className="mt-1 text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
                           {r.topic}
-                        </span>
-                        <span className="font-mono text-[10px] text-zinc-500">
-                          paper #{String(i + 1).padStart(2, "0")}
-                        </span>
+                        </div>
                       </div>
-                      <h3 className="mt-3 text-lg font-semibold leading-snug text-zinc-50">
-                        {r.title}
-                      </h3>
-                      <p className="mt-2 text-[13px] leading-relaxed text-zinc-400">
-                        {r.description}
-                      </p>
-                      <div className="mt-4 space-y-2 border-t border-zinc-800/60 pt-3 font-mono text-[11px]">
-                        <div className="flex gap-3">
-                          <span className="w-20 flex-shrink-0 text-zinc-500">method</span>
-                          <span className="text-zinc-300">{r.methodology}</span>
+                      <div>
+                        <h4 className="display text-[clamp(22px,2.5vw,32px)] leading-[1.1] tracking-[-0.02em] text-[var(--fg)]">
+                          {r.title}
+                        </h4>
+                        <p className="mt-3 text-[14px] leading-[1.65] text-[var(--fg-soft)]">
+                          {r.description}
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11.5px] text-[var(--fg-mute)]">
+                          <span className="text-[var(--fg-faint)]">method:</span>
+                          <span>{r.methodology}</span>
                         </div>
-                        <div className="flex gap-3">
-                          <span className="w-20 flex-shrink-0 text-zinc-500">stack</span>
-                          <span className="text-zinc-300">{r.tech.join(", ")}</span>
+                      </div>
+                      <div>
+                        <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                          stack
                         </div>
-                        {i === 0 && (
-                          <div className="flex gap-3">
-                            <span className="w-20 flex-shrink-0 text-zinc-500">note</span>
-                            <span className="inline-flex items-center gap-1 text-zinc-300">
-                              <Sigma className="h-3 w-3" />
-                              L = -E[log π(a|s)] + βH(π)
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {r.tech.map((t) => (
+                            <span
+                              key={t}
+                              className="border border-[var(--rule)] px-2 py-0.5 font-mono text-[10.5px] text-[var(--fg-mute)]"
+                            >
+                              {t}
                             </span>
-                          </div>
-                        )}
+                          ))}
+                        </div>
+                        <a
+                          href={r.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          data-cursor="view"
+                          className="link-underline mt-4 inline-block font-mono text-[11px] text-[var(--fg-mute)]"
+                        >
+                          read paper ↗
+                        </a>
                       </div>
-                      <a
-                        href={r.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        data-cursor="view"
-                        className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] text-amber-300 hover:text-amber-200"
-                      >
-                        <BookOpen className="h-3 w-3" />
-                        read paper
-                        <ArrowUpRight className="h-3 w-3" />
-                      </a>
                     </motion.article>
                   ))}
                 </div>

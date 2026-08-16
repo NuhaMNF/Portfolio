@@ -4,25 +4,28 @@ import { motion } from "framer-motion";
 import { activity } from "@/lib/data";
 
 const colorFor = (count: number) => {
-  if (count === 0) return "bg-zinc-900/80";
-  if (count < 4) return "bg-emerald-900/70";
-  if (count < 9) return "bg-emerald-700/80";
-  if (count < 14) return "bg-emerald-500/80";
-  return "bg-amber-300/90";
+  if (count === 0) return "var(--rule)";
+  if (count < 4) return "rgba(217, 150, 104, 0.3)";
+  if (count < 9) return "rgba(217, 150, 104, 0.55)";
+  if (count < 14) return "rgba(232, 183, 90, 0.75)";
+  return "var(--accent)";
 };
 
 export function GithubActivity() {
   const max = Math.max(...activity.weeks.map((d) => d.count));
   const months = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
   return (
-    <div className="rounded-md border border-zinc-800/60 bg-zinc-900/30 p-5">
-      <div className="mb-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-        <span>fig. 3 — contributions (52w)</span>
-        <span className="text-amber-300">{activity.streak}d streak</span>
+    <div className="border border-[var(--rule)] bg-[var(--bg-paper)] p-6">
+      <div className="mb-4 flex items-baseline justify-between font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+        <span>fig. 04 — contributions (52w)</span>
+        <span className="metric text-[var(--accent)]">
+          {activity.streak}d streak
+        </span>
       </div>
+
       <div className="overflow-x-auto">
         <div className="min-w-[760px]">
-          <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-3 pb-1 font-mono text-[9px] text-zinc-500">
+          <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-3 pb-2 font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--fg-faint)]">
             {months.map((m) => (
               <span key={m}>{m}</span>
             ))}
@@ -38,8 +41,9 @@ export function GithubActivity() {
                       initial={{ opacity: 0, scale: 0.4 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: (w * 7 + d) * 0.004, duration: 0.2 }}
-                      className={`h-3 w-3 rounded-[3px] ${colorFor(cell.count)} transition-transform hover:scale-125`}
+                      transition={{ delay: (w * 7 + d) * 0.003, duration: 0.2 }}
+                      className="h-3 w-3 transition-transform hover:scale-125"
+                      style={{ background: colorFor(cell.count) }}
                       title={`${cell.count} contributions`}
                     />
                   );
@@ -47,28 +51,32 @@ export function GithubActivity() {
               </div>
             ))}
           </div>
-          <div className="mt-3 flex items-center gap-2 font-mono text-[10px] text-zinc-500">
+          <div className="mt-4 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
             <span>less</span>
             {[0, 4, 9, 14, max].map((c, i) => (
-              <span key={i} className={`h-3 w-3 rounded-[3px] ${colorFor(c)}`} />
+              <span
+                key={i}
+                className="h-3 w-3"
+                style={{ background: colorFor(c) }}
+              />
             ))}
             <span>more</span>
           </div>
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-4 border-t border-[var(--rule)] pt-6 md:grid-cols-4">
         <Stat label="commits" value={activity.totalCommits} />
         <Stat label="PRs" value={activity.totalPRs} />
         <Stat label="issues" value={activity.totalIssues} />
         <Stat label="stars" value={activity.totalStars} />
       </div>
 
-      <div className="mt-6">
-        <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+      <div className="mt-8">
+        <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
           languages
         </div>
-        <div className="flex h-2 overflow-hidden rounded-full bg-zinc-900/80 ring-1 ring-zinc-800">
+        <div className="flex h-px w-full bg-[var(--rule)]">
           {activity.topLanguages.map((l) => (
             <div
               key={l.name}
@@ -77,38 +85,42 @@ export function GithubActivity() {
                 width: `${l.value}%`,
                 background:
                   l.name === "Python"
-                    ? "#fbbf24"
+                    ? "var(--accent)"
                     : l.name === "TypeScript"
-                    ? "#38bdf8"
+                    ? "#7aa8c4"
                     : l.name === "Rust"
-                    ? "#f59e0b"
+                    ? "var(--syntax-fn)"
                     : l.name === "C++"
-                    ? "#a78bfa"
-                    : "#52525b",
+                    ? "var(--syntax-kw)"
+                    : "var(--fg-faint)",
               }}
               title={`${l.name} ${l.value}%`}
             />
           ))}
         </div>
-        <div className="mt-2 flex flex-wrap gap-3 font-mono text-[11px] text-zinc-400">
-          {activity.topLanguages.map((l) => (
-            <span key={l.name} className="flex items-center gap-1.5">
+        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] text-[var(--fg-mute)]">
+          {activity.topLanguages.map((l, i) => (
+            <span key={l.name} className="flex items-center gap-2">
               <span
-                className="h-2 w-2 rounded-full"
+                className="h-2 w-2"
                 style={{
                   background:
                     l.name === "Python"
-                      ? "#fbbf24"
+                      ? "var(--accent)"
                       : l.name === "TypeScript"
-                      ? "#38bdf8"
+                      ? "#7aa8c4"
                       : l.name === "Rust"
-                      ? "#f59e0b"
+                      ? "var(--syntax-fn)"
                       : l.name === "C++"
-                      ? "#a78bfa"
-                      : "#52525b",
+                      ? "var(--syntax-kw)"
+                      : "var(--fg-faint)",
                 }}
               />
-              {l.name} {l.value}%
+              <span>{l.name}</span>
+              <span className="metric text-[var(--fg-soft)]">{l.value}%</span>
+              {i < activity.topLanguages.length - 1 && (
+                <span className="text-[var(--fg-ghost)]">·</span>
+              )}
             </span>
           ))}
         </div>
@@ -119,11 +131,11 @@ export function GithubActivity() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded border border-zinc-800/60 bg-zinc-950/40 p-3">
-      <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+    <div>
+      <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
         {label}
       </div>
-      <div className="font-mono text-2xl text-zinc-50 tabular-nums">
+      <div className="metric mt-1 text-[26px] text-[var(--fg)]">
         {value.toLocaleString()}
       </div>
     </div>

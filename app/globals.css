@@ -1,18 +1,68 @@
 @import "tailwindcss";
 
+/* ============================================================
+   NUHA NIZAR — Research Notebook Design System
+   Visual language: warm ink on cool paper, scientific grid,
+   restrained amber accent, editorial typography
+   ============================================================ */
+
 :root {
-  --bg: #0a0a0b;
-  --fg: #fafafa;
-  --muted: #a1a1aa;
-  --accent: #fbbf24;
-  --accent-2: #10b981;
+  /* Surfaces — warm ink, slight cool undertone */
+  --bg: #0c0d10;
+  --bg-paper: #111215;
+  --bg-deep: #08090b;
+  --surface: #131419;
+  --surface-2: #1a1c22;
+  --surface-3: #22252d;
+
+  /* Ink — warm whites & grays (not cyan) */
+  --fg: #f3efe6;
+  --fg-soft: #d6d1c4;
+  --fg-mute: #8a857a;
+  --fg-faint: #5a564d;
+  --fg-ghost: #3a3833;
+
+  /* Accent — restrained amber (sparingly used) */
+  --accent: #e8b75a;
+  --accent-soft: #b78a3d;
+  --accent-glow: rgba(232, 183, 90, 0.12);
+
+  /* Secondary — terracotta for syntax accents */
+  --syntax-fn: #d99668;
+  --syntax-str: #93b27c;
+  --syntax-num: #e8b75a;
+  --syntax-kw: #c89bb5;
+  --syntax-cm: #56524a;
+  --syntax-var: #d6d1c4;
+
+  /* Lines */
+  --rule: #1f2026;
+  --rule-soft: #16171b;
+  --hairline: #111216;
+
+  /* Status states */
+  --state-idle: #5a564d;
+  --state-queued: #6a665d;
+  --state-running: #e8b75a;
+  --state-done: #93b27c;
 }
 
 @theme inline {
   --color-bg: var(--bg);
+  --color-paper: var(--bg-paper);
   --color-fg: var(--fg);
+  --color-fg-soft: var(--fg-soft);
+  --color-fg-mute: var(--fg-mute);
+  --color-fg-faint: var(--fg-faint);
   --color-accent: var(--accent);
-  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-syntax-fn: var(--syntax-fn);
+  --color-syntax-str: var(--syntax-str);
+  --color-syntax-num: var(--syntax-num);
+  --color-syntax-kw: var(--syntax-kw);
+  --color-rule: var(--rule);
+  --color-rule-soft: var(--rule-soft);
+  --font-display: var(--font-display), "Fraunces", ui-serif, Georgia, serif;
   --font-sans: var(--font-sans), "Inter", system-ui, sans-serif;
   --font-mono: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
 }
@@ -30,41 +80,379 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
 }
 
-/* Subtle graph paper background available globally */
+/* ============================================================
+   RESEARCH NOTEBOOK BACKGROUND
+   Variable-density grid, vertical margins, coordinate marks
+   ============================================================ */
 .bg-paper {
-  background-color: #0a0a0b;
+  background-color: var(--bg);
+  /* Subtle 32px major grid + 8px minor ticks via stacked gradients */
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 32px 32px;
+    /* major horizontal */
+    linear-gradient(to right, rgba(243, 239, 230, 0.018) 1px, transparent 1px),
+    /* major vertical */
+    linear-gradient(to bottom, rgba(243, 239, 230, 0.018) 1px, transparent 1px),
+    /* major horizontal */
+    linear-gradient(to right, rgba(243, 239, 230, 0.028) 1px, transparent 1px),
+    /* major vertical */
+    linear-gradient(to bottom, rgba(243, 239, 230, 0.028) 1px, transparent 1px);
+  background-size:
+    8px 8px,
+    8px 8px,
+    128px 128px,
+    128px 128px;
+  background-position: 0 0;
 }
 
-/* Custom scrollbar */
+/* Soft paper vignette — warmer near center */
+.bg-paper-vignette::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 1200px 800px at 30% 20%, rgba(232, 183, 90, 0.025), transparent 60%),
+    radial-gradient(ellipse 900px 700px at 70% 80%, rgba(217, 150, 104, 0.018), transparent 60%);
+  z-index: 0;
+}
+
+/* Notebook coordinate marks — left edge tick column */
+.coord-marks-left {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  pointer-events: none;
+  z-index: 2;
+  background-image:
+    linear-gradient(to right, rgba(243, 239, 230, 0.012), transparent 4px);
+}
+
+.coord-marks-left::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 16px 24px, rgba(243, 239, 230, 0.08) 0.5px, transparent 1px);
+  background-size: 100% 32px;
+  opacity: 0.5;
+}
+
+/* Right edge coordinate column — measurement ticks */
+.coord-marks-right {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  pointer-events: none;
+  z-index: 2;
+  background-image:
+    linear-gradient(to left, rgba(243, 239, 230, 0.012), transparent 4px);
+}
+
+/* Hairline cell border */
+.hairline {
+  border-color: var(--hairline);
+}
+
+.rule-top {
+  border-top: 1px solid var(--rule);
+}
+.rule-bottom {
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ============================================================
+   NOTEBOOK CELL TACTILE SYSTEM
+   ============================================================ */
+.cell-paper {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 30%),
+    var(--surface);
+  border: 1px solid var(--rule);
+  position: relative;
+}
+
+.cell-paper::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(243, 239, 230, 0.05), transparent);
+}
+
+.cell-paper-active {
+  background:
+    linear-gradient(180deg, rgba(232, 183, 90, 0.02), transparent 30%),
+    var(--surface);
+  border-color: rgba(232, 183, 90, 0.18);
+}
+
+/* Subtle elevation shadow on hover */
+.cell-elevate {
+  transition:
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cell-elevate:hover {
+  border-color: rgba(232, 183, 90, 0.25);
+  box-shadow:
+    0 1px 0 rgba(243, 239, 230, 0.02) inset,
+    0 24px 48px -32px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   AUTHENTIC CODE BLOCK
+   ============================================================ */
+.code-frame {
+  position: relative;
+  background: var(--bg-deep);
+  border: 1px solid var(--rule-soft);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.code-frame .line-gutter {
+  display: inline-block;
+  width: 2.2em;
+  text-align: right;
+  padding-right: 1em;
+  margin-right: 1em;
+  color: var(--fg-ghost);
+  user-select: none;
+  border-right: 1px solid var(--hairline);
+}
+
+.code-frame .line-cursor {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1.2s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.code-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.code-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.code-scroll::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 3px;
+}
+
+/* ============================================================
+   ANNOTATION — handwritten style
+   ============================================================ */
+.annotation {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--fg-mute);
+  position: relative;
+  padding-left: 14px;
+}
+
+.annotation::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 8px;
+  height: 1px;
+  background: var(--fg-ghost);
+}
+
+.annotation--warm {
+  color: var(--accent);
+  opacity: 0.75;
+}
+
+.annotation--wry {
+  color: var(--syntax-str);
+  opacity: 0.75;
+}
+
+.annotation-handwritten {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--fg-mute);
+  position: relative;
+  transform: rotate(-0.4deg);
+}
+
+.annotation-handwritten::before {
+  content: "// ";
+  font-family: var(--font-mono);
+  font-style: normal;
+  color: var(--fg-ghost);
+  margin-right: 4px;
+}
+
+/* ============================================================
+   EXECUTION STATE — refined, no neon
+   ============================================================ */
+.state-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.state-dot--idle {
+  background: var(--state-idle);
+}
+.state-dot--queued {
+  background: var(--state-queued);
+}
+.state-dot--running {
+  background: var(--state-running);
+  animation: pulse 1.6s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(232, 183, 90, 0.4);
+}
+.state-dot--done {
+  background: var(--state-done);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ============================================================
+   STATUS BAR — IDE bottom strip
+   ============================================================ */
+.status-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24px;
+  z-index: 30;
+  background: var(--bg-deep);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(12px);
+}
+
+.status-bar-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border-right: 1px solid var(--hairline);
+  height: 100%;
+}
+
+.status-bar-segment:last-child {
+  border-right: none;
+}
+
+.status-bar-segment--right {
+  margin-left: auto;
+}
+
+/* ============================================================
+   DISPLAY TYPOGRAPHY
+   ============================================================ */
+.display {
+  font-family: var(--font-display);
+  font-weight: 350;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  font-feature-settings: "ss01", "ss02";
+}
+
+.display-huge {
+  font-family: var(--font-display);
+  font-weight: 350;
+  letter-spacing: -0.045em;
+  line-height: 0.86;
+  font-feature-settings: "ss01", "ss02";
+}
+
+.display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+
+.eyebrow--accent {
+  color: var(--accent);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0b;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 6px;
-  border: 2px solid #0a0a0b;
+  background: var(--rule);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: var(--surface-3);
 }
 
-/* Selection */
+/* ============================================================
+   SELECTION
+   ============================================================ */
 ::selection {
-  background: rgba(251, 191, 36, 0.3);
-  color: #fef3c7;
+  background: rgba(232, 183, 90, 0.25);
+  color: var(--fg);
 }
 
-/* Hide default cursor on desktop where we use custom cursor */
+/* ============================================================
+   CURSOR (desktop only)
+   ============================================================ */
 @media (pointer: fine) {
   a,
   button,
@@ -73,7 +461,9 @@ body {
   }
 }
 
-/* Reduced motion */
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -85,26 +475,168 @@ body {
   }
 }
 
-/* Focus rings */
+/* ============================================================
+   FOCUS
+   ============================================================ */
 :focus-visible {
-  outline: 2px solid rgba(251, 191, 36, 0.6);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline: 1px solid rgba(232, 183, 90, 0.6);
+  outline-offset: 3px;
+  border-radius: 1px;
 }
 
-/* Smooth font for code */
 code,
 pre {
   font-family: var(--font-mono);
 }
 
-/* Horizontal scroll snap for code blocks on mobile */
-.code-scroll {
-  scroll-snap-type: x proximity;
-  scrollbar-width: thin;
+/* ============================================================
+   HORIZONTAL OVERFLOW PROTECTION
+   ============================================================ */
+html,
+body {
+  overflow-x: hidden;
 }
 
-/* Prevent horizontal page overflow */
-html, body {
-  overflow-x: hidden;
+/* ============================================================
+   DIVIDERS — thin rules with intentional weight
+   ============================================================ */
+.rule-fade-x {
+  background: linear-gradient(to right, transparent, var(--rule) 30%, var(--rule) 70%, transparent);
+  height: 1px;
+}
+
+.rule-fade-y {
+  background: linear-gradient(to bottom, transparent, var(--rule) 30%, var(--rule) 70%, transparent);
+  width: 1px;
+}
+
+/* ============================================================
+   METRIC TICKER
+   ============================================================ */
+.metric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   LINK STYLES
+   ============================================================ */
+.link-underline {
+  position: relative;
+  display: inline-block;
+  color: var(--fg-soft);
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--fg-mute);
+  transform-origin: left;
+  transform: scaleX(0.4);
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), background 400ms ease;
+}
+
+.link-underline:hover {
+  color: var(--fg);
+}
+
+.link-underline:hover::after {
+  transform: scaleX(1);
+  background: var(--accent);
+}
+
+/* ============================================================
+   EXPERIMENT BLOCK — large editorial layout
+   ============================================================ */
+.experiment-marker {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+
+.experiment-marker .num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+  font-feature-settings: "tnum";
+}
+
+/* ============================================================
+   BLOCK CURSOR — kernel indicator between type
+   ============================================================ */
+.block-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  margin-bottom: 1px;
+  animation: blink 1.2s steps(2) infinite;
+}
+
+/* ============================================================
+   TICKER — bottom kernel indicator
+   ============================================================ */
+.kernel-ticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  background: var(--bg-paper);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  border-radius: 1px;
+}
+
+/* ============================================================
+   PAGINATION / ANCHOR OFFSET
+   ============================================================ */
+section[id] {
+  scroll-margin-top: 32px;
+}
+
+/* ============================================================
+   HANDWRITTEN NOTE — slightly rotated, serif italic
+   ============================================================ */
+.note {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--fg-mute);
+  letter-spacing: -0.01em;
+  position: relative;
+}
+
+.note--off {
+  transform: rotate(-0.6deg);
+}
+
+.note--more-off {
+  transform: rotate(0.4deg) translateY(2px);
+}
+
+/* ============================================================
+   TODO / STRIKETHROUGH — controlled imperfection
+   ============================================================ */
+.strike-todo {
+  text-decoration: line-through;
+  text-decoration-color: var(--fg-ghost);
+  text-decoration-thickness: 1px;
+  color: var(--fg-faint);
 }

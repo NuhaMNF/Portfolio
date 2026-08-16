@@ -359,16 +359,17 @@ export const activity = {
 
 // Sidebar navigation
 export const navItems = [
-  { id: "hero", cellId: "1", label: "Introduce" },
-  { id: "about", cellId: "2", label: "About" },
-  { id: "skills", cellId: "3", label: "Skills" },
-  { id: "experience", cellId: "4", label: "Experience" },
-  { id: "ai_lab", cellId: "4.5", label: "AI Lab" },
-  { id: "projects", cellId: "5", label: "Projects" },
-  { id: "research", cellId: "6", label: "Research" },
-  { id: "education", cellId: "7", label: "Education" },
-  { id: "activity", cellId: "8", label: "Activity" },
-  { id: "contact", cellId: "9", label: "Connect" },
+  { id: "hero", cellId: "1", label: "introduce" },
+  { id: "about", cellId: "2", label: "about" },
+  { id: "skills", cellId: "3", label: "capabilities" },
+  { id: "thinking", cellId: "3.5", label: "thinking" },
+  { id: "experience", cellId: "4", label: "experience" },
+  { id: "ai_lab", cellId: "4.5", label: "ai_lab" },
+  { id: "projects", cellId: "5", label: "projects" },
+  { id: "research", cellId: "6", label: "research" },
+  { id: "education", cellId: "7", label: "education" },
+  { id: "activity", cellId: "8", label: "activity" },
+  { id: "contact", cellId: "9", label: "connect" },
 ];
 
 export const bootSequence = [
@@ -388,7 +389,8 @@ export const bootSequence = [
 export const commands = [
   { id: "hero", label: "go to introduce", shortcut: "g h" },
   { id: "about", label: "go to about", shortcut: "g a" },
-  { id: "skills", label: "go to skills", shortcut: "g s" },
+  { id: "skills", label: "go to capabilities", shortcut: "g s" },
+  { id: "thinking", label: "go to thinking", shortcut: "g t" },
   { id: "experience", label: "go to experience", shortcut: "g e" },
   { id: "ai_lab", label: "go to ai lab", shortcut: "g ai" },
   { id: "projects", label: "go to projects", shortcut: "g p" },
@@ -398,9 +400,10 @@ export const commands = [
   { id: "contact", label: "go to connect", shortcut: "g c" },
   { id: "github", label: "open github", shortcut: "gh" },
   { id: "linkedin", label: "open linkedin", shortcut: "li" },
+  { id: "run_nuha", label: "run_nuha()", shortcut: "⌘⏎" },
   { id: "hire", label: "hire nuha", shortcut: "!" },
   { id: "help", label: "show help", shortcut: "?" },
-  { id: "restart", label: "restart notebook", shortcut: "r" },
+  { id: "restart", label: "restart kernel", shortcut: "r" },
   { id: "surprise", label: "surprise me", shortcut: "🎲" },
   { id: "theme", label: "toggle theme (soon)", shortcut: "t" },
 ];

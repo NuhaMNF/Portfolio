@@ -40,34 +40,47 @@ export function BootTerminal({ onDone }: { onDone?: () => void }) {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.04 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0a0b]"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--bg-deep)]"
         >
-          <div className="absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:32px_32px]" />
-          <div className="relative w-[min(640px,92vw)] rounded-md border border-zinc-800/80 bg-[#0d0d0f] p-5 font-mono text-[13px] shadow-2xl">
-            <div className="mb-4 flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-rose-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-              <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-zinc-500">portfolio runtime</span>
+          <div className="absolute inset-0 bg-paper" />
+          <div className="absolute inset-0 bg-paper-vignette" />
+
+          <div className="relative w-[min(560px,92vw)] border border-[var(--rule)] bg-[var(--bg-paper)]">
+            <div className="flex items-center gap-3 border-b border-[var(--rule)] px-5 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+              <span className="text-[var(--accent)]">●</span>
+              <span>portfolio runtime</span>
+              <span className="ml-auto metric text-[var(--fg-mute)]">v0.42</span>
             </div>
-            <div className="space-y-1">
+            <div className="px-5 py-5 font-mono text-[12.5px] leading-[1.7]">
               {bootSequence.slice(0, shown + 1).map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -4 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.18 }}
-                  className={item.line.startsWith(">>>") ? "text-emerald-300" : i === bootSequence.length - 1 ? "text-amber-300" : "text-zinc-300"}
+                  className={
+                    item.line.startsWith(">>>")
+                      ? "text-[var(--accent)]"
+                      : i === bootSequence.length - 1
+                      ? "text-[var(--accent-soft)]"
+                      : "text-[var(--fg-soft)]"
+                  }
                 >
                   {item.line || " "}
-                  {i === shown && <span className="ml-1 inline-block h-3.5 w-2 animate-pulse bg-zinc-300 align-middle" />}
+                  {i === shown && (
+                    <span className="ml-1 inline-block h-3.5 w-2 animate-pulse bg-[var(--fg)] align-middle" />
+                  )}
                 </motion.div>
               ))}
             </div>
-          </div>
-          <div className="absolute bottom-6 right-6 font-mono text-[11px] text-zinc-500">
-            <span className="rounded border border-zinc-800 bg-zinc-900/60 px-1.5 py-0.5">ESC</span>
-            <span className="ml-2">skip boot</span>
+            <div className="border-t border-[var(--rule)] px-5 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+              <span>kernel:</span>{" "}
+              <span className="text-[var(--state-done)]">booting</span>
+              <span className="ml-auto float-right">
+                <span className="border border-[var(--rule)] px-1.5 py-0.5">ESC</span>{" "}
+                <span className="ml-2">skip</span>
+              </span>
+            </div>
           </div>
         </motion.div>
       )}

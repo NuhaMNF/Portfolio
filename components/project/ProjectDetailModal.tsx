@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GithubIcon } from "@/components/ui/BrandIcons";
 import { ProjectPreview } from "./ProjectPreview";
@@ -24,6 +24,13 @@ type Project = {
   links: Array<{ label: string; url: string }>;
 };
 
+const LOAD_STEPS = [
+  "dataset",
+  "model",
+  "backend",
+  "interface",
+];
+
 export function ProjectDetailModal({
   project,
   onClose,
@@ -31,10 +38,19 @@ export function ProjectDetailModal({
   project: Project | null;
   onClose: () => void;
 }) {
+  const [phase, setPhase] = useState<"loading" | "ready">("loading");
+  const [step, setStep] = useState(0);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!project) return;
+    setPhase("loading");
+    setStep(0);
+    LOAD_STEPS.forEach((_, i) => {
+      setTimeout(() => setStep(i + 1), 280 + i * 320);
+    });
+    const t = setTimeout(() => setPhase("ready"), 280 + LOAD_STEPS.length * 320 + 200);
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -43,6 +59,7 @@ export function ProjectDetailModal({
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      clearTimeout(t);
     };
   }, [project, onClose]);
 
@@ -53,7 +70,7 @@ export function ProjectDetailModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-[var(--bg-deep)]/85 backdrop-blur"
           onClick={onClose}
         >
           <motion.div
@@ -66,76 +83,165 @@ export function ProjectDetailModal({
             exit={{ y: 24, opacity: 0, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 220, damping: 26 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-h-[90vh] w-[min(1080px,94vw)] overflow-y-auto rounded-md border border-zinc-800 bg-[#0c0c0e] shadow-2xl"
+            className="relative max-h-[92vh] w-[min(1120px,94vw)] overflow-y-auto border border-[var(--rule)] bg-[var(--bg-paper)]"
           >
-            <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-zinc-800 bg-[#0c0c0e]/95 px-5 py-3 font-mono text-[12px] backdrop-blur">
-              <span className="text-zinc-500">In[</span>
-              <span className="text-amber-300">{project.cellId}</span>
-              <span className="text-zinc-600">]:</span>
-              <span className="text-zinc-400">
-                project.<span className="text-sky-300">{project.id}</span>.run()
+            {/* Header */}
+            <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-[var(--rule)] bg-[var(--bg-paper)]/95 px-6 py-3 font-mono text-[11px] tracking-[0.04em] backdrop-blur">
+              <span className="text-[var(--fg-faint)]">In</span>
+              <span className="text-[var(--fg-faint)]">[</span>
+              <span className="metric text-[var(--accent)]">{project.cellId}</span>
+              <span className="text-[var(--fg-faint)]">]</span>
+              <span className="text-[var(--fg-soft)]">
+                <span className="text-[var(--fg-mute)]">project.</span>
+                <span className="text-[var(--accent)]">{project.id}</span>
+                <span className="text-[var(--fg-mute)]">.run()</span>
               </span>
-              <span className="ml-auto text-zinc-500">→ Out[{project.cellId}]: expanded</span>
+              <span className="ml-auto font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                Out[{project.cellId}]: expanded
+              </span>
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="ml-3 inline-flex h-7 w-7 items-center justify-center rounded border border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-amber-300"
+                className="ml-3 inline-flex h-7 w-7 items-center justify-center border border-[var(--rule)] text-[var(--fg-mute)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-3 w-3" />
               </button>
             </header>
 
-            <div className="grid grid-cols-1 gap-0 md:grid-cols-[1.1fr_1fr]">
-              <div className="border-b border-zinc-800/80 bg-[#0a0a0b] p-6 md:border-b-0 md:border-r">
-                <div className="aspect-[5/3] overflow-hidden rounded border border-zinc-800/80 bg-[#0a0a0b]">
-                  <ProjectPreview id={project.id} />
-                </div>
-                <div className="mt-4 grid grid-cols-3 gap-2">
-                  {project.metrics.map((m) => (
-                    <div key={m.label} className="rounded border border-zinc-800/60 bg-zinc-900/40 p-2">
-                      <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{m.label}</div>
-                      <div className="font-mono text-base text-amber-300 tabular-nums">{m.value}</div>
+            <AnimatePresence mode="wait">
+              {phase === "loading" ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="grid grid-cols-1 gap-0 md:grid-cols-[1fr_1fr]"
+                >
+                  <div className="border-b border-[var(--rule)] p-10 md:border-b-0 md:border-r">
+                    <div className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                      loading experiment
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300">{project.category}</div>
-                <h2 className="mt-1 text-3xl font-semibold text-zinc-50">{project.title}</h2>
-                <p className="mt-1 text-[14px] text-zinc-400">{project.subtitle} · {project.year}</p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {project.tech.map((t) => (
-                    <span key={t} className="rounded border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 font-mono text-[11px] text-zinc-300">{t}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
+                    <div className="display mt-4 text-[40px] leading-[1] tracking-[-0.02em] text-[var(--fg)]">
+                      <span className="display-italic">{project.title}</span>
+                    </div>
+                    <div className="mt-8 space-y-3 font-mono text-[13px]">
+                      {LOAD_STEPS.map((s, i) => {
+                        const done = step > i;
+                        const active = step === i;
+                        return (
+                          <div key={s} className="flex items-center gap-3">
+                            <span
+                              className={
+                                done
+                                  ? "text-[var(--state-done)]"
+                                  : active
+                                  ? "text-[var(--accent)]"
+                                  : "text-[var(--fg-ghost)]"
+                              }
+                            >
+                              {done ? "✓" : active ? "●" : "·"}
+                            </span>
+                            <span
+                              className={
+                                done || active ? "text-[var(--fg-soft)]" : "text-[var(--fg-faint)]"
+                              }
+                            >
+                              {s}
+                            </span>
+                            {active && (
+                              <span className="state-dot state-dot--running ml-auto" />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="mt-10 font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                      executing…
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center bg-[var(--bg-deep)] p-10">
+                    <div className="aspect-[5/3] w-full max-w-md">
+                      <ProjectPreview id={project.id} />
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="ready"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="grid grid-cols-1 gap-0 md:grid-cols-[1.1fr_1fr]">
+                    <div className="border-b border-[var(--rule)] bg-[var(--bg-deep)] p-8 md:border-b-0 md:border-r">
+                      <div className="aspect-[5/3] overflow-hidden border border-[var(--rule-soft)]">
+                        <ProjectPreview id={project.id} />
+                      </div>
+                      <div className="mt-5 grid grid-cols-3 gap-4">
+                        {project.metrics.map((m) => (
+                          <div key={m.label}>
+                            <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                              {m.label}
+                            </div>
+                            <div className="metric mt-1 text-[22px] text-[var(--fg)]">
+                              {m.value}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="p-8">
+                      <div className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                        {project.category}
+                      </div>
+                      <h2 className="display mt-2 text-[clamp(36px,4vw,48px)] leading-[1] tracking-[-0.02em] text-[var(--fg)]">
+                        {project.title}
+                      </h2>
+                      <p className="mt-2 text-[14px] text-[var(--fg-soft)]">
+                        {project.subtitle} · {project.year}
+                      </p>
+                      <div className="mt-6 flex flex-wrap gap-x-3 gap-y-2 font-mono text-[12px] text-[var(--fg-soft)]">
+                        {project.tech.map((t, i) => (
+                          <span key={t} className="flex items-center gap-3">
+                            <span>{t}</span>
+                            {i < project.tech.length - 1 && (
+                              <span className="text-[var(--fg-ghost)]">·</span>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
 
-            <div className="space-y-6 border-t border-zinc-800/80 p-6">
-              <Block label="// problem" text={project.problem} />
-              <Block label="// solution" text={project.solution} />
-              <Block label="// architecture" text={project.architecture} mono />
-              <Block label="// results" text={project.description} />
-            </div>
+                  <div className="space-y-8 border-t border-[var(--rule)] p-8">
+                    <Block label="// problem" text={project.problem} />
+                    <Block label="// approach" text={project.solution} />
+                    <Block label="// architecture" text={project.architecture} mono />
+                    <Block label="// result" text={project.description} />
+                  </div>
 
-            <footer className="flex flex-wrap items-center gap-3 border-t border-zinc-800/80 p-6 font-mono text-[12px]">
-              <span className="text-zinc-500">{">"}</span>
-              <span className="text-zinc-400">edit this cell</span>
-              <div className="ml-auto flex items-center gap-2">
-                {project.links.map((l) => (
-                  <a
-                    key={l.url}
-                    href={l.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-md border border-amber-300/40 bg-amber-300/10 px-3 py-1.5 text-amber-200 hover:bg-amber-300/20"
-                  >
-                    {l.label === "github" ? <GithubIcon className="h-3.5 w-3.5" /> : <ExternalLink className="h-3.5 w-3.5" />}
-                    {l.label}
-                  </a>
-                ))}
-              </div>
-            </footer>
+                  <footer className="flex flex-wrap items-center gap-3 border-t border-[var(--rule)] p-8 font-mono text-[11px]">
+                    <span className="text-[var(--fg-faint)]">↳</span>
+                    <span className="text-[var(--fg-mute)]">edit this cell</span>
+                    <div className="ml-auto flex items-center gap-2">
+                      {project.links.map((l) => (
+                        <a
+                          key={l.url}
+                          href={l.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          data-cursor="view"
+                          className="inline-flex items-center gap-1.5 border border-[var(--rule)] bg-[var(--surface)] px-3 py-1.5 text-[var(--fg-soft)] transition-colors hover:border-[var(--accent)]/40 hover:text-[var(--accent)]"
+                        >
+                          {l.label === "github" ? <GithubIcon className="h-3 w-3" /> : <ExternalLink className="h-3 w-3" />}
+                          {l.label}
+                        </a>
+                      ))}
+                    </div>
+                  </footer>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       )}
@@ -146,8 +252,16 @@ export function ProjectDetailModal({
 function Block({ label, text, mono }: { label: string; text: string; mono?: boolean }) {
   return (
     <div>
-      <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300">{label}</div>
-      <div className={`text-[14px] leading-relaxed text-zinc-300 ${mono ? "rounded border border-zinc-800/80 bg-[#0a0a0b] p-4 font-mono text-[12.5px] text-zinc-200 whitespace-pre" : ""}`}>
+      <div className="mb-3 font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+        {label}
+      </div>
+      <div
+        className={
+          mono
+            ? "border border-[var(--rule-soft)] bg-[var(--bg-deep)] p-4 font-mono text-[12.5px] leading-[1.7] text-[var(--fg-soft)] whitespace-pre"
+            : "text-[14.5px] leading-[1.7] text-[var(--fg-soft)]"
+        }
+      >
         {text}
       </div>
     </div>

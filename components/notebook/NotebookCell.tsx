@@ -17,17 +17,13 @@ interface NotebookCellProps {
     runCell: () => void
   ) => React.ReactNode;
   threshold?: number;
-  /**
-   * If true, output stays hidden until the user clicks Run.
-   * Code still types on scroll, but `run` flag starts false.
-   */
   manualRun?: boolean;
+  /** Compact variant for cells that don't need full visual weight */
+  variant?: "default" | "compact" | "wide";
 }
 
 /**
- * Tracks when this cell enters the viewport. Drives execution state.
- * Children receive (executed, status, run, runCell) so the cell decides
- * how to render. When `manualRun` is true, output waits for click.
+ * Notebook cell with tactile feel: paper surface, layer lines, cell markers.
  */
 export function NotebookCell({
   cellId,
@@ -35,11 +31,11 @@ export function NotebookCell({
   children,
   threshold = 0.18,
   manualRun = true,
+  variant = "default",
 }: NotebookCellProps) {
   const { ref, executed } = useCellObserver<HTMLDivElement>(threshold);
   const status: "queued" | "running" | "done" = !executed ? "queued" : "running";
   const [run, setRun] = useState(false);
-
   const runCell = () => setRun(true);
 
   return (
@@ -52,10 +48,18 @@ export function NotebookCell({
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
         <ExecutionPrompt cellId={cellId} status={status} />
-        {children(executed, status, manualRun ? run : true, manualRun ? runCell : () => setRun(true))}
+
+        <div
+          className={cn(
+            "mt-4",
+            variant === "wide" && "relative"
+          )}
+        >
+          {children(executed, status, manualRun ? run : true, manualRun ? runCell : () => setRun(true))}
+        </div>
 
         {manualRun && executed && (
           <AnimatePresence>
@@ -63,22 +67,32 @@ export function NotebookCell({
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.4 }}
-              className="mt-4 flex items-center gap-3"
+              className="mt-5 flex items-center gap-3"
             >
               <button
                 onClick={runCell}
                 data-cursor="run"
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-md border px-4 py-2 font-mono text-[13px] transition-colors",
+                  "group inline-flex items-center gap-2 border px-3.5 py-1.5 font-mono text-[12px] transition-colors duration-300",
                   run
-                    ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
-                    : "border-amber-300/40 bg-amber-300/10 text-amber-200 hover:bg-amber-300/20"
+                    ? "border-[var(--rule)] text-[var(--fg-mute)] hover:border-[var(--accent)]"
+                    : "border-[var(--rule)] text-[var(--fg-soft)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 )}
               >
-                {run ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 fill-current" />}
-                {run ? "executed" : "▶ run cell"}
+                {run ? (
+                  <>
+                    <CheckCircle2 className="h-3 w-3 text-[var(--state-done)]" />
+                    <span>executed</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-3 w-3 fill-current" />
+                    <span>run cell</span>
+                    <span className="ml-1 text-[10px] text-[var(--fg-faint)]">shift+⏎</span>
+                  </>
+                )}
               </button>
-              <span className="font-mono text-[11px] text-zinc-500">
+              <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[var(--fg-faint)]">
                 {run ? "output expanded" : "click to expand output"}
               </span>
             </motion.div>

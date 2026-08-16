@@ -7,27 +7,80 @@ import { cn } from "@/lib/utils";
 interface CodeBlockProps {
   code: string;
   className?: string;
-  variant?: "default" | "minimal";
+  variant?: "default" | "minimal" | "wide";
   language?: "python" | "text";
+  showLineNumbers?: boolean;
+  showCursor?: boolean;
 }
 
-export function CodeBlock({ code, className, variant = "default", language = "python" }: CodeBlockProps) {
-  const tokens = language === "python" ? highlightPython(code) : [{ text: code, cls: "text-zinc-200" }];
+/**
+ * CodeBlock — authentic computational cell feel.
+ * Subtle line numbers in gutter, optional cursor, syntax highlight.
+ */
+export function CodeBlock({
+  code,
+  className,
+  variant = "default",
+  language = "python",
+  showLineNumbers = true,
+  showCursor = false,
+}: CodeBlockProps) {
+  const tokens =
+    language === "python" ? highlightPython(code) : [{ text: code, cls: "text-zinc-200" }];
+  const lines = code.split("\n");
+  const tokenLines: Array<Array<{ text: string; cls: string }>> = [];
+  let cursor = 0;
+  for (const line of lines) {
+    const lineTokens: Array<{ text: string; cls: string }> = [];
+    let remaining = line.length;
+    while (remaining > 0 && cursor < tokens.length) {
+      const t = tokens[cursor];
+      if (t.text.length <= remaining) {
+        lineTokens.push(t);
+        remaining -= t.text.length;
+        cursor++;
+      } else {
+        lineTokens.push({ text: t.text.slice(0, remaining), cls: t.cls });
+        tokens[cursor] = { text: t.text.slice(remaining), cls: t.cls };
+        remaining = 0;
+      }
+    }
+    tokenLines.push(lineTokens);
+  }
+
   return (
     <div
       className={cn(
-        "code-scroll relative overflow-x-auto rounded-md border border-zinc-800/80 bg-[#0e0e10]/95",
-        "font-mono text-[13px] leading-[1.65]",
-        variant === "default" ? "p-4 md:p-5" : "p-3",
+        "code-frame code-scroll relative overflow-x-auto",
+        variant === "wide" && "px-6 py-5",
+        variant === "default" && "px-5 py-4",
+        variant === "minimal" && "px-3 py-2",
         className
       )}
     >
-      <div className="pointer-events-none absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-emerald-400/40 via-emerald-400/10 to-transparent" />
       <pre className="whitespace-pre">
-        {tokens.map((t, i) => (
-          <span key={i} className={t.cls}>
-            {t.text}
-          </span>
+        {tokenLines.map((line, i) => (
+          <div key={i} className="flex">
+            {showLineNumbers && (
+              <span className="line-gutter metric">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            )}
+            <span className="flex-1">
+              {line.length === 0 ? (
+                <span>{" "}</span>
+              ) : (
+                line.map((t, j) => (
+                  <span key={j} className={t.cls}>
+                    {t.text}
+                  </span>
+                ))
+              )}
+              {showCursor && i === tokenLines.length - 1 && (
+                <span className="line-cursor" />
+              )}
+            </span>
+          </div>
         ))}
       </pre>
     </div>
@@ -35,7 +88,7 @@ export function CodeBlock({ code, className, variant = "default", language = "py
 }
 
 /**
- * Typewriter — animates code as if being typed.
+ * TypedCode — animates code as if being typed.
  * Reveals one character at a time, tokens colored as they appear.
  */
 export function TypedCode({
@@ -55,38 +108,63 @@ export function TypedCode({
 }) {
   const tokens = highlightPython(code);
   const chars = tokens.flatMap((t) => Array.from(t.text));
-  const tokenIndexForChar = tokens.flatMap((t, i) => Array.from(t.text).map(() => i));
+  const tokenIndexForChar = tokens.flatMap((t, _i) => Array.from(t.text).map(() => _i));
+
+  const lines = code.split("\n");
+  const charPerLine: number[] = [];
+  let counted = 0;
+  for (const l of lines) {
+    charPerLine.push(counted);
+    counted += l.length + 1;
+  }
 
   return (
     <motion.div
       className={cn(
-        "relative overflow-x-auto rounded-md border border-zinc-800/80 bg-[#0e0e10]/95",
-        "font-mono text-[13px] leading-[1.65] p-4 md:p-5",
+        "code-frame code-scroll relative overflow-x-auto px-5 py-4",
         className
       )}
     >
-      <div className="pointer-events-none absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-emerald-400/50 via-emerald-400/10 to-transparent" />
       <pre className="whitespace-pre">
         {start &&
-          chars.map((_, i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{
-                delay: startDelay + i * (speed / 1000),
-                duration: 0.001,
-              }}
-              onAnimationComplete={() => {
-                if (i === chars.length - 1) onDone?.();
-              }}
-              className={tokens[tokenIndexForChar[i]].cls}
-            >
-              {chars[i]}
-            </motion.span>
-          ))}
+          chars.map((_, i) => {
+            const lineIdx = charPerLine.findIndex(
+              (start, idx) =>
+                i >= start &&
+                (idx === charPerLine.length - 1 || i < charPerLine[idx + 1])
+            );
+            const isLastChar =
+              i === chars.length - 1 ||
+              (i < chars.length - 1 &&
+                charPerLine[lineIdx + 1] === i + 1);
+            return (
+              <span
+                key={i}
+                className="inline"
+                style={{
+                  display: "inline",
+                }}
+              >
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    delay: startDelay + i * (speed / 1000),
+                    duration: 0.001,
+                  }}
+                  onAnimationComplete={() => {
+                    if (i === chars.length - 1) onDone?.();
+                  }}
+                  className={tokens[tokenIndexForChar[i]].cls}
+                >
+                  {chars[i]}
+                </motion.span>
+                {isLastChar && <br />}
+              </span>
+            );
+          })}
         {!start && (
-          <span className="text-zinc-500">// waiting to run…</span>
+          <span className="text-[var(--fg-faint)]">// waiting to run…</span>
         )}
       </pre>
     </motion.div>

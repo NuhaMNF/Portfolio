@@ -4,92 +4,100 @@ import { motion } from "framer-motion";
 import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
+import { Annotation } from "@/components/notebook/Annotation";
 import { experience } from "@/lib/data";
-import { Briefcase, MapPin, Calendar } from "lucide-react";
+
+const experienceCode = `experience = [
+    { "role": "AI Engineer",  "company": "Lumen Labs",     "period": "2025 — Present" },
+    { "role": "ML Engineer",  "company": "Northwind AI",   "period": "2023 — 2025" },
+    { "role": "Software Eng", "company": "PenguinByte",    "period": "2021 — 2023" },
+    { "role": "Research Intern","company": "IISc Bangalore","period": "2020 — 2021" },
+]
+for cell in experience:
+    cell.execute()`;
 
 export function Experience() {
   return (
-    <section className="relative px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-5xl">
+    <section className="relative px-6 py-28 md:py-36 lg:px-12">
+      <div className="mx-auto max-w-[1320px]">
+        <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <div className="mb-3 flex items-center gap-3 font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
+              <span>In</span>
+              <span>[</span>
+              <span className="metric text-[var(--accent)]">04</span>
+              <span>]</span>
+              <span className="ml-2 text-[var(--fg-faint)]">·</span>
+              <span className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
+                runtime history
+              </span>
+            </div>
+            <h2 className="display text-[clamp(40px,5.5vw,72px)] leading-[0.96] tracking-[-0.035em] text-[var(--fg)]">
+              <span className="display-italic">Traceback.</span>{" "}
+              <span className="text-[var(--fg-soft)]">The trajectory so far.</span>
+            </h2>
+          </div>
+          <div className="flex flex-col justify-end">
+            <Annotation offset="slight" tone="quiet" prefix="#">
+              four roles · one direction
+            </Annotation>
+          </div>
+        </div>
+
         <NotebookCell cellId="4" threshold={0.12}>
           {(executed, status, run) => (
             <>
-              <CodeBlock
-                code={`experience = [\n    { "role": "AI Engineer", "company": "Lumen Labs", "period": "2025 — Present" },\n    { "role": "ML Engineer", "company": "Northwind AI", "period": "2023 — 2025" },\n    { "role": "Software Engineer", "company": "PenguinByte", "period": "2021 — 2023" },\n    { "role": "Research Intern", "company": "IISc Bangalore", "period": "2020 — 2021" },\n]\nfor cell in experience:\n    cell.execute()`}
-                className="mt-4"
-              />
+              <CodeBlock code={experienceCode} className="mt-2" />
               <OutputBlock cellId="4" visible={run} tone="default">
-                <div className="space-y-3">
+                <div className="space-y-6">
                   {experience.map((job, i) => (
-                    <motion.div
+                    <motion.article
                       key={job.role + job.company}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: executed ? 1 : 0, x: executed ? 0 : -8 }}
-                      transition={{ delay: 0.2 + i * 0.18, duration: 0.5 }}
-                      className="overflow-hidden rounded-md border border-zinc-800/60 bg-zinc-950/30"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: executed ? 1 : 0, y: executed ? 0 : 8 }}
+                      transition={{ delay: 0.2 + i * 0.15, duration: 0.5 }}
+                      className="grid grid-cols-1 gap-6 border-t border-[var(--rule)] pt-6 md:grid-cols-[200px_1fr_240px] md:gap-10"
                     >
-                      <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800/40 bg-zinc-900/40 px-4 py-2 font-mono text-[11px]">
-                        <span className="text-zinc-500">In[</span>
-                        <span className="text-amber-300">4.{i + 1}</span>
-                        <span className="text-zinc-600">]:</span>
-                        <span className="text-zinc-400">
-                          experience.append(role=
-                          <span className="text-emerald-300">"{job.role}"</span>,
-                          company=
-                          <span className="text-emerald-300">"{job.company}"</span>)
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-1 gap-3 p-4 md:grid-cols-3">
-                        <div className="md:col-span-2">
-                          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300">
-                            Out[4.{i + 1}]:
-                          </div>
-                          <h3 className="mt-1 text-lg font-semibold text-zinc-50">
-                            {job.role}
-                          </h3>
-                          <div className="mt-0.5 flex flex-wrap items-center gap-3 text-[12px] text-zinc-400">
-                            <span className="flex items-center gap-1.5">
-                              <Briefcase className="h-3 w-3" />
-                              {job.company}
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <MapPin className="h-3 w-3" />
-                              {job.location}
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <Calendar className="h-3 w-3" />
-                              {job.period}
-                            </span>
-                          </div>
-                          <ul className="mt-3 space-y-1.5">
-                            {job.bullets.map((b, j) => (
-                              <li
-                                key={j}
-                                className="flex gap-2 text-[13px] leading-relaxed text-zinc-300"
-                              >
-                                <span className="mt-1.5 inline-block h-1 w-1 flex-shrink-0 rounded-full bg-amber-300" />
-                                {b}
-                              </li>
-                            ))}
-                          </ul>
+                      <div>
+                        <div className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                          {job.period}
                         </div>
-                        <div>
-                          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-                            stack
-                          </div>
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {job.stack.map((t) => (
-                              <span
-                                key={t}
-                                className="rounded border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 font-mono text-[11px] text-zinc-300"
-                              >
-                                {t}
-                              </span>
-                            ))}
-                          </div>
+                        <div className="mt-2 font-mono text-[11px] tracking-[0.04em] text-[var(--accent)]">
+                          {job.location}
                         </div>
                       </div>
-                    </motion.div>
+                      <div>
+                        <h3 className="display text-[28px] leading-[1.05] tracking-[-0.02em] text-[var(--fg)]">
+                          {job.role}
+                        </h3>
+                        <div className="mt-1.5 text-[14px] text-[var(--fg-soft)]">
+                          {job.company}
+                        </div>
+                        <ul className="mt-5 space-y-2 text-[14px] leading-[1.65] text-[var(--fg-soft)]">
+                          {job.bullets.map((b, j) => (
+                            <li key={j} className="flex gap-3">
+                              <span className="mt-2 inline-block h-px w-3 flex-shrink-0 bg-[var(--fg-faint)]" />
+                              <span>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                          stack
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {job.stack.map((t) => (
+                            <span
+                              key={t}
+                              className="border border-[var(--rule)] px-2 py-0.5 font-mono text-[11px] text-[var(--fg-mute)]"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.article>
                   ))}
                 </div>
               </OutputBlock>
@@ -100,4 +108,3 @@ export function Experience() {
     </section>
   );
 }
-

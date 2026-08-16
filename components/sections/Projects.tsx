@@ -6,29 +6,20 @@ import { NotebookCell } from "@/components/notebook/NotebookCell";
 import { OutputBlock } from "@/components/notebook/OutputBlock";
 import { CodeBlock } from "@/components/notebook/CodeBlock";
 import { CodeAnnotation } from "@/components/notebook/CodeAnnotation";
+import { ExperimentBlock } from "@/components/notebook/ExperimentBlock";
+import { Annotation } from "@/components/notebook/Annotation";
 import { ProjectDetailModal } from "@/components/project/ProjectDetailModal";
-import { TrainingEpochs } from "@/components/visualizations/TrainingEpochs";
+import { ProjectPreview } from "@/components/project/ProjectPreview";
 import { projects } from "@/lib/data";
-import {
-  ExternalLink,
-  ArrowUpRight,
-  Star,
-  Cpu,
-  Eye,
-  BarChart3,
-  Boxes,
-  Layers,
-  MessageSquare,
-} from "lucide-react";
-import { GithubIcon } from "@/components/ui/BrandIcons";
 
-const projectIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  "lumen-rag": MessageSquare,
-  cetacea: Boxes,
-  tideline: BarChart3,
-  meridian: Eye,
-  graphite: Layers,
-};
+const projectsCode = `projects = [
+    LumenRAG(...),
+    Cetacea(...),
+    Tideline(...),
+    Meridian(...),
+    Graphite(...),
+]
+projects.run_all()`;
 
 export function Projects() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -47,110 +38,49 @@ export function Projects() {
   const activeProject = projects.find((p) => p.id === selected) ?? null;
 
   return (
-    <section id="projects" className="relative px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-5xl">
+    <section id="projects" className="relative px-6 py-28 md:py-36 lg:px-12">
+      <div className="mx-auto max-w-[1320px]">
+        <ExperimentBlock
+          number="05"
+          title="Projects"
+          status="5 experiments · 4 years"
+        />
+
+        <div className="mt-10 mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <h3 className="display text-[clamp(28px,3vw,40px)] leading-[1.1] tracking-[-0.02em] text-[var(--fg)]">
+              <span className="display-italic">Five</span> case studies, kept like
+              field notes.
+            </h3>
+          </div>
+          <div className="space-y-3">
+            <Annotation offset="slight" tone="warm" prefix="#">
+              each one — a problem first, then a method
+            </Annotation>
+            <CodeAnnotation id="p5" />
+          </div>
+        </div>
+
         <NotebookCell cellId="5" threshold={0.08}>
           {(executed, status, run) => (
             <>
-              <CodeBlock
-                code={`projects = [\n    LumenRAG(...),\n    Cetacea(...),\n    Tideline(...),\n    Meridian(...),\n    Graphite(...),\n]\nprojects.run_all()`}
-                className="mt-4"
-              />
+              <CodeBlock code={projectsCode} className="mt-2" />
               <OutputBlock cellId="5" visible={run} tone="default">
-                <div className="relative">
-                  <CodeAnnotation id="p5" className="absolute -right-1 -top-8 hidden md:block" align="right" />
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {projects.map((p, i) => {
-                      const Icon = projectIcons[p.id] ?? Cpu;
-                      const isFeatured = p.id === "tideline";
-                      return (
-                        <motion.div
-                          key={p.id}
-                          initial={{ opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
-                          data-cursor="open"
-                          onClick={() => setSelected(p.id)}
-                          className={`group relative cursor-pointer overflow-hidden rounded-md border bg-zinc-950/40 transition-colors hover:border-amber-300/40 ${
-                            isFeatured ? "border-amber-400/30 md:col-span-2" : "border-zinc-800/60"
-                          }`}
-                        >
-                          <div className="absolute inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:24px_24px]" />
-                          <div className="flex items-center justify-between border-b border-zinc-800/60 bg-zinc-900/30 px-4 py-2 font-mono text-[11px]">
-                            <span className="flex items-center gap-2">
-                              <span className="text-zinc-500">In[</span>
-                              <span className="text-amber-300">{p.cellId}</span>
-                              <span className="text-zinc-600">]:</span>
-                              <span className="text-zinc-400">
-                                project = <span className="text-sky-300">{p.id}</span>(<span className="text-zinc-500">...</span>)
-                              </span>
-                            </span>
-                            <span className="text-zinc-500">{p.year}</span>
-                          </div>
-                          <div className={`grid grid-cols-1 gap-4 p-5 ${isFeatured ? "md:grid-cols-2" : ""}`}>
-                            <div>
-                              <div className="mb-2 flex items-center gap-3">
-                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/80 text-amber-300 transition-transform group-hover:scale-110">
-                                  <Icon className="h-4 w-4" />
-                                </span>
-                                <div>
-                                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300">
-                                    {p.category}
-                                  </div>
-                                  <h3 className="text-lg font-semibold text-zinc-50">{p.title}</h3>
-                                </div>
-                              </div>
-                              <p className="text-[13px] leading-relaxed text-zinc-400">{p.description}</p>
-                              <div className="mt-3 flex flex-wrap gap-1.5">
-                                {p.tech.map((t) => (
-                                  <span key={t} className="rounded border border-zinc-800 bg-zinc-900/60 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">{t}</span>
-                                ))}
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-3">
-                              <div className="grid grid-cols-3 gap-2">
-                                {p.metrics.map((m) => (
-                                  <div key={m.label} className="rounded border border-zinc-800/60 bg-zinc-900/40 p-2">
-                                    <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{m.label}</div>
-                                    <div className="font-mono text-base text-amber-300 tabular-nums">{m.value}</div>
-                                  </div>
-                                ))}
-                              </div>
-                              {isFeatured ? (
-                                <TrainingEpochs running={executed} />
-                              ) : (
-                                <div className="flex items-center gap-2">
-                                  <a href={p.repo} target="_blank" rel="noreferrer" data-cursor="view" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1.5 rounded border border-zinc-800 bg-zinc-900/40 px-2 py-1 font-mono text-[11px] text-zinc-300 hover:text-amber-300">
-                                    <GithubIcon className="h-3 w-3" /> repo
-                                  </a>
-                                  {p.demo && (
-                                    <a href={p.demo} target="_blank" rel="noreferrer" data-cursor="view" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1.5 rounded border border-zinc-800 bg-zinc-900/40 px-2 py-1 font-mono text-[11px] text-zinc-300 hover:text-amber-300">
-                                      <ExternalLink className="h-3 w-3" /> demo
-                                    </a>
-                                  )}
-                                  <span className="ml-auto inline-flex items-center gap-1 font-mono text-[10px] text-zinc-500">
-                                    <Star className="h-3 w-3" /> featured
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-end gap-2 border-t border-zinc-800/40 bg-zinc-900/20 px-4 py-1.5 font-mono text-[10px] text-zinc-500">
-                            <ArrowUpRight className="h-3 w-3" />
-                            click cell to expand
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
+                <div className="space-y-24">
+                  {projects.map((p, i) => (
+                    <ProjectEntry
+                      key={p.id}
+                      project={p}
+                      index={i}
+                      onOpen={() => setSelected(p.id)}
+                    />
+                  ))}
                 </div>
 
-                <div className="mt-6 flex items-center gap-2 font-mono text-[11px] text-zinc-500">
-                  <span className="text-amber-300">Out[5]:</span>
-                  <span>{projects.length} projects executed.</span>
-                  <span className="ml-auto text-zinc-600">
-                    <ArrowUpRight className="inline h-3 w-3" /> click any cell to inspect
-                  </span>
+                <div className="mt-12 border-t border-[var(--rule)] pt-6 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                  <span className="metric text-[var(--accent)]">5</span>
+                  <span className="ml-2">experiments completed.</span>
+                  <span className="ml-4 hidden md:inline">↳ all cells archived.</span>
                 </div>
               </OutputBlock>
             </>
@@ -160,5 +90,135 @@ export function Projects() {
 
       <ProjectDetailModal project={activeProject} onClose={() => setSelected(null)} />
     </section>
+  );
+}
+
+function ProjectEntry({
+  project,
+  index,
+  onOpen,
+}: {
+  project: (typeof projects)[number];
+  index: number;
+  onOpen: () => void;
+}) {
+  const isOdd = index % 2 === 0;
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay: 0.1 * index, ease: [0.22, 1, 0.36, 1] }}
+      className="relative"
+    >
+      {/* Project marker */}
+      <div className="mb-6 flex items-center gap-4 font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
+        <span className="metric text-[var(--accent)]">{project.cellId}</span>
+        <span className="text-[var(--fg-ghost)]">·</span>
+        <span className="text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+          {project.category}
+        </span>
+        <span className="text-[var(--fg-ghost)]">·</span>
+        <span className="metric text-[var(--fg-faint)]">{project.year}</span>
+      </div>
+
+      <div className={`grid grid-cols-1 gap-10 lg:gap-16 ${isOdd ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-[1fr_1.4fr]"}`}>
+        {/* Text column */}
+        <div className={isOdd ? "order-2 lg:order-1" : "order-2 lg:order-1"}>
+          <h4 className="display text-[clamp(36px,4.5vw,64px)] leading-[0.95] tracking-[-0.035em] text-[var(--fg)]">
+            {project.title}
+          </h4>
+          <p className="mt-3 text-[16px] leading-[1.6] text-[var(--fg-soft)]">
+            {project.subtitle}
+          </p>
+
+          <div className="mt-8 space-y-6 border-l border-[var(--rule)] pl-6">
+            <Field label="// problem" text={project.problem} />
+            <Field label="// approach" text={project.solution} />
+            <div>
+              <div className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                // stack
+              </div>
+              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-mono text-[12px] text-[var(--fg-soft)]">
+                {project.tech.map((t, i) => (
+                  <span key={t} className="flex items-center gap-4">
+                    <span>{t}</span>
+                    {i < project.tech.length - 1 && (
+                      <span className="text-[var(--fg-ghost)]">·</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-3 gap-6 border-t border-[var(--rule)] pt-6">
+            {project.metrics.map((m) => (
+              <div key={m.label}>
+                <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+                  {m.label}
+                </div>
+                <div className="metric mt-1 text-[24px] text-[var(--fg)]">
+                  {m.value}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex items-center gap-4">
+            <button
+              data-cursor="open"
+              onClick={onOpen}
+              className="inline-flex items-center gap-2 border border-[var(--rule)] bg-[var(--surface)] px-4 py-2 font-mono text-[12px] text-[var(--fg-soft)] transition-colors hover:border-[var(--accent)]/40 hover:text-[var(--accent)]"
+            >
+              <span>open notebook</span>
+              <span className="text-[10px] text-[var(--fg-faint)]">→</span>
+            </button>
+            {project.links.map((l) => (
+              <a
+                key={l.url}
+                href={l.url}
+                target="_blank"
+                rel="noreferrer"
+                data-cursor="view"
+                className="link-underline font-mono text-[12px] text-[var(--fg-mute)]"
+              >
+                {l.label} ↗
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Visual column */}
+        <div
+          className={`relative order-1 lg:order-2 ${isOdd ? "" : ""}`}
+        >
+          <div
+            data-cursor="open"
+            onClick={onOpen}
+            className="cell-paper cell-elevate aspect-[4/3] cursor-pointer overflow-hidden"
+          >
+            <ProjectPreview id={project.id} />
+          </div>
+          <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+            <span>fig. {project.cellId.replace(".", "_")} — preview</span>
+            <span>click to expand</span>
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+function Field({ label, text }: { label: string; text: string }) {
+  return (
+    <div>
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+        {label}
+      </div>
+      <p className="mt-2 text-[14.5px] leading-[1.7] text-[var(--fg-soft)]">
+        {text}
+      </p>
+    </div>
   );
 }
