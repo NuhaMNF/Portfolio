@@ -51,47 +51,55 @@
   --glass-sheen: rgba(255, 255, 255, 0.08);
   --glass-iridescence: rgba(124, 77, 184, 0.08);
   --glass-blur: 16px;
+  --glass-saturate: 1.35;
+  --elev-1: inset 0 1px 0 var(--glass-tint), 0 18px 48px -28px rgba(0, 0, 0, 0.45);
+  --elev-2: inset 0 1px 0 var(--glass-tint), 0 24px 48px -28px rgba(0, 0, 0, 0.5);
+  --elev-btn: inset 0 1px 0 var(--glass-tint);
 }
 
 html[data-theme="light"] {
-  --bg: #f6f4f0;
-  --bg-paper: #f8f6f2;
-  --bg-deep: #efece6;
-  --surface: #ffffff;
-  --surface-2: #f2f4f8;
-  --surface-3: #e7eaf1;
+  --bg: #e6e1d6;
+  --bg-paper: #f0ece4;
+  --bg-deep: #d8d2c6;
+  --surface: #f4f0e8;
+  --surface-2: #ebe6dc;
+  --surface-3: #ddd7cc;
 
-  --fg: #17181d;
-  --fg-soft: #3a3d46;
-  --fg-mute: #6a6f7a;
-  --fg-faint: #9aa0ab;
-  --fg-ghost: #c4c8d2;
+  --fg: #1c1b18;
+  --fg-soft: #3d3b36;
+  --fg-mute: #5e5b54;
+  --fg-faint: #8a857c;
+  --fg-ghost: #b4aea3;
 
-  --accent: #c48a2a;
-  --accent-soft: #a06e1e;
-  --accent-glow: rgba(196, 138, 42, 0.12);
+  --accent: #9a6b1c;
+  --accent-soft: #7d5616;
+  --accent-glow: rgba(154, 107, 28, 0.1);
 
-  --syntax-fn: #b56a38;
-  --syntax-str: #4f7a3e;
-  --syntax-num: #c48a2a;
-  --syntax-kw: #8b5a7a;
-  --syntax-cm: #8a8f99;
-  --syntax-var: #3a3d46;
+  --syntax-fn: #9a5428;
+  --syntax-str: #3f6a32;
+  --syntax-num: #9a6b1c;
+  --syntax-kw: #6e4660;
+  --syntax-cm: #8a857c;
+  --syntax-var: #3d3b36;
 
-  --rule: #dfe2e9;
-  --rule-soft: #e8ebf1;
-  --hairline: #eceef3;
+  --rule: #c4bdb0;
+  --rule-soft: #d2cbbf;
+  --hairline: #d8d2c6;
 
-  --state-idle: #9aa0ab;
-  --state-queued: #8a8f99;
-  --state-running: #c48a2a;
-  --state-done: #4f7a3e;
+  --state-idle: #8a857c;
+  --state-queued: #7a756c;
+  --state-running: #9a6b1c;
+  --state-done: #3f6a32;
 
-  --glass: rgba(248, 246, 242, 0.75);
-  --glass-tint: rgba(255, 255, 255, 0.6);
-  --glass-sheen: rgba(255, 255, 255, 0.4);
-  --glass-iridescence: rgba(196, 138, 42, 0.04);
-  --glass-blur: 20px;
+  --glass: rgba(244, 240, 232, 0.78);
+  --glass-tint: rgba(255, 255, 255, 0.22);
+  --glass-sheen: rgba(255, 255, 255, 0.08);
+  --glass-iridescence: rgba(28, 27, 24, 0.02);
+  --glass-blur: 8px;
+  --glass-saturate: 1.04;
+  --elev-1: 0 1px 0 rgba(255, 255, 255, 0.55) inset, 0 1px 1px rgba(28, 27, 24, 0.06), 0 8px 20px -10px rgba(28, 27, 24, 0.22);
+  --elev-2: 0 1px 0 rgba(255, 255, 255, 0.55) inset, 0 2px 3px rgba(28, 27, 24, 0.06), 0 14px 28px -12px rgba(28, 27, 24, 0.28);
+  --elev-btn: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 2px rgba(28, 27, 24, 0.1);
 }
 
 @theme inline {
@@ -238,11 +246,9 @@ html[data-theme="light"] .coord-marks-right {
     linear-gradient(165deg, var(--glass-sheen), transparent 32%, var(--glass-iridescence) 100%),
     var(--glass);
   border: 1px solid var(--rule);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.55);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.55);
-  box-shadow:
-    inset 0 1px 0 var(--glass-tint),
-    0 18px 48px -28px rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--elev-1);
 }
 
 .liquid-glass::after {
@@ -270,14 +276,14 @@ html[data-theme="light"] .coord-marks-right {
     linear-gradient(165deg, var(--glass-sheen), transparent 42%, var(--glass-iridescence) 100%),
     var(--glass);
   border: 1px solid var(--rule);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  box-shadow: inset 0 1px 0 var(--glass-tint);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--elev-btn);
   transition:
-    border-color 300ms ease,
-    color 300ms ease,
-    box-shadow 300ms ease,
-    background 300ms ease;
+    border-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
 }
 
 .btn-glass:hover {
@@ -309,11 +315,9 @@ html[data-theme="light"] .coord-marks-right {
     linear-gradient(165deg, var(--glass-sheen), transparent 32%, var(--glass-iridescence) 100%),
     var(--glass);
   border: 1px solid var(--rule);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.55);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.55);
-  box-shadow:
-    inset 0 1px 0 var(--glass-tint),
-    0 18px 48px -28px rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--elev-1);
 }
 
 .cell-paper::before {
@@ -338,10 +342,8 @@ html[data-theme="light"] .coord-marks-right {
   background:
     linear-gradient(180deg, rgba(232, 183, 90, 0.08), transparent 34%),
     var(--glass);
-  border-color: rgba(232, 183, 90, 0.28);
-  box-shadow:
-    inset 0 1px 0 var(--glass-tint),
-    0 18px 48px -28px rgba(0, 0, 0, 0.4);
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--rule));
+  box-shadow: var(--elev-2);
 }
 
 /* Subtle elevation shadow on hover */
@@ -353,10 +355,18 @@ html[data-theme="light"] .coord-marks-right {
 }
 
 .cell-elevate:hover {
-  border-color: rgba(232, 183, 90, 0.25);
-  box-shadow:
-    0 1px 0 var(--glass-tint) inset,
-    0 24px 48px -32px rgba(0, 0, 0, 0.5);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
+  box-shadow: var(--elev-2);
+}
+
+html[data-theme="light"] .liquid-glass::after,
+html[data-theme="light"] .cell-paper::after {
+  opacity: 0.2;
+}
+
+html[data-theme="light"] .status-bar {
+  background: color-mix(in srgb, var(--bg-deep) 88%, var(--fg) 12%);
+  color: var(--fg-mute);
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -381,9 +391,9 @@ html[data-theme="light"] .coord-marks-right {
     linear-gradient(165deg, var(--glass-sheen), transparent 40%),
     var(--glass);
   border: 1px solid var(--rule-soft);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  box-shadow: inset 0 1px 0 var(--glass-tint);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--elev-btn);
   font-family: var(--font-mono);
   font-size: 12.5px;
   line-height: 1.7;

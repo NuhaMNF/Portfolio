@@ -19,9 +19,9 @@ import {
 
 const REST_COLOR = new THREE.Color("#07060c");
 const LIGHT_CLEAR = "#f6f4f0";
-const INFLUENCE_RADIUS_FULL = 0.95;
-const INFLUENCE_RADIUS_MEDIUM = 1.85;
-const INFLUENCE_RADIUS_WEAK = 2.9;
+const INFLUENCE_RADIUS_FULL = 1.05;
+const INFLUENCE_RADIUS_MEDIUM = 2.05;
+const INFLUENCE_RADIUS_WEAK = 3.2;
 const STIFFNESS = 70;
 const DAMPING = 14;
 const CURSOR_DAMP_RATE = 10;
@@ -122,26 +122,34 @@ function makeKeyMaterial(light: boolean, preset: KeyGradientPreset) {
       void main() {
         vec3 faceDist = uHalf - abs(vLocal);
         float second = max(min(faceDist.x, faceDist.y), min(max(faceDist.x, faceDist.y), faceDist.z));
-        float edge = 1.0 - smoothstep(0.0, mix(0.04, 0.038, uLight), second);
+        float edge = 1.0 - smoothstep(0.0, mix(0.04, 0.035, uLight), second);
+        
         vec3 accent = vHue < 0.5
           ? mix(uLeft, uMid, vHue * 2.0)
           : mix(uMid, uRight, (vHue - 0.5) * 2.0);
-        float glow = smoothstep(0.04, mix(0.62, 0.5, uLight), vInf);
-        vec3 paper = vec3(0.965, 0.957, 0.941);
-        vec3 rest = mix(uRest, paper, uLight);
-        vec3 fillD = mix(uRest * 0.35, accent * 0.22, glow);
-        vec3 fillL = mix(paper, accent * 0.92, 0.82);
-        vec3 fill = mix(fillD, fillL, uLight);
-        vec3 rimD = mix(rest, accent, glow);
-        vec3 rimL = mix(accent, vec3(0.18, 0.2, 0.32), 0.12);
-        vec3 rim = mix(rimD, rimL, uLight);
-        vec3 rgb = mix(fill, rim, edge);
+        
+        // Refined balanced glow ramp
+        float glow = smoothstep(0.04, 0.72, vInf);
         float top = smoothstep(uHalf.y * 0.2, uHalf.y, vLocal.y);
-        rgb += accent * top * glow * mix(0.55, 0.35, uLight);
-        rgb *= mix(0.22 + glow * 2.15, 0.85 + glow * 0.55, uLight);
-        float aFill = mix(0.06 + glow * 0.08, glow * 0.42, uLight);
-        float aEdge = mix(0.16 + glow * 0.8, glow * 0.98, uLight);
-        float alpha = mix(aFill, aEdge, edge);
+
+        // DARK MODE COLORWAY: Deep cosmic canvas with refined neon accents & rim bloom
+        vec3 fillDark = mix(uRest * 0.45, accent * 0.38, glow);
+        vec3 rimDark = mix(uRest * 1.9, accent * 1.45, glow);
+        vec3 rgbDark = mix(fillDark, rimDark, edge);
+        rgbDark += accent * top * glow * 0.65;
+        float alphaDark = mix(0.07 + glow * 0.3, 0.2 + glow * 0.75, edge);
+
+        // LIGHT MODE COLORWAY: Clean frosted paper at rest, vivid glowing aura on hover
+        vec3 paperRest = vec3(0.965, 0.957, 0.941);
+        vec3 rimRestLight = vec3(0.82, 0.80, 0.77);
+        vec3 fillLight = mix(paperRest, mix(vec3(0.99), accent, 0.52), glow);
+        vec3 rimLight = mix(rimRestLight, accent * 1.2, glow);
+        vec3 rgbLight = mix(fillLight, rimLight, edge);
+        rgbLight += accent * top * glow * 0.45;
+        float alphaLight = mix(0.38 + glow * 0.45, 0.58 + glow * 0.4, edge);
+
+        vec3 rgb = mix(rgbDark, rgbLight, uLight);
+        float alpha = mix(alphaDark, alphaLight, uLight);
         if (alpha < 0.02) discard;
         gl_FragColor = vec4(rgb, alpha);
       }
@@ -159,9 +167,15 @@ function makeGlowTexture(light: boolean, preset: KeyGradientPreset) {
   const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
   const colors = light ? preset.light : preset.dark;
 
-  grad.addColorStop(0, colors.glowCore);
-  grad.addColorStop(0.28, colors.glowMid);
-  grad.addColorStop(1, colors.glowEdge);
+  if (light) {
+    grad.addColorStop(0, colors.glowCore);
+    grad.addColorStop(0.4, colors.glowMid);
+    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+  } else {
+    grad.addColorStop(0, colors.glowCore);
+    grad.addColorStop(0.32, colors.glowMid);
+    grad.addColorStop(1, colors.glowEdge);
+  }
 
   g.fillStyle = grad;
   g.fillRect(0, 0, size, size);
@@ -201,10 +215,10 @@ export function BoxFieldCanvas() {
         <EffectComposer multisampling={0}>
           <Bloom
             mipmapBlur
-            intensity={light ? 0.7 : 1.15}
-            luminanceThreshold={light ? 0.28 : 0.22}
+            intensity={light ? 0.6 : 0.95}
+            luminanceThreshold={light ? 0.24 : 0.25}
             luminanceSmoothing={0.45}
-            radius={light ? 0.62 : 0.82}
+            radius={light ? 0.55 : 0.68}
           />
         </EffectComposer>
       </Canvas>
@@ -450,30 +464,32 @@ function CursorGlow({
       KEY_H * 0.5 + KEY_LIFT + 0.28,
       smoothCursor.z
     );
-    if (mat.current) mat.current.opacity = (light ? 0.72 : 0.95) * o;
-    if (sphereMat.current) sphereMat.current.opacity = (light ? 0.7 : 1) * o;
+    if (mat.current) mat.current.opacity = (light ? 0.78 : 0.95) * o;
+    if (sphereMat.current) sphereMat.current.opacity = (light ? 0 : 1) * o;
   });
 
   return (
     <group ref={group} visible={false}>
-      <mesh>
-        <sphereGeometry args={[0.16, 20, 20]} />
-        <meshBasicMaterial
-          ref={sphereMat}
-          color={light ? preset.light.sphere : preset.dark.sphere}
-          transparent
-          opacity={0}
-          toneMapped={false}
-        />
-      </mesh>
+      {!light && (
+        <mesh>
+          <sphereGeometry args={[0.16, 20, 20]} />
+          <meshBasicMaterial
+            ref={sphereMat}
+            color={preset.dark.sphere}
+            transparent
+            opacity={0}
+            toneMapped={false}
+          />
+        </mesh>
+      )}
       {tex && (
-        <sprite scale={light ? [2.2, 2.2, 1] : [1.9, 1.9, 1]} renderOrder={2}>
+        <sprite scale={light ? [2.8, 2.8, 1] : [2.4, 2.4, 1]} renderOrder={2}>
           <spriteMaterial
             ref={mat}
             map={tex}
             transparent
             depthWrite={false}
-            blending={THREE.AdditiveBlending}
+            blending={light ? THREE.NormalBlending : THREE.AdditiveBlending}
             opacity={0}
             toneMapped={false}
           />

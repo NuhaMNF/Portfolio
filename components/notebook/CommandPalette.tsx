@@ -2,17 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { commands } from "@/lib/data";
+import { commands, profile } from "@/lib/data";
 import { useCommandPalette } from "@/lib/hooks/useCommandPalette";
 import { getStoredKeyGradient, setKeyGradient, KEY_GRADIENTS } from "@/lib/keyGradients";
+import { getStoredBackgroundMode, setBackgroundMode } from "@/lib/backgroundMode";
 import { cn } from "@/lib/utils";
 
-const GHOST = "try: help, projects, hire, run_nuha";
+const GHOST = "try: projects, capabilities, contact, theme";
 
 const GROUPS: Record<string, string[]> = {
-  navigate: ["hero", "about", "skills", "experience", "ai_lab", "projects", "research", "education", "activity", "contact"],
-  actions: ["github", "linkedin", "hire", "surprise"],
-  system: ["help", "restart", "run_nuha", "theme", "glow"],
+  navigate: ["hero", "about", "skills", "projects", "education", "achievements", "contact"],
+  actions: ["github", "linkedin", "hire"],
+  system: ["help", "theme", "glow", "bg"],
 };
 
 export function CommandPalette() {
@@ -55,8 +56,8 @@ export function CommandPalette() {
   function runCommand(id: string) {
     setOpen(false);
     setQuery("");
-    if (id === "github") return window.open("https://github.com/nuhanizar", "_blank");
-    if (id === "linkedin") return window.open("https://linkedin.com/in/nuhanizar", "_blank");
+    if (id === "github") return window.open(profile.github, "_blank");
+    if (id === "linkedin") return window.open(profile.linkedin, "_blank");
     if (id === "hire") {
       window.dispatchEvent(new CustomEvent("nuha:hire"));
       return;
@@ -75,7 +76,7 @@ export function CommandPalette() {
       window.dispatchEvent(new CustomEvent("nuha:surprise"));
       return;
     }
-    if (id === "run_nuha") {
+    if (id === "run_bajithan" || id === "run_nuha") {
       window.dispatchEvent(new CustomEvent("nuha:run"));
       return;
     }
@@ -88,6 +89,11 @@ export function CommandPalette() {
       const idx = KEY_GRADIENTS.findIndex((p) => p.id === current);
       const next = KEY_GRADIENTS[(idx + 1) % KEY_GRADIENTS.length].id;
       setKeyGradient(next);
+      return;
+    }
+    if (id === "bg") {
+      const current = getStoredBackgroundMode();
+      setBackgroundMode(current === "boxes" ? "stars" : "boxes");
       return;
     }
     const el = document.getElementById(id);
@@ -111,36 +117,54 @@ export function CommandPalette() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-start justify-center bg-[var(--bg-deep)]/85 backdrop-blur-sm"
+          transition={{ duration: 0.18 }}
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/65 p-4 pt-[14vh] backdrop-blur-md"
           onClick={() => setOpen(false)}
         >
           <motion.div
-            initial={{ y: -16, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -16, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ scale: 0.96, opacity: 0, y: -10 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.96, opacity: 0, y: -10 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full max-w-xl overflow-hidden rounded-xl border border-[var(--rule)] bg-[var(--surface)] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
-            className="mt-[12vh] w-[min(680px,92vw)] overflow-hidden border border-[var(--rule)] bg-[var(--bg-paper)] shadow-[0_24px_80px_-32px_rgba(0,0,0,0.6)]"
           >
             {showHelp ? (
-              <div className="p-6 font-mono text-[12px]">
-                <div className="mb-4 flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
-                  <span>// available commands</span>
-                  <span>{commands.length} entries</span>
+              <div className="p-6">
+                <div className="mb-4 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
+                  <span>help · shortcuts</span>
+                  <span className="metric text-[var(--accent)]">v2.4</span>
                 </div>
-                <div className="grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2">
-                  {commands.map((c) => (
-                    <div key={c.id} className="flex items-center gap-3 text-[var(--fg-soft)]">
-                      <span className="metric text-[var(--fg-faint)]">{c.id}</span>
-                      <span>{c.label}</span>
-                      <span className="ml-auto metric text-[var(--fg-faint)]">{c.shortcut}</span>
-                    </div>
-                  ))}
+                <div className="space-y-3 font-mono text-[12px]">
+                  <div className="flex justify-between border-b border-[var(--rule)] pb-2">
+                    <span className="text-[var(--fg-mute)]">Navigate Section</span>
+                    <span className="metric text-[var(--fg-soft)]">G + &lt;key&gt;</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[var(--rule)] pb-2">
+                    <span className="text-[var(--fg-mute)]">Command Menu</span>
+                    <span className="metric text-[var(--fg-soft)]">⌘K</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[var(--rule)] pb-2">
+                    <span className="text-[var(--fg-mute)]">Toggle Theme</span>
+                    <span className="metric text-[var(--fg-soft)]">T</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[var(--rule)] pb-2">
+                    <span className="text-[var(--fg-mute)]">Cycle Key Glow</span>
+                    <span className="metric text-[var(--fg-soft)]">K</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[var(--rule)] pb-2">
+                    <span className="text-[var(--fg-mute)]">Toggle Background</span>
+                    <span className="metric text-[var(--fg-soft)]">B</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--fg-mute)]">Close</span>
+                    <span className="metric text-[var(--fg-soft)]">ESC</span>
+                  </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setShowHelp(false)}
-                  data-cursor="view"
-                  className="btn-glass mt-5 px-3 py-1.5 font-mono text-[12px] text-[var(--fg-soft)]"
+                  className="btn-glass mt-6 w-full py-2 font-mono text-[12px]"
                 >
                   back
                 </button>
@@ -148,8 +172,8 @@ export function CommandPalette() {
             ) : (
               <>
                 <div className="flex items-center gap-3 border-b border-[var(--rule)] px-5 py-3 font-mono">
-                  <span className="text-[10px] uppercase tracking-[0.24em] text-[var(--accent)]">
-                    nuha://command
+                  <span className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--accent)] font-medium">
+                    Nuha Nizar · Menu
                   </span>
                   <span className="text-[var(--fg-ghost)]">›</span>
                   <input

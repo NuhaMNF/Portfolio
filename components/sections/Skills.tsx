@@ -1,89 +1,66 @@
 "use client";
 
-import { NotebookCell } from "@/components/notebook/NotebookCell";
-import { OutputBlock } from "@/components/notebook/OutputBlock";
-import { CodeBlock } from "@/components/notebook/CodeBlock";
-import { CodeAnnotation } from "@/components/notebook/CodeAnnotation";
 import { CapabilityMap } from "@/components/visualizations/CapabilityMap";
 import { KnowledgeAtlas } from "@/components/visualizations/KnowledgeAtlas";
 import { skills } from "@/lib/data";
 
-const skillsCode = `capabilities = {
-    "AI / ML":       ["PyTorch", "Transformers", "RL", "Diffusion"],
-    "Programming":   ["Python", "TypeScript", "Rust", "C++"],
-    "Backend":       ["FastAPI", "PostgreSQL", "Redis", "Kafka"],
-    "Frontend":      ["Next.js", "React", "Three.js", "Tailwind"],
-    "Data":          ["Pandas", "NumPy", "dbt", "SQL"],
-    "Cloud":         ["AWS", "Docker", "Kubernetes", "GCP"],
-}`;
-
 export function Skills() {
   return (
-    <section id="skills" className="relative px-6 py-28 md:py-36 lg:px-12">
+    <section id="skills" className="relative px-6 py-24 md:py-32 lg:px-12">
       <div className="mx-auto max-w-[1320px]">
-        <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_1fr]">
+        {/* Section Header */}
+        <div className="mb-6 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)]">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+          <span>03 / Capabilities</span>
+        </div>
+
+        {/* Heading */}
+        <div className="mb-14 grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <div className="mb-3 flex items-center gap-3 font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
-              <span>In</span>
-              <span>[</span>
-              <span className="metric text-[var(--accent)]">03</span>
-              <span>]</span>
-              <span className="ml-2 text-[var(--fg-faint)]">·</span>
-              <span className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
-                capabilities
-              </span>
-            </div>
-            <h2 className="display text-[clamp(40px,5.5vw,72px)] leading-[0.96] tracking-[-0.035em] text-[var(--fg)]">
-              <span className="display-italic">Knowledge</span>{" "}
-              <span className="text-[var(--fg-soft)]">as a living atlas.</span>
+            <h2 className="display text-[clamp(36px,5vw,68px)] leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
+              Technical fluency & <span className="display-italic text-[var(--fg-soft)]">management capabilities</span>.
             </h2>
           </div>
           <div className="flex flex-col justify-end">
-            <CodeAnnotation id="p3" className="block" align="left" />
+            <p className="text-[16px] leading-[1.75] text-[var(--fg-soft)]">
+              An interconnected skillset spanning relational data architecture, full-stack software development, and innovation methodology.
+            </p>
           </div>
         </div>
 
-        <NotebookCell cellId="3">
-          {(executed, status, run) => (
-            <>
-              <CodeBlock code={skillsCode} className="mt-2" />
-              <OutputBlock cellId="3" visible={run} tone="default">
-                <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_1fr]">
-                  <CapabilityMap />
-                  <div className="space-y-8">
-                    <KnowledgeAtlas />
-                  </div>
-                </div>
+        {/* Visualizations Grid */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.05fr_1fr]">
+          <CapabilityMap />
+          <KnowledgeAtlas />
+        </div>
 
-                <div className="mt-10 border-t border-[var(--rule)] pt-6">
-                  <div className="mb-4 flex items-baseline gap-3 font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
-                    <span>// full inventory</span>
-                    <span className="metric text-[var(--accent)]">04</span>
-                  </div>
-                  <div className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                    {Object.entries(skills).map(([group, items]) => (
-                      <div key={group} className="border-l border-[var(--rule)] pl-4">
-                        <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
-                          {group}
-                        </div>
-                        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[12px] text-[var(--fg-soft)]">
-                          {items.map((s, i) => (
-                            <span key={s} className="flex items-center gap-3">
-                              <span>{s}</span>
-                              {i < items.length - 1 && (
-                                <span className="text-[var(--fg-ghost)]">·</span>
-                              )}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+        {/* Full Inventory Matrix */}
+        <div className="mt-10 rounded-xl border border-[var(--rule)] bg-[var(--surface)]/50 p-6 md:p-8">
+          <div className="mb-6 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
+            <span>// Complete Skill Inventory</span>
+            <span className="metric text-[var(--accent)]">Structured by Domain</span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Object.entries(skills).map(([group, items]) => (
+              <div key={group} className="rounded-lg border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-4">
+                <div className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-[var(--accent)] font-medium">
+                  {group}
                 </div>
-              </OutputBlock>
-            </>
-          )}
-        </NotebookCell>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {items.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-md border border-[var(--rule)] bg-[var(--surface)] px-2.5 py-1 font-mono text-[12px] text-[var(--fg-soft)] shadow-xs transition-colors hover:border-[var(--accent)]/50 hover:text-[var(--fg)]"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { applyTheme, getStoredTheme, toggleStoredTheme } from "@/lib/theme";
+import { getStoredBackgroundMode, setBackgroundMode } from "@/lib/backgroundMode";
 
 function isTypingTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -17,11 +18,17 @@ export function ThemeController() {
       toggleStoredTheme();
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "t" && e.key !== "T") return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (isTypingTarget(e.target)) return;
-      e.preventDefault();
-      toggleStoredTheme();
+
+      if (e.key === "t" || e.key === "T") {
+        e.preventDefault();
+        toggleStoredTheme();
+      } else if (e.key === "b" || e.key === "B") {
+        e.preventDefault();
+        const cur = getStoredBackgroundMode();
+        setBackgroundMode(cur === "boxes" ? "stars" : "boxes");
+      }
     };
 
     window.addEventListener("nuha:toggle-theme", onToggle);

@@ -1,191 +1,236 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Plane, Database, Cpu, CheckSquare, Layers, Activity } from "lucide-react";
 
 export function ProjectPreview({ id }: { id: string }) {
   switch (id) {
-    case "lumen-rag":
-      return <RAGGraph />;
-    case "cetacea":
-      return <Waveform />;
-    case "tideline":
-      return <Stream />;
-    case "meridian":
-      return <Scanner />;
-    case "graphite":
-      return <Tree />;
+    case "flight-booking":
+      return <FlightBookingDiagram />;
+    case "game-coding":
+      return <GameEngineDiagram />;
+    case "task-management":
+      return <TaskKanbanDiagram />;
     default:
-      return <RAGGraph />;
+      return <FlightBookingDiagram />;
   }
 }
 
-function RAGGraph() {
-  const nodes = [
-    { x: 30, y: 130 },
-    { x: 130, y: 60 },
-    { x: 130, y: 200 },
-    { x: 230, y: 130 },
-    { x: 360, y: 130 },
+/**
+ * ✈️ Flight Booking System Preview Diagram
+ */
+function FlightBookingDiagram() {
+  const routes = [
+    { from: { x: 50, y: 70, label: "CMB" }, to: { x: 200, y: 130, label: "SIN" } },
+    { from: { x: 200, y: 130, label: "SIN" }, to: { x: 350, y: 60, label: "LHR" } },
   ];
-  return (
-    <svg viewBox="0 0 400 260" className="h-full w-full">
-      <defs>
-        <linearGradient id="rag-stroke" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#10b981" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.6" />
-        </linearGradient>
-      </defs>
-      {nodes.slice(0, -1).map((n, i) => {
-        const next = nodes[i + 1];
-        return (
-          <motion.line
-            key={i}
-            x1={n.x}
-            y1={n.y}
-            x2={next.x}
-            y2={next.y}
-            stroke="url(#rag-stroke)"
-            strokeWidth={1.5}
-            strokeDasharray="4 4"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
-          />
-        );
-      })}
-      {nodes.map((n, i) => (
-        <motion.g
-          key={i}
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: i * 0.1, duration: 0.4 }}
-        >
-          <circle cx={n.x} cy={n.y} r={i === nodes.length - 1 ? 8 : 6} fill={i === nodes.length - 1 ? "#fbbf24" : "#10b981"} />
-          <circle cx={n.x} cy={n.y} r={i === nodes.length - 1 ? 16 : 12} fill="none" stroke={i === nodes.length - 1 ? "#fbbf24" : "#10b981"} opacity={0.25} />
-        </motion.g>
-      ))}
-    </svg>
-  );
-}
 
-function Waveform() {
-  const bars = Array.from({ length: 40 }, (_, i) => i);
   return (
-    <svg viewBox="0 0 400 260" className="h-full w-full">
-      {bars.map((i) => {
-        const x = i * 10 + 4;
-        const h = 30 + Math.abs(Math.sin(i * 0.6)) * 140;
-        return (
-          <motion.rect
-            key={i}
-            x={x}
-            y={130 - h / 2}
-            width={4}
-            height={h}
-            fill="#10b981"
-            opacity={0.7}
-            animate={{ height: [h, h * 0.6, h], y: [130 - h / 2, 130 - h * 0.3, 130 - h / 2] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", delay: i * 0.04 }}
-          />
-        );
-      })}
-    </svg>
-  );
-}
+    <div className="relative flex h-full w-full flex-col justify-between bg-[var(--surface)]/90 p-5 font-mono select-none">
+      {/* Top Telemetry */}
+      <div className="flex items-center justify-between border-b border-[var(--rule-soft)] pb-2.5 text-[10px] text-[var(--fg-faint)]">
+        <span className="flex items-center gap-1.5 text-[var(--accent)] font-medium">
+          <Plane className="h-3.5 w-3.5" />
+          <span>FLIGHT_DISPATCH_v2.5</span>
+        </span>
+        <span className="text-[var(--state-done)]">● SYSTEM ONLINE</span>
+      </div>
 
-function Stream() {
-  const rows = Array.from({ length: 6 }, (_, i) => i);
-  return (
-    <svg viewBox="0 0 400 260" className="h-full w-full">
-      {rows.map((row) => (
-        <motion.g
-          key={row}
-          animate={{ x: [-20, 400] }}
-          transition={{ duration: 4 + row * 0.4, repeat: Infinity, ease: "linear", delay: row * 0.2 }}
-        >
-          <rect x={0} y={40 + row * 36} width={60} height={20} rx={3} fill="#27272a" />
-          <rect x={70} y={40 + row * 36} width={90} height={20} rx={3} fill="#10b981" opacity={0.4} />
-          <rect x={170} y={40 + row * 36} width={70} height={20} rx={3} fill="#fbbf24" opacity={0.35} />
-        </motion.g>
-      ))}
-    </svg>
-  );
-}
+      {/* SVG Flight Routes & Radar */}
+      <div className="relative my-auto h-[140px] w-full">
+        <svg viewBox="0 0 400 160" className="h-full w-full">
+          {/* Grid lines */}
+          <line x1="0" y1="40" x2="400" y2="40" stroke="var(--rule)" strokeDasharray="3 3" />
+          <line x1="0" y1="80" x2="400" y2="80" stroke="var(--rule)" strokeDasharray="3 3" />
+          <line x1="0" y1="120" x2="400" y2="120" stroke="var(--rule)" strokeDasharray="3 3" />
 
-function Scanner() {
-  const cells = Array.from({ length: 64 }, (_, i) => i);
-  return (
-    <svg viewBox="0 0 400 260" className="h-full w-full">
-      {cells.map((i) => {
-        const x = (i % 8) * 48 + 8;
-        const y = Math.floor(i / 8) * 48 + 8;
-        return (
-          <motion.rect
-            key={i}
-            x={x}
-            y={y}
-            width={40}
-            height={40}
+          {/* Curved trajectory path */}
+          <path
+            d="M 50 110 Q 125 30 200 80 T 350 50"
             fill="none"
-            stroke="#3f3f46"
-            strokeWidth={1}
-            animate={{ fill: ["rgba(16,185,129,0)", "rgba(251,191,36,0.4)", "rgba(16,185,129,0)"] }}
-            transition={{ duration: 3, repeat: Infinity, delay: i * 0.05, ease: "easeInOut" }}
+            stroke="var(--accent)"
+            strokeWidth="2"
+            strokeDasharray="4 4"
           />
-        );
-      })}
-    </svg>
+
+          {/* Animated Flight Pulse */}
+          <motion.circle
+            r="4"
+            fill="var(--accent)"
+            animate={{
+              cx: [50, 200, 350],
+              cy: [110, 80, 50],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Airport Node CMB */}
+          <g transform="translate(50, 110)">
+            <circle r="6" fill="var(--surface-2)" stroke="var(--accent)" strokeWidth="2" />
+            <text y="20" textAnchor="middle" fill="var(--fg)" fontSize="10" fontWeight="bold">
+              CMB
+            </text>
+          </g>
+
+          {/* Airport Node SIN */}
+          <g transform="translate(200, 80)">
+            <circle r="6" fill="var(--surface-2)" stroke="var(--accent)" strokeWidth="2" />
+            <text y="20" textAnchor="middle" fill="var(--fg)" fontSize="10" fontWeight="bold">
+              SIN
+            </text>
+          </g>
+
+          {/* Airport Node LHR */}
+          <g transform="translate(350, 50)">
+            <circle r="6" fill="var(--surface-2)" stroke="var(--accent)" strokeWidth="2" />
+            <text y="20" textAnchor="middle" fill="var(--fg)" fontSize="10" fontWeight="bold">
+              LHR
+            </text>
+          </g>
+        </svg>
+      </div>
+
+      {/* Bottom MySQL Query Pipeline Badge */}
+      <div className="flex items-center justify-between rounded border border-[var(--rule-soft)] bg-[var(--surface-2)]/60 px-3 py-1.5 text-[10px] text-[var(--fg-mute)]">
+        <span className="flex items-center gap-1.5">
+          <Database className="h-3 w-3 text-[var(--accent)]" />
+          <span>MySQL Transaction: OK</span>
+        </span>
+        <span className="text-[var(--accent)]">SeatAllocation [OOP]</span>
+      </div>
+    </div>
   );
 }
 
-function Tree() {
-  const lines = [
-    { x1: 200, y1: 30, x2: 200, y2: 80 },
-    { x1: 200, y1: 80, x2: 110, y2: 130 },
-    { x1: 200, y1: 80, x2: 290, y2: 130 },
-    { x1: 110, y1: 130, x2: 60, y2: 180 },
-    { x1: 110, y1: 130, x2: 160, y2: 180 },
-    { x1: 290, y1: 130, x2: 240, y2: 180 },
-    { x1: 290, y1: 130, x2: 340, y2: 180 },
-    { x1: 60, y1: 180, x2: 60, y2: 220 },
-    { x1: 160, y1: 180, x2: 160, y2: 220 },
-    { x1: 240, y1: 180, x2: 240, y2: 220 },
-    { x1: 340, y1: 180, x2: 340, y2: 220 },
-  ];
+/**
+ * 🎮 Game Coding Enhancement Preview Diagram
+ */
+function GameEngineDiagram() {
+  const cells = Array.from({ length: 24 }, (_, i) => i);
+
   return (
-    <svg viewBox="0 0 400 260" className="h-full w-full">
-      {lines.map((l, i) => (
-        <motion.line
-          key={i}
-          x1={l.x1}
-          y1={l.y1}
-          x2={l.x2}
-          y2={l.y2}
-          stroke="#10b981"
-          strokeWidth={1.5}
-          strokeDasharray="3 3"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.6, delay: i * 0.1, repeat: Infinity, repeatType: "reverse" }}
-        />
-      ))}
-      {[
-        { x: 200, y: 30, big: true },
-        { x: 110, y: 130 }, { x: 290, y: 130 },
-        { x: 60, y: 180 }, { x: 160, y: 180 }, { x: 240, y: 180 }, { x: 340, y: 180 },
-        { x: 60, y: 220 }, { x: 160, y: 220 }, { x: 240, y: 220 }, { x: 340, y: 220 },
-      ].map((n, i) => (
-        <motion.circle
-          key={i}
-          cx={n.x}
-          cy={n.y}
-          r={n.big ? 6 : 4}
-          fill={n.big ? "#fbbf24" : "#10b981"}
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: i * 0.08, duration: 0.4 }}
-        />
-      ))}
-    </svg>
+    <div className="relative flex h-full w-full flex-col justify-between bg-[var(--surface)]/90 p-5 font-mono select-none">
+      {/* Top Telemetry */}
+      <div className="flex items-center justify-between border-b border-[var(--rule-soft)] pb-2.5 text-[10px] text-[var(--fg-faint)]">
+        <span className="flex items-center gap-1.5 text-[var(--accent)] font-medium">
+          <Cpu className="h-3.5 w-3.5" />
+          <span>C++ ENGINE LOOP · 60.0 FPS</span>
+        </span>
+        <span className="text-[var(--state-done)]">● MEMORY CLEAN</span>
+      </div>
+
+      {/* Grid & Entity Component Scanner */}
+      <div className="my-auto grid grid-cols-6 gap-2">
+        {cells.map((i) => (
+          <motion.div
+            key={i}
+            className="flex h-10 items-center justify-center rounded border border-[var(--rule)] bg-[var(--surface-2)]/50 text-[10px] text-[var(--fg-faint)]"
+            animate={{
+              borderColor: [
+                "var(--rule)",
+                i % 3 === 0 ? "var(--accent)" : "var(--rule)",
+                "var(--rule)",
+              ],
+              backgroundColor: [
+                "rgba(0,0,0,0)",
+                i % 3 === 0 ? "var(--accent-glow)" : "rgba(0,0,0,0)",
+                "rgba(0,0,0,0)",
+              ],
+            }}
+            transition={{
+              duration: 2.4,
+              delay: (i % 6) * 0.18 + Math.floor(i / 6) * 0.25,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            0x{i.toString(16).toUpperCase()}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Bottom Status */}
+      <div className="flex items-center justify-between rounded border border-[var(--rule-soft)] bg-[var(--surface-2)]/60 px-3 py-1.5 text-[10px] text-[var(--fg-mute)]">
+        <span className="flex items-center gap-1.5">
+          <Activity className="h-3 w-3 text-[var(--accent)]" />
+          <span>OOP Polymorphism & Collision</span>
+        </span>
+        <span className="text-[var(--state-done)]">0.4ms tick</span>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 📋 Task Management System Preview Diagram
+ */
+function TaskKanbanDiagram() {
+  return (
+    <div className="relative flex h-full w-full flex-col justify-between bg-[var(--surface)]/90 p-5 font-mono select-none">
+      {/* Top Telemetry */}
+      <div className="flex items-center justify-between border-b border-[var(--rule-soft)] pb-2.5 text-[10px] text-[var(--fg-faint)]">
+        <span className="flex items-center gap-1.5 text-[var(--accent)] font-medium">
+          <CheckSquare className="h-3.5 w-3.5" />
+          <span>REACT + NODE + POSTGRES</span>
+        </span>
+        <span className="text-[var(--state-done)]">● REST API 200</span>
+      </div>
+
+      {/* Mini Kanban Columns */}
+      <div className="my-auto grid grid-cols-3 gap-2.5">
+        {/* Column 1: Backlog */}
+        <div className="rounded-lg border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-2">
+          <div className="text-[9px] uppercase tracking-wider text-[var(--fg-faint)] mb-2">Backlog</div>
+          <div className="space-y-1.5">
+            <div className="rounded bg-[var(--surface)] p-2 text-[10px] text-[var(--fg-soft)] border border-[var(--rule-soft)] shadow-xs">
+              Auth Guard
+            </div>
+            <div className="rounded bg-[var(--surface)] p-2 text-[10px] text-[var(--fg-mute)] border border-[var(--rule-soft)]">
+              API Docs
+            </div>
+          </div>
+        </div>
+
+        {/* Column 2: In Progress */}
+        <div className="rounded-lg border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-2">
+          <div className="text-[9px] uppercase tracking-wider text-[var(--accent)] font-medium mb-2">In Progress</div>
+          <div className="space-y-1.5">
+            <motion.div
+              animate={{ y: [0, -2, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="rounded bg-[var(--surface)] p-2 text-[10px] text-[var(--fg)] border border-[var(--accent)]/50 shadow-xs"
+            >
+              Task Board Sync
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Column 3: Completed */}
+        <div className="rounded-lg border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-2">
+          <div className="text-[9px] uppercase tracking-wider text-[var(--state-done)] font-medium mb-2">Done</div>
+          <div className="space-y-1.5">
+            <div className="rounded bg-[var(--surface)] p-2 text-[10px] text-[var(--fg-mute)] line-through border border-[var(--rule-soft)]">
+              PostgreSQL Schema
+            </div>
+            <div className="rounded bg-[var(--surface)] p-2 text-[10px] text-[var(--fg-mute)] line-through border border-[var(--rule-soft)]">
+              User CRUD
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Status */}
+      <div className="flex items-center justify-between rounded border border-[var(--rule-soft)] bg-[var(--surface-2)]/60 px-3 py-1.5 text-[10px] text-[var(--fg-mute)]">
+        <span className="flex items-center gap-1.5">
+          <Layers className="h-3 w-3 text-[var(--accent)]" />
+          <span>Real-time Workspace Sync</span>
+        </span>
+        <span className="text-[var(--accent)]">JWT Secure</span>
+      </div>
+    </div>
   );
 }

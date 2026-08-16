@@ -1,219 +1,199 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { NotebookCell } from "@/components/notebook/NotebookCell";
-import { OutputBlock } from "@/components/notebook/OutputBlock";
-import { CodeBlock } from "@/components/notebook/CodeBlock";
-import { CodeAnnotation } from "@/components/notebook/CodeAnnotation";
+import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
-import { Send, CheckCircle2 } from "lucide-react";
+import { Send, CheckCircle2, Mail, ArrowUpRight } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 
-type Phase = "idle" | "compiling" | "validating" | "routing" | "delivered";
-
-const PHASES: Array<{ id: Phase; label: string; ms: number }> = [
-  { id: "compiling", label: "compiling message...", ms: 220 },
-  { id: "validating", label: "validating inputs...", ms: 320 },
-  { id: "routing", label: "routing to nuha@nizar.dev...", ms: 420 },
-  { id: "delivered", label: "✓ message delivered. <Response 200>", ms: 520 },
-];
-
 export function Contact() {
-  const [phase, setPhase] = useState<Phase>("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [elapsed, setElapsed] = useState(0);
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function submit() {
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
-    const start = performance.now();
-    setPhase("compiling");
-    setElapsed(0);
-    let acc = 0;
-    PHASES.forEach((p) => {
-      acc += p.ms;
-      setTimeout(() => {
-        setPhase(p.id);
-        setElapsed(Math.round(performance.now() - start));
-      }, acc);
-    });
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setSent(true);
+    }, 600);
   }
 
-  const isRunning = phase !== "idle" && phase !== "delivered";
-
   return (
-    <section id="contact" className="relative px-6 py-28 md:py-36 lg:px-12">
+    <section id="contact" className="relative px-6 py-24 md:py-32 lg:px-12">
       <div className="mx-auto max-w-[1320px]">
-        <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_1fr]">
+        {/* Section Header */}
+        <div className="mb-6 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)]">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+          <span>07 / Connect</span>
+        </div>
+
+        {/* Heading */}
+        <div className="mb-14 grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <div className="mb-3 flex items-center gap-3 font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
-              <span>In</span>
-              <span>[</span>
-              <span className="metric text-[var(--accent)]">09</span>
-              <span>]</span>
-              <span className="ml-2 text-[var(--fg-faint)]">·</span>
-              <span className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
-                handshake
-              </span>
-            </div>
-            <h2 className="display text-[clamp(48px,7vw,96px)] leading-[0.92] tracking-[-0.045em] text-[var(--fg)]">
-              <span className="display-italic">Connect.</span>
+            <h2 className="display text-[clamp(36px,5vw,68px)] leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
+              Let&apos;s start a <span className="display-italic text-[var(--fg-soft)]">conversation</span>.
             </h2>
-            <p className="mt-6 max-w-md text-[16px] leading-[1.65] text-[var(--fg-soft)]">
-              Open to research collaborations, AI platform work, and lifetime
-              friendships with people who care about their craft.
-            </p>
           </div>
           <div className="flex flex-col justify-end">
-            <CodeAnnotation id="p6" />
-            <div className="mt-6 space-y-2 font-mono text-[12px]">
-              <ContactLink label="@" value={profile.email} href={`mailto:${profile.email}`} />
-              <ContactLink label="gh" value="github.com/nuhanizar" href={profile.github} icon={<GithubIcon className="h-3.5 w-3.5" />} />
-              <ContactLink label="in" value="linkedin.com/in/nuhanizar" href={profile.linkedin} icon={<LinkedinIcon className="h-3.5 w-3.5" />} />
-            </div>
+            <p className="text-[16px] leading-[1.75] text-[var(--fg-soft)]">
+              Open to internship opportunities, data analysis projects, and software development collaborations.
+            </p>
           </div>
         </div>
 
-        <NotebookCell cellId="9">
-          {(executed, status, run) => (
-            <>
-              <CodeBlock
-                code={`connect(\n    email=True,\n    linkedin=True,\n    github=True,\n)`}
-                className="mt-2"
-              />
-              <OutputBlock cellId="9" visible={run} tone="result">
-                <div className="border border-[var(--rule)] bg-[var(--bg-deep)] p-7">
-                  <div className="mb-5 flex items-center gap-3 font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
-                    <span className="text-[var(--accent)]">send_message</span>
-                    <span className="text-[var(--fg-faint)]">(</span>
-                  </div>
-                  <div className="space-y-5">
-                    <Field label="name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
-                    <Field label="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
-                    <Field label="message" value={form.message} onChange={(v) => setForm({ ...form, message: v })} multiline />
-                  </div>
-                  <div className="mt-5 flex items-center justify-between">
-                    <span className="font-mono text-[11px] text-[var(--fg-faint)]">)</span>
-                    <button
-                      data-cursor="run"
-                      onClick={submit}
-                      disabled={isRunning}
-                      className="btn-glass btn-glass--accent inline-flex items-center gap-2 px-4 py-2 font-mono text-[12px] disabled:opacity-50"
-                    >
-                      <Send className="h-3 w-3" />
-                      {phase === "delivered" ? "✓ sent" : isRunning ? "▸ executing..." : "execute"}
-                    </button>
-                  </div>
+        {/* Contact Console Grid */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr]">
+          {/* Message Form */}
+          <div className="rounded-2xl border border-[var(--rule)] bg-[var(--surface)]/75 p-7 md:p-8 backdrop-blur-xl shadow-lg">
+            <h3 className="font-medium text-[18px] text-[var(--fg)] mb-6">Send a Message</h3>
+
+            {sent ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="rounded-xl border border-[var(--state-done)]/30 bg-[var(--state-done)]/10 p-6 text-center"
+              >
+                <CheckCircle2 className="mx-auto h-8 w-8 text-[var(--state-done)] mb-3" />
+                <h4 className="font-medium text-[16px] text-[var(--fg)]">Message Sent Successfully</h4>
+                <p className="mt-1.5 text-[14px] text-[var(--fg-soft)]">
+                  Thank you for reaching out. I will get back to you promptly!
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSent(false);
+                    setForm({ name: "", email: "", message: "" });
+                  }}
+                  className="btn-glass mt-5 px-4 py-1.5 font-mono text-[12px]"
+                >
+                  Send Another
+                </button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block font-mono text-[11px] uppercase tracking-wider text-[var(--fg-mute)] mb-1.5">
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="e.g. Alex Silva"
+                    className="w-full rounded-lg border border-[var(--rule)] bg-[var(--surface-2)]/60 px-4 py-2.5 font-sans text-[14px] text-[var(--fg)] outline-none transition-colors focus:border-[var(--accent)]"
+                  />
                 </div>
 
-                <AnimatePresence>
-                  {phase !== "idle" && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="mt-5 border border-[var(--rule)] bg-[var(--bg-deep)] p-5 font-mono text-[12px]"
-                    >
-                      {isRunning && (
-                        <div className="flex items-center gap-2 text-[var(--fg-soft)]">
-                          <span className="state-dot state-dot--running" />
-                          <span>
-                            {phase === "compiling"
-                              ? "compiling message..."
-                              : phase === "validating"
-                              ? "validating inputs..."
-                              : "routing to nuha@nizar.dev..."}
-                          </span>
-                          <span className="ml-auto metric text-[var(--fg-faint)]">{elapsed}ms</span>
-                        </div>
-                      )}
-                      {phase === "delivered" && (
-                        <div>
-                          <div className="flex items-center gap-2 text-[var(--state-done)]">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                            <span>message delivered. &lt;Response 200&gt;</span>
-                            <span className="ml-auto metric text-[var(--fg-faint)]">{elapsed}ms</span>
-                          </div>
-                          <div className="mt-2 text-[var(--accent)]">
-                            {">>>"} return{" "}
-                            <span className="text-[var(--state-done)]">
-                              &quot;Let&apos;s build something intelligent.&quot;
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </OutputBlock>
-            </>
-          )}
-        </NotebookCell>
+                <div>
+                  <label className="block font-mono text-[11px] uppercase tracking-wider text-[var(--fg-mute)] mb-1.5">
+                    Your Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    placeholder="e.g. alex@example.com"
+                    className="w-full rounded-lg border border-[var(--rule)] bg-[var(--surface-2)]/60 px-4 py-2.5 font-sans text-[14px] text-[var(--fg)] outline-none transition-colors focus:border-[var(--accent)]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[11px] uppercase tracking-wider text-[var(--fg-mute)] mb-1.5">
+                    Message
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    placeholder="How can we collaborate?"
+                    className="w-full rounded-lg border border-[var(--rule)] bg-[var(--surface-2)]/60 p-4 font-sans text-[14px] text-[var(--fg)] outline-none transition-colors focus:border-[var(--accent)]"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  data-cursor="run"
+                  className="btn-glass btn-glass--accent inline-flex w-full items-center justify-center gap-2 py-3 font-mono text-[13px] rounded-lg shadow-sm disabled:opacity-50"
+                >
+                  <Send className="h-3.5 w-3.5" />
+                  <span>{loading ? "Sending..." : "Send Message"}</span>
+                </button>
+              </form>
+            )}
+          </div>
+
+          {/* Direct Channels */}
+          <div className="space-y-4">
+            <a
+              href={`mailto:${profile.email}`}
+              data-cursor="view"
+              className="group flex items-center justify-between rounded-xl border border-[var(--rule)] bg-[var(--surface)]/70 p-5 backdrop-blur-md transition-all hover:border-[var(--accent)]/40 hover:shadow-md"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] text-[var(--accent)]">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-faint)]">Email Directly</div>
+                  <div className="font-medium text-[15px] text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors">
+                    {profile.email}
+                  </div>
+                </div>
+              </div>
+              <ArrowUpRight className="h-4 w-4 text-[var(--fg-faint)] group-hover:text-[var(--accent)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
+              data-cursor="view"
+              className="group flex items-center justify-between rounded-xl border border-[var(--rule)] bg-[var(--surface)]/70 p-5 backdrop-blur-md transition-all hover:border-[var(--accent)]/40 hover:shadow-md"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] text-[var(--accent)]">
+                  <GithubIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-faint)]">GitHub Profile</div>
+                  <div className="font-medium text-[15px] text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors">
+                    github.com/NuhaMNF
+                  </div>
+                </div>
+              </div>
+              <ArrowUpRight className="h-4 w-4 text-[var(--fg-faint)] group-hover:text-[var(--accent)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              data-cursor="view"
+              className="group flex items-center justify-between rounded-xl border border-[var(--rule)] bg-[var(--surface)]/70 p-5 backdrop-blur-md transition-all hover:border-[var(--accent)]/40 hover:shadow-md"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] text-[var(--accent)]">
+                  <LinkedinIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-faint)]">LinkedIn</div>
+                  <div className="font-medium text-[15px] text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors">
+                    linkedin.com/in/nuhanizar
+                  </div>
+                </div>
+              </div>
+              <ArrowUpRight className="h-4 w-4 text-[var(--fg-faint)] group-hover:text-[var(--accent)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          </div>
+        </div>
       </div>
     </section>
-  );
-}
-
-function ContactLink({
-  label,
-  value,
-  href,
-  icon,
-}: {
-  label: string;
-  value: string;
-  href: string;
-  icon?: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target={href.startsWith("mailto") ? undefined : "_blank"}
-      rel="noreferrer"
-      data-cursor="view"
-      className="group flex items-center gap-3 border border-[var(--rule)] px-3 py-2 transition-colors hover:border-[var(--accent)]/40"
-    >
-      <span className="metric text-[var(--fg-faint)] group-hover:text-[var(--accent)]">
-        {label}
-      </span>
-      {icon}
-      <span className="text-[var(--fg-soft)] group-hover:text-[var(--accent)]">{value}</span>
-    </a>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  multiline,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  multiline?: boolean;
-}) {
-  return (
-    <label className="block">
-      <span className="font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
-        <span className="text-[var(--accent)]">{label}</span>
-        <span className="text-[var(--fg-faint)]"> = </span>
-        <span className="text-[var(--state-done)]">&quot;{value || `your ${label}`}&quot;</span>
-      </span>
-      {multiline ? (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={4}
-          className="mt-2 w-full resize-y border border-[var(--rule)] bg-[var(--bg-deep)] p-3 font-mono text-[12.5px] leading-[1.6] text-[var(--fg-soft)] outline-none focus:border-[var(--accent)]/50"
-        />
-      ) : (
-        <input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="mt-2 w-full border border-[var(--rule)] bg-[var(--bg-deep)] px-3 py-2 font-mono text-[12.5px] text-[var(--fg-soft)] outline-none focus:border-[var(--accent)]/50"
-        />
-      )}
-    </label>
   );
 }

@@ -5,13 +5,17 @@ import { motion } from "framer-motion";
 import { skillsGraph } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-/**
- * KnowledgeAtlas — replaces the network graph with a research-style tree.
- * Center node = nuha. Domain rings = capability areas. Tool leaves.
- * Hover reveals tool labels; isolated filter via click.
- */
-const FILTERS = ["all", "ai", "ml", "sw", "web", "data", "cloud", "research"] as const;
+const FILTERS = ["all", "data", "sw", "web", "db", "biz"] as const;
 type Filter = (typeof FILTERS)[number];
+
+const FILTER_LABELS: Record<Filter, string> = {
+  all: "all nodes",
+  data: "data analysis",
+  sw: "software dev",
+  web: "web systems",
+  db: "databases",
+  biz: "management",
+};
 
 interface Node {
   id: string;
@@ -31,8 +35,8 @@ export function KnowledgeAtlas() {
   const h = 460;
   const cx = w / 2;
   const cy = h / 2;
-  const domainR = 175;
-  const toolR = 72;
+  const domainR = 170;
+  const toolR = 70;
 
   const points = useMemo(() => {
     const arr: Node[] = [];
@@ -71,29 +75,34 @@ export function KnowledgeAtlas() {
   };
 
   return (
-    <div className="border border-[var(--rule)] bg-[var(--bg-paper)] p-6">
-      <div className="mb-3 flex items-baseline justify-between font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
-        <span>fig. 02 — knowledge atlas</span>
-        <span className="metric text-[var(--accent)]">{points.length} nodes</span>
+    <div className="rounded-2xl border border-[var(--rule)] bg-[var(--surface)]/70 p-6 md:p-8 backdrop-blur-xl shadow-lg">
+      <div className="mb-4 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
+        <span className="flex items-center gap-2 text-[var(--accent)] font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+          Knowledge Atlas
+        </span>
+        <span className="metric text-[var(--fg-mute)]">{points.length} Connected Nodes</span>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
+      {/* Filter Tabs */}
+      <div className="mb-5 flex flex-wrap gap-1.5 font-mono text-[11px]">
         {FILTERS.map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "btn-glass px-2 py-0.5 transition-colors duration-300",
-              filter === f ? "btn-glass--accent" : "text-[var(--fg-faint)]"
+              "rounded-md border px-2.5 py-1 transition-all duration-200 uppercase tracking-wider text-[10px]",
+              filter === f
+                ? "border-[var(--accent)] bg-[var(--accent)] text-white shadow-xs"
+                : "border-[var(--rule)] bg-[var(--surface-2)]/60 text-[var(--fg-mute)] hover:border-[var(--accent)]/40 hover:text-[var(--fg)]"
             )}
           >
-            {filter === f && <span className="mr-1">●</span>}
-            {f}
+            {FILTER_LABELS[f]}
           </button>
         ))}
       </div>
 
-      <div className="relative aspect-[720/460] w-full">
+      <div className="relative aspect-[720/460] w-full select-none">
         <svg viewBox={`0 0 ${w} ${h}`} className="h-full w-full">
           {edges.map((e, i) => {
             const a = points.find((p) => p.id === e.a);
@@ -110,9 +119,9 @@ export function KnowledgeAtlas() {
                 x2={b.x}
                 y2={b.y}
                 stroke={active ? "var(--accent)" : "var(--rule)"}
-                strokeWidth={active ? 1 : 0.6}
+                strokeWidth={active ? 1.5 : 0.8}
                 strokeDasharray="3 4"
-                opacity={dim ? 0.1 : active ? 0.85 : 0.5}
+                opacity={dim ? 0.08 : active ? 0.9 : 0.45}
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.8, delay: i * 0.01 }}
@@ -122,19 +131,20 @@ export function KnowledgeAtlas() {
           {points.map((p, i) => {
             const dim = isDim(p);
             const active = hover === p.id || (!dim && filter !== "all" && (p.id === filter || p.group === filter));
-            const r = p.isCenter ? 24 : p.isDomain ? 14 : 4;
+            const r = p.isCenter ? 22 : p.isDomain ? 12 : 4;
             return (
               <motion.g
                 key={p.id}
                 initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: dim ? 0.18 : 1, scale: 1 }}
-                transition={{ delay: i * 0.018, duration: 0.4 }}
+                animate={{ opacity: dim ? 0.16 : 1, scale: 1 }}
+                transition={{ delay: i * 0.015, duration: 0.4 }}
                 onMouseEnter={() => setHover(p.id)}
                 onMouseLeave={() => setHover(null)}
+                className="cursor-pointer"
               >
                 {p.isCenter && (
                   <>
-                    <circle cx={p.x} cy={p.y} r={r + 18} fill="none" stroke="var(--accent)" strokeOpacity={0.2} strokeDasharray="2 4" />
+                    <circle cx={p.x} cy={p.y} r={r + 16} fill="none" stroke="var(--accent)" strokeOpacity={0.2} strokeDasharray="2 4" />
                     <circle cx={p.x} cy={p.y} r={r + 8} fill="none" stroke="var(--accent)" strokeOpacity={0.4} />
                   </>
                 )}
@@ -142,20 +152,23 @@ export function KnowledgeAtlas() {
                   cx={p.x}
                   cy={p.y}
                   r={r}
-                  fill={p.isCenter ? "var(--accent)" : active ? "var(--accent)" : "var(--fg-faint)"}
+                  fill={p.isCenter ? "var(--accent)" : active ? "var(--accent)" : "var(--surface-2)"}
+                  stroke={p.isCenter ? "var(--surface)" : "var(--accent)"}
+                  strokeWidth={p.isCenter ? 2 : active ? 2 : 1}
                 />
                 <text
                   x={p.x}
                   y={p.y + r + 12}
                   textAnchor="middle"
-                  fontSize={p.isDomain ? 10 : 9}
+                  fontSize={p.isDomain ? 10.5 : 9}
                   fontFamily="var(--font-mono)"
                   fill={dim ? "var(--fg-ghost)" : active ? "var(--accent)" : "var(--fg-soft)"}
+                  fontWeight={p.isDomain || active ? "bold" : "normal"}
                   style={{
                     textTransform: p.isDomain ? "uppercase" : "none",
-                    letterSpacing: p.isDomain ? "0.16em" : "0.02em",
+                    letterSpacing: p.isDomain ? "0.14em" : "0.02em",
                   }}
-                  opacity={dim ? 0.3 : 1}
+                  opacity={dim ? 0.25 : 1}
                 >
                   {p.label}
                 </text>

@@ -1,86 +1,98 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NotebookCell } from "@/components/notebook/NotebookCell";
-import { OutputBlock } from "@/components/notebook/OutputBlock";
-import { CodeBlock } from "@/components/notebook/CodeBlock";
 import { education } from "@/lib/data";
-
-const educationCode = `education = [
-    { "degree": "M.S. Computer Science", "institution": "IISc Bangalore" },
-    { "degree": "B.E. Computer Science", "institution": "NIT Trichy" },
-]`;
+import { GraduationCap, BookOpen, Calendar, MapPin } from "lucide-react";
 
 export function Education() {
   return (
-    <section id="education" className="relative px-6 py-28 md:py-36 lg:px-12">
+    <section id="education" className="relative px-6 py-24 md:py-32 lg:px-12">
       <div className="mx-auto max-w-[1320px]">
-        <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_1fr]">
+        {/* Section Header */}
+        <div className="mb-6 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)]">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+          <span>05 / Education</span>
+        </div>
+
+        {/* Heading */}
+        <div className="mb-14 grid grid-cols-1 gap-10 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <div className="mb-3 flex items-center gap-3 font-mono text-[11px] tracking-[0.04em] text-[var(--fg-mute)]">
-              <span>In</span>
-              <span>[</span>
-              <span className="metric text-[var(--accent)]">07</span>
-              <span>]</span>
-              <span className="ml-2 text-[var(--fg-faint)]">·</span>
-              <span className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
-                foundations
-              </span>
-            </div>
-            <h2 className="display text-[clamp(40px,5.5vw,72px)] leading-[0.96] tracking-[-0.035em] text-[var(--fg)]">
-              <span className="display-italic">Foundations.</span>{" "}
-              <span className="text-[var(--fg-soft)]">The roots of the runtime.</span>
+            <h2 className="display text-[clamp(36px,5vw,68px)] leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
+              Academic foundations & <span className="display-italic text-[var(--fg-soft)]">disciplines</span>.
             </h2>
+          </div>
+          <div className="flex flex-col justify-end">
+            <p className="text-[16px] leading-[1.75] text-[var(--fg-soft)]">
+              Rigorous formal coursework bridging information technology architecture with organizational management science.
+            </p>
           </div>
         </div>
 
-        <NotebookCell cellId="7">
-          {(executed, status, run) => (
-            <>
-              <CodeBlock code={educationCode} className="mt-2" />
-              <OutputBlock cellId="7" visible={run} tone="default">
-                <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-                  {education.map((edu, i) => (
-                    <motion.div
-                      key={edu.institution}
-                      data-cursor="view"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 + i * 0.12, duration: 0.5 }}
-                      className="border-l border-[var(--rule)] pl-6"
-                    >
-                      <div className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
-                        {edu.period}
-                      </div>
-                      <h3 className="display mt-3 text-[clamp(28px,3.2vw,40px)] leading-[1] tracking-[-0.02em] text-[var(--fg)]">
-                        {edu.degree}
-                      </h3>
-                      <div className="mt-2 text-[15px] text-[var(--fg-soft)]">
-                        {edu.institution}
-                      </div>
-                      <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 font-mono text-[12px] text-[var(--fg-mute)]">
-                        {edu.focus.map((f, idx) => (
-                          <span key={f} className="flex items-center gap-3">
-                            <span>{f}</span>
-                            {idx < edu.focus.length - 1 && (
-                              <span className="text-[var(--fg-ghost)]">·</span>
-                            )}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="mt-5 border-t border-[var(--rule)] pt-3 text-[13px] leading-[1.6] text-[var(--fg-mute)]">
-                        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
-                          thesis:{" "}
-                        </span>
-                        {edu.thesis}
-                      </div>
-                    </motion.div>
-                  ))}
+        {/* Education Card */}
+        <div className="space-y-8">
+          {education.map((edu, i) => (
+            <motion.div
+              key={edu.institution}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 * i, duration: 0.6 }}
+              className="rounded-2xl border border-[var(--rule)] bg-[var(--surface)]/70 p-8 md:p-10 backdrop-blur-xl shadow-lg"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--rule-soft)] pb-6">
+                <div className="flex items-center gap-3 font-mono text-[11px] text-[var(--fg-mute)]">
+                  <span className="flex items-center gap-1.5 text-[var(--accent)]">
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span>{edu.period}</span>
+                  </span>
+                  <span>·</span>
+                  <span className="flex items-center gap-1 text-[var(--fg-faint)]">
+                    <MapPin className="h-3.5 w-3.5" />
+                    <span>Sri Lanka</span>
+                  </span>
                 </div>
-              </OutputBlock>
-            </>
-          )}
-        </NotebookCell>
+                <span className="rounded-full border border-[var(--rule)] bg-[var(--surface-2)] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-[var(--state-done)]">
+                  {edu.note}
+                </span>
+              </div>
+
+              <div className="mt-7 grid grid-cols-1 gap-8 lg:grid-cols-[1.4fr_1fr]">
+                <div>
+                  <div className="flex items-center gap-3 text-[var(--accent)] mb-3">
+                    <GraduationCap className="h-6 w-6" />
+                    <span className="font-mono text-[12px] uppercase tracking-[0.18em]">Undergraduate Degree</span>
+                  </div>
+                  <h3 className="font-serif text-[clamp(26px,3.2vw,40px)] font-normal leading-[1.15] text-[var(--fg)]">
+                    {edu.degree}
+                  </h3>
+                  <div className="mt-3 text-[17px] font-medium text-[var(--fg-soft)]">
+                    {edu.institution}
+                  </div>
+                  <div className="mt-1 font-mono text-[13px] text-[var(--fg-mute)]">
+                    {edu.department}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-[var(--rule-soft)] bg-[var(--surface-2)]/40 p-6">
+                  <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] mb-4">
+                    <BookOpen className="h-3.5 w-3.5" />
+                    <span>Areas of Interest</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {edu.focus.map((f) => (
+                      <span
+                        key={f}
+                        className="rounded-md border border-[var(--rule)] bg-[var(--surface)] px-3 py-1.5 font-mono text-[12px] text-[var(--fg-soft)] shadow-xs"
+                      >
+                        {f}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

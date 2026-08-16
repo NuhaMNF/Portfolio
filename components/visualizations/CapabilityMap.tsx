@@ -5,8 +5,7 @@ import { motion } from "framer-motion";
 import { skillsRadar } from "@/lib/data";
 
 /**
- * CapabilityMap — replaces the generic radar chart with a precision
- * research-instrument diagram. Coordinate ticks, labeled axes, value markers.
+ * CapabilityMap — Precision radar instrument diagram with interactive hover axes.
  */
 export function CapabilityMap() {
   const [hover, setHover] = useState<number | null>(null);
@@ -26,14 +25,17 @@ export function CapabilityMap() {
     .join(" ");
 
   return (
-    <div className="border border-[var(--rule)] bg-[var(--bg-paper)] p-6">
-      <div className="mb-3 flex items-baseline justify-between font-mono text-[10.5px] uppercase tracking-[0.22em] text-[var(--fg-faint)]">
-        <span>fig. 01 — capability map</span>
-        <span className="metric text-[var(--accent)]">{axes} axes</span>
+    <div className="rounded-2xl border border-[var(--rule)] bg-[var(--surface)]/70 p-6 md:p-8 backdrop-blur-xl shadow-lg">
+      <div className="mb-4 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--fg-faint)]">
+        <span className="flex items-center gap-2 text-[var(--accent)] font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+          Capability Radar
+        </span>
+        <span className="metric text-[var(--fg-mute)]">{axes} Core Axes</span>
       </div>
 
-      <div className="relative aspect-square w-full max-w-[460px] mx-auto">
-        <svg viewBox="0 0 440 440" className="h-full w-full">
+      <div className="relative aspect-square w-full max-w-[440px] mx-auto">
+        <svg viewBox="0 0 440 440" className="h-full w-full select-none">
           {/* Concentric rings with labeled values */}
           {[0.25, 0.5, 0.75, 1].map((ring) => (
             <g key={ring}>
@@ -48,11 +50,11 @@ export function CapabilityMap() {
               <text
                 x={cx + 4}
                 y={cy - r * ring + 4}
-                className="metric"
+                className="metric font-mono"
                 fontSize={9}
                 fill="var(--fg-faint)"
               >
-                {ring * 100}
+                {ring * 100}%
               </text>
             </g>
           ))}
@@ -60,16 +62,19 @@ export function CapabilityMap() {
           {/* Axes */}
           {skillsRadar.map((d, i) => {
             const a = angle(i);
+            const isHovered = hover === i;
             return (
-              <line
-                key={d.axis}
-                x1={cx}
-                y1={cy}
-                x2={cx + Math.cos(a) * (r + 8)}
-                y2={cy + Math.sin(a) * (r + 8)}
-                stroke="var(--rule)"
-                strokeDasharray="2 4"
-              />
+              <g key={d.axis} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} className="cursor-pointer">
+                <line
+                  x1={cx}
+                  y1={cy}
+                  x2={cx + Math.cos(a) * (r + 8)}
+                  y2={cy + Math.sin(a) * (r + 8)}
+                  stroke={isHovered ? "var(--accent)" : "var(--rule)"}
+                  strokeWidth={isHovered ? 1.5 : 1}
+                  strokeDasharray={isHovered ? undefined : "2 4"}
+                />
+              </g>
             );
           })}
 
@@ -81,96 +86,55 @@ export function CapabilityMap() {
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             points={polygon}
             fill="var(--accent)"
-            fillOpacity={0.08}
+            fillOpacity={0.12}
             stroke="var(--accent)"
-            strokeWidth={1}
+            strokeWidth={1.5}
             style={{ transformOrigin: `${cx}px ${cy}px` }}
           />
 
-          {/* Tick marks */}
-          {skillsRadar.flatMap((d, i) => {
+          {/* Axis Labels & Interactive Points */}
+          {skillsRadar.map((d, i) => {
             const a = angle(i);
             const rr = (r * d.value) / 100;
             const x = cx + Math.cos(a) * rr;
             const y = cy + Math.sin(a) * rr;
-            return (
-              <g key={`${d.axis}-tick`}>
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={hover === i ? 4 : 2.5}
-                  fill={hover === i ? "var(--accent)" : "var(--accent-soft)"}
-                />
-                <circle
-                  cx={x}
-                  cy={y}
-                  r="6"
-                  fill="none"
-                  stroke="var(--accent)"
-                  strokeOpacity={hover === i ? 0.5 : 0}
-                  strokeWidth={1}
-                />
-              </g>
-            );
-          })}
+            const lx = cx + Math.cos(a) * (r + 26);
+            const ly = cy + Math.sin(a) * (r + 26);
+            const isHovered = hover === i;
 
-          {/* Axis labels */}
-          {skillsRadar.map((d, i) => {
-            const a = angle(i);
-            const x = cx + Math.cos(a) * (r + 24);
-            const y = cy + Math.sin(a) * (r + 24);
-            const isHover = hover === i;
             return (
               <g
-                key={`${d.axis}-label`}
+                key={`${d.axis}-node`}
                 onMouseEnter={() => setHover(i)}
                 onMouseLeave={() => setHover(null)}
-                className="cursor-pointer"
+                className="cursor-pointer transition-all duration-200"
               >
+                {/* Node circle */}
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={isHovered ? 6 : 4}
+                  fill="var(--surface-2)"
+                  stroke="var(--accent)"
+                  strokeWidth={isHovered ? 2.5 : 1.5}
+                />
+
+                {/* Text label */}
                 <text
-                  x={x}
-                  y={y}
+                  x={lx}
+                  y={ly}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fontSize={10}
-                  fontFamily="var(--font-mono)"
-                  fill={isHover ? "var(--accent)" : "var(--fg-soft)"}
-                  style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}
+                  className="font-mono text-[10.5px] uppercase tracking-wider transition-colors duration-150"
+                  fill={isHovered ? "var(--accent)" : "var(--fg-soft)"}
+                  fontWeight={isHovered ? "bold" : "normal"}
                 >
                   {d.axis}
                 </text>
-                {isHover && (
-                  <text
-                    x={x}
-                    y={y + 14}
-                    textAnchor="middle"
-                    fontSize={11}
-                    fontFamily="var(--font-mono)"
-                    fill="var(--accent)"
-                  >
-                    {d.value}
-                  </text>
-                )}
               </g>
             );
           })}
         </svg>
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-x-6 gap-y-2 border-t border-[var(--rule)] pt-4 font-mono text-[11px]">
-        {skillsRadar.map((d, i) => (
-          <div
-            key={d.axis}
-            className={`flex items-center justify-between transition-colors ${
-              hover === i ? "text-[var(--accent)]" : "text-[var(--fg-mute)]"
-            }`}
-            onMouseEnter={() => setHover(i)}
-            onMouseLeave={() => setHover(null)}
-          >
-            <span>{d.axis}</span>
-            <span className="metric text-[var(--fg-soft)]">{d.value}</span>
-          </div>
-        ))}
       </div>
     </div>
   );

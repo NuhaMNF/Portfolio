@@ -6,9 +6,7 @@ import { NotebookExplorer } from "@/components/notebook/NotebookExplorer";
 import { NotebookStatus } from "@/components/system/NotebookStatus";
 import { CommandPalette } from "@/components/notebook/CommandPalette";
 import { EasterEggOverlay } from "@/components/ui/EasterEggOverlay";
-import { BootTerminalClient } from "@/components/system/BootTerminalClient";
 import { StatusBar } from "@/components/system/StatusBar";
-import { RunNuha } from "@/components/system/RunNuha";
 import { BoxFieldBackground } from "@/components/ui/BoxFieldBackground";
 import { ThemeController } from "@/components/system/ThemeController";
 
@@ -32,21 +30,23 @@ const display = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Nuha Nizar — Research Notebook",
+  title: "Nuha Nizar — Portfolio | Management & IT Undergraduate",
   description:
-    "The personal computational notebook of Nuha Nizar — AI engineer, researcher, builder. A living record of experiments, projects and ideas.",
+    "Undergraduate in Management & Information Technology at the University of Kelaniya. Passionate about data analysis, innovation, and solving problems through technology.",
   keywords: [
     "Nuha Nizar",
-    "AI Engineer",
-    "Machine Learning",
-    "Research Notebook",
-    "Developer",
+    "Management & IT",
+    "University of Kelaniya",
+    "Department of Industrial Management",
+    "Data Analysis",
+    "Software Development",
+    "Database Systems",
     "Portfolio",
   ],
   openGraph: {
-    title: "Nuha Nizar — Research Notebook",
+    title: "Nuha Nizar — Portfolio",
     description:
-      "A living computational notebook by Nuha Nizar — AI engineer and researcher.",
+      "Undergraduate in Management & IT at the University of Kelaniya. Combining management insight with data-driven decision making.",
     type: "website",
   },
 };
@@ -74,14 +74,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeController />
         <BoxFieldBackground />
         <CoordRails />
-        <BootTerminalClient />
         <CustomCursor />
         <NotebookExplorer />
         <NotebookStatus />
         <CommandPalette />
         <EasterEggOverlay />
-        <RunNuha />
-        <div className="relative z-[1] lg:pl-[260px] pb-[24px]">{children}</div>
+        <div className="relative z-[1] lg:pl-[296px] pb-[24px]">{children}</div>
         <StatusBar />
       </body>
     </html>

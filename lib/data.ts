@@ -1,432 +1,302 @@
-// All portfolio content. Single source of truth. Easy to swap.
+// All portfolio content. Single source of truth.
 
 export const profile = {
   name: "Nuha Nizar",
-  role: "AI Engineer & Developer",
+  role: "Management & IT Undergraduate",
   initials: "NN",
-  email: "nuha@nizar.dev",
-  location: "Bengaluru, IN",
-  tagline: "I turn research into systems that learn — and systems into products that feel inevitable.",
-  github: "https://github.com/nuhanizar",
+  email: "nuhanizar16@gmail.com",
+  location: "University of Kelaniya, LK",
+  tagline:
+    "An Undergraduate in Management & IT, eager to apply technical and data-focused skills in a professional setting. Passionate about data analysis, innovation, and solving problems through technology. Committed to growing into a role that combines management insight with data driven decision making.",
+  github: "https://github.com/NuhaMNF",
   linkedin: "https://linkedin.com/in/nuhanizar",
-  twitter: "https://twitter.com/nuhanizar",
+  twitter: "",
 };
 
-// Hero class block — rendered with Typewriter
 export const heroClassCode = `class NuhaNizar:
-    name = "Nuha Nizar"
-    role = "AI Engineer & Developer"
-
-    def build(self, idea):
-        return f"{idea} → Intelligence → Impact"
+    role = "Management & IT Undergraduate"
+    university = "University of Kelaniya"
+    department = "Industrial Management"
+    interests = [
+        "Data Analysis",
+        "Software Development",
+        "Database Systems",
+        "Business & Management",
+        "Technology & Innovation"
+    ]
 
     def introduce(self):
-        return "Building intelligent things with code."
+        return "Combining management insight with data-driven decision making."
 
 nuha = NuhaNizar()
 nuha.introduce()`;
 
 export const aboutDict = `nuha = {
-    "curiosity": "high",
-    "coffee": True,
-    "building": True,
-    "learning": "always",
-    "shipping": True,
-    "debugging": "patient",
+    "degree": "BSc (Hons) in Management & Information Technology",
+    "university": "University of Kelaniya",
+    "department": "Department of Industrial Management",
+    "timeline": "2025 – 2028",
+    "expected_completion": 2028,
+    "areas_of_interest": [
+        "Data Analysis",
+        "Software Development",
+        "Database Systems",
+        "Business & Management",
+        "Technology & Innovation"
+    ],
+    "focus": "management insight + data-driven decisions"
 }`;
 
 export const aboutBio = [
-  "I'm an AI engineer and developer who treats software as a medium for thought. I build systems that learn, infer, and reason — and I obsess over the small details that make them feel inevitable.",
-  "My work spans machine learning, distributed systems, and the seams where they meet product. I love taking a fuzzy idea and turning it into something that runs, scales, and feels right.",
-  "Outside of code, I read research papers like novels, sketch architectures on paper, and believe the best abstractions are the ones you can almost draw.",
+  "An Undergraduate in Management & IT, eager to apply technical and data-focused skills in a professional setting. Passionate about data analysis, innovation, and solving problems through technology.",
+  "Committed to growing into a role that combines management insight with data driven decision making.",
 ];
 
 export const stats = [
-  { label: "models shipped", value: 12, suffix: "" },
-  { label: "open-source repos", value: 27, suffix: "" },
-  { label: "papers read / mo", value: 14, suffix: "" },
-  { label: "cups of coffee", value: 9999, suffix: "+" },
+  { label: "flagship project", value: 1, suffix: "" },
+  { label: "finalist awards", value: 2, suffix: "" },
+  { label: "focus areas", value: 5, suffix: "" },
+  { label: "languages", value: 3, suffix: "" },
 ];
 
 export const philosophy = [
-  { label: "curiosity", value: 100 },
-  { label: "learning", value: 100 },
-  { label: "building", value: 95 },
-  { label: "shipping", value: 92 },
-  { label: "patience", value: 88 },
-  { label: "caffeine", value: 100 },
+  { label: "data analysis", value: 92 },
+  { label: "software development", value: 88 },
+  { label: "database systems", value: 90 },
+  { label: "business & management", value: 94 },
+  { label: "technology & innovation", value: 95 },
 ];
 
-// Skills — represented as Python dict
 export const skills = {
-  "AI / ML": ["PyTorch", "TensorFlow", "Transformers", "LangChain", "Diffusion", "RL"],
-  "Programming": ["Python", "TypeScript", "JavaScript", "C++", "Rust"],
-  "Backend": ["FastAPI", "Node.js", "PostgreSQL", "Redis", "GraphQL"],
-  "Frontend": ["Next.js", "React", "Three.js", "Tailwind", "Framer Motion"],
-  "Data": ["Pandas", "NumPy", "dbt", "Airflow", "SQL"],
-  "Cloud": ["AWS", "Azure", "Docker", "Kubernetes", "GCP"],
-  "MLOps": ["Weights & Biases", "MLflow", "Triton", "Ray", "BentoML"],
-  "Tools": ["Git", "Linux", "Vim", "Figma", "Notion"],
+  "Areas of Interest": [
+    "Data Analysis",
+    "Software Development",
+    "Database Systems",
+    "Business & Management",
+    "Technology & Innovation",
+  ],
+  "Languages & Paradigms": ["Java", "C++", "JavaScript", "OOP"],
+  "Web & Backend": ["React.js", "Node.js", "REST API"],
+  "Database & Design": ["MySQL", "PostgreSQL", "Database Design"],
+  "Tools & Practices": ["Git & GitHub", "Debugging", "Team Collaboration"],
 };
 
-// Radar chart data — each category gets a 0–100 score
 export const skillsRadar = [
-  { axis: "AI / ML", value: 92 },
-  { axis: "Backend", value: 88 },
-  { axis: "Frontend", value: 78 },
-  { axis: "Data", value: 85 },
-  { axis: "Cloud", value: 80 },
-  { axis: "MLOps", value: 74 },
-];
-
-export const experience = [
-  {
-    role: "AI Engineer",
-    company: "Lumen Labs",
-    period: "2025 — Present",
-    location: "Remote",
-    bullets: [
-      "Architected multi-agent RAG platform serving 40k+ daily queries.",
-      "Reduced inference cost 38% via quantization + speculative decoding.",
-      "Led rollout of evaluation harness across 6 product teams.",
-    ],
-    stack: ["PyTorch", "LangChain", "AWS", "PostgreSQL"],
-  },
-  {
-    role: "Machine Learning Engineer",
-    company: "Northwind AI",
-    period: "2023 — 2025",
-    location: "Bengaluru, IN",
-    bullets: [
-      "Built a vision backbone for document understanding, +6.2 mAP.",
-      "Owned the feature store; cut training data prep from days to hours.",
-      "Mentored 4 engineers; introduced experiment tracking org-wide.",
-    ],
-    stack: ["PyTorch", "Ray", "Snowflake", "dbt"],
-  },
-  {
-    role: "Software Engineer",
-    company: "PenguinByte",
-    period: "2021 — 2023",
-    location: "Hybrid",
-    bullets: [
-      "Shipped 9 production services in TypeScript + Go.",
-      "Designed event-driven order pipeline handling 12k req/s.",
-      "Owned observability — cut MTTR by 41%.",
-    ],
-    stack: ["TypeScript", "Node.js", "Kafka", "Redis"],
-  },
-  {
-    role: "Research Intern",
-    company: "IISc Bangalore",
-    period: "2020 — 2021",
-    location: "Bengaluru, IN",
-    bullets: [
-      "Published workshop paper on sample-efficient RL.",
-      "Contributed to open-source simulator used by 3 labs.",
-    ],
-    stack: ["PyTorch", "NumPy", "JAX"],
-  },
+  { axis: "Data Analysis", value: 92 },
+  { axis: "Software Dev", value: 88 },
+  { axis: "Database Systems", value: 90 },
+  { axis: "Business & Mgmt", value: 94 },
+  { axis: "Innovation", value: 95 },
 ];
 
 export const projects = [
   {
-    id: "lumen-rag",
-    cellId: "5.1",
-    title: "Lumen RAG",
-    subtitle: "Multi-agent retrieval platform",
+    id: "task-management",
+    cellId: "01",
+    title: "Task Management System",
+    subtitle: "React.js · Node.js · PostgreSQL · REST API",
     year: 2025,
-    category: "AI Systems",
-    description: "A production multi-agent retrieval system that orchestrates query planning, hybrid search, and reranking with evaluator feedback loops.",
-    problem: "Single-shot retrieval couldn't hold up to messy, multi-hop questions from real users. Faithfulness dropped >30% on adversarially-rewritten queries.",
-    solution: "A planner agent decomposes the query, dual retrievers run in parallel, and a reranker + evaluator loop decides when to escalate or rewrite.",
+    category: "Full-Stack Web Application",
+    description:
+      "A web-based task management system designed to help users efficiently create, organize, assign, track, and manage tasks. The system improves task organization and collaboration by providing a centralized platform for managing tasks and their progress.",
+    problem:
+      "Workplace productivity and team transparency suffered from fragmented communication and untracked task assignments across disparate tools.",
+    solution:
+      "Engineered a centralized web platform featuring an interactive React.js frontend, secure Node.js REST API, and PostgreSQL relational database with role-based assignment and live notifications.",
     architecture: [
-      "user → planner",
-      "      ├─ retriever (lex+vec)",
-      "      ├─ retriever (graph)",
-      "      └─ reranker",
-      "evaluator ↻ planner",
+      "React.js Single Page App (Vite / Tailwind / HSL Tokens)",
+      "       │",
+      "       ├──► REST API Gateway (Node.js / Express)",
+      "       │       ├── JWT Authentication & Route Guards",
+      "       │       ├── Task Management & Role Assignment",
+      "       │       ├── Comment Threading & File Attachments",
+      "       │       └── Real-time Notification Dispatcher",
+      "       │",
+      "       └──► Relational Database (PostgreSQL)",
+      "               ├── Normalized Task & User Schemas",
+      "               └── Audit Log Triggers",
     ].join("\n"),
-    tech: ["PyTorch", "LangChain", "FastAPI", "Postgres", "Redis"],
-    repo: "https://github.com/nuhanizar/lumen-rag",
-    demo: "https://lumen-rag.dev",
-    metrics: [
-      { label: "p95 latency", value: "420ms" },
-      { label: "answer accuracy", value: "0.91" },
-      { label: "daily queries", value: "40k+" },
-    ],
-    links: [
-      { label: "github", url: "https://github.com/nuhanizar/lumen-rag" },
-      { label: "demo", url: "https://lumen-rag.dev" },
-    ],
-  },
-  {
-    id: "cetacea",
-    cellId: "5.2",
-    title: "Cetacea",
-    subtitle: "Diffusion model for audio synthesis",
-    year: 2024,
-    category: "Generative AI",
-    description: "A latent diffusion model trained on field recordings. Generates 10s of coherent soundscapes conditioned on text and visual cues.",
-    problem: "Audio diffusion papers existed but rarely crossed the perceptual quality bar for non-musical soundscapes — fizzly, lobotomized, lacking long-range structure.",
-    solution: "Curated a 1.2k-hour field-recording corpus, added CLAP-guided conditioning, and trained a small latent U-Net with classifier-free guidance sweeps.",
-    architecture: [
-      "prompt → CLAP encoder",
-      "      └─ latent u-net diffusion",
-      "audio VAE → 10s soundscape",
-      "vagus post-net (super-res)",
-    ].join("\n"),
-    tech: ["PyTorch", "Diffusers", "CUDA", "Triton"],
-    repo: "https://github.com/nuhanizar/cetacea",
-    demo: "https://cetacea.dev",
-    metrics: [
-      { label: "FAD score", value: "1.8" },
-      { label: "param count", value: "340M" },
-      { label: "FLOPS", value: "0.7T" },
-    ],
-    links: [
-      { label: "github", url: "https://github.com/nuhanizar/cetacea" },
-      { label: "demo", url: "https://cetacea.dev" },
-    ],
-  },
-  {
-    id: "tideline",
-    cellId: "5.3",
-    title: "Tideline",
-    subtitle: "Realtime analytics for ML systems",
-    year: 2024,
-    category: "MLOps",
-    description: "An analytics layer that streams inference logs + drift metrics into a queryable timeseries store. Web-based lab notebook for SREs.",
-    problem: "SREs and ML engineers rode three different dashboards to answer one question: 'is this model degraded?' Drift, latency, and ground-truth were islands.",
-    solution: "A unified ingestion layer streams everything into ClickHouse, exposed via a notebook-style query UI so an SRE can grab a notebook and dig in.",
-    architecture: [
-      "services → kafka → flink",
-      "                  ├─ tsdb (clickhouse)",
-      "                  └─ drift workers",
-      "notebook UI ↔ sql + spark",
-    ].join("\n"),
-    tech: ["TypeScript", "Ray", "ClickHouse", "Next.js"],
-    repo: "https://github.com/nuhanizar/tideline",
-    demo: "https://tideline.dev",
-    metrics: [
-      { label: "ingestion", value: "1.2M/s" },
-      { label: "p99 query", value: "85ms" },
-      { label: "retention", value: "90d" },
-    ],
-    links: [
-      { label: "github", url: "https://github.com/nuhanizar/tideline" },
-      { label: "demo", url: "https://tideline.dev" },
-    ],
-  },
-  {
-    id: "meridian",
-    cellId: "5.4",
-    title: "Meridian",
-    subtitle: "Document understanding backbone",
-    year: 2023,
-    category: "Computer Vision",
-    description: "Vision transformer pre-trained for layout-aware document understanding. Beats prior SOTA by 6.2 mAP on three public benchmarks.",
-    problem: "Generic ViTs lose the spatial coherence of documents — receipts, forms, contracts all have a grammar we were ignoring.",
-    solution: "Layout-aware pre-training with masked image modeling that respects 2D structure, plus a lightweight adapter for downstream tasks.",
-    architecture: [
-      "ViT-L/16 backbone",
-      "+ layout-aware MIM",
-      "+ adapter heads (cls, ner, rel)",
-      "→ 3 benchmarks, +6.2 mAP",
-    ].join("\n"),
-    tech: ["PyTorch", "JAX", "TPU", "W&B"],
-    repo: "https://github.com/nuhanizar/meridian",
+    tech: ["React.js", "Node.js", "PostgreSQL", "REST API", "Git & GitHub"],
+    repo: "https://github.com/NuhaMNF/Task-Management-System.git",
     demo: null,
     metrics: [
-      { label: "mAP", value: "0.832" },
-      { label: "params", value: "220M" },
-      { label: "datasets", value: "3" },
+      { label: "year", value: "2025" },
+      { label: "frontend", value: "React.js" },
+      { label: "backend", value: "Node.js" },
+      { label: "database", value: "PostgreSQL" },
+    ],
+    features: [
+      "Task creation, priority tagging (Low / Med / High), and due date scheduling",
+      "Multi-member task assignment with role tracking (Project Manager, Collaborator)",
+      "Collaborative task comment threads with attachment support",
+      "Real-time notification audit center with instant read/unread status updates",
+      "Normalized PostgreSQL database persistence and REST API endpoints",
+    ],
+    images: [
+      {
+        id: "presentation",
+        title: "Project presentation",
+        tag: "On stage",
+        src: "/projects/task-management/presentation.png",
+        description: "Presenting the problem, solution, and product flow to a live audience.",
+      },
+      {
+        id: "team",
+        title: "Team",
+        tag: "Team",
+        src: "/projects/task-management/team.png",
+        description: "Team photograph from the collaboration event.",
+      },
+      {
+        id: "tasks-table",
+        title: "All Tasks Directory & Filters",
+        tag: "Task Table View",
+        src: "/projects/task-management/tasks-table.jpg",
+        description: "Task table with status and priority filtering, assignment tags, and deadline tracking.",
+      },
+      {
+        id: "task-details",
+        title: "Task Configuration & Comments",
+        tag: "Task Modal Editor",
+        src: "/projects/task-management/task-details.jpg",
+        description: "Task modal editor featuring dynamic assignee selection, due date picker, and collaborative comments thread.",
+      },
+      {
+        id: "notifications",
+        title: "Live Activity & Notifications",
+        tag: "Notifications Center",
+        src: "/projects/task-management/notifications.jpg",
+        description: "Real-time activity audit feed tracking task assignment changes and team status updates.",
+      },
     ],
     links: [
-      { label: "github", url: "https://github.com/nuhanizar/meridian" },
-    ],
-  },
-  {
-    id: "graphite",
-    cellId: "5.5",
-    title: "Graphite",
-    subtitle: "Type-safe graph runtime",
-    year: 2022,
-    category: "Developer Tools",
-    description: "A graph-based runtime for building type-safe data pipelines in TypeScript. Live reload, schema-aware migrations, IDE-grade errors.",
-    problem: "Workflow orchestrators were either magical YAML or untyped Python. We wanted the type-safety of a typed language with the expressiveness of a DAG.",
-    solution: "A graph runtime that treats your pipeline as a typed AST, with a React-style dev experience: live reload, schema migrations, and errors at the line.",
-    architecture: [
-      "dsl.ts ─► compiler ─► graph AST",
-      "                    ├─ migrate",
-      "                    ├─ type-check",
-      "                    └─ runtime (workers)",
-      "react ui ← live ws",
-    ].join("\n"),
-    tech: ["TypeScript", "Rust", "GraphQL"],
-    repo: "https://github.com/nuhanizar/graphite",
-    demo: "https://graphite.dev",
-    metrics: [
-      { label: "stars", value: "3.4k" },
-      { label: "downloads", value: "120k" },
-      { label: "extensions", value: "12" },
-    ],
-    links: [
-      { label: "github", url: "https://github.com/nuhanizar/graphite" },
-      { label: "demo", url: "https://graphite.dev" },
+      {
+        label: "github repository",
+        url: "https://github.com/NuhaMNF/Task-Management-System.git",
+      },
     ],
   },
 ];
 
-export const research = [
+export const achievements = [
   {
-    title: "Sample-Efficient Reinforcement Learning",
-    topic: "Reinforcement Learning",
+    title: "Top 10 Finalist",
+    event: "IdeaSprint",
+    org: "University of Kelaniya",
     description:
-      "Curriculum-based exploration strategies that improve sample efficiency on sparse-reward benchmarks by 2.3×.",
-    methodology: "Curriculum + intrinsic motivation + Hindsight Experience Replay.",
-    tech: ["PyTorch", "JAX", "OpenAI Gym"],
-    link: "https://arxiv.org/abs/0000.00000",
+      "Selected among the Top 10 finalists in an innovation-focused competition.",
   },
   {
-    title: "Latent Diffusion for Cross-Modal Generation",
-    topic: "Generative AI",
+    title: "Top 10 Finalist",
+    event: "Trinova Youth Innovation Competition",
+    org: "CINEC Campus",
     description:
-      "Joint embedding of text and audio for coherent soundscape generation from natural language prompts.",
-    methodology: "CLAP-guided diffusion, classifier-free guidance sweeps.",
-    tech: ["Diffusers", "CLAP", "PyTorch"],
-    link: "https://arxiv.org/abs/0000.00001",
-  },
-  {
-    title: "Layout-Aware Document Transformers",
-    topic: "Computer Vision",
-    description:
-      "ViT pre-training with spatial augmentation that respects 2D document layout, improving form understanding.",
-    methodology: "Masked image modeling + structure-aware pretraining.",
-    tech: ["PyTorch", "TPU", "W&B"],
-    link: "https://arxiv.org/abs/0000.00002",
-  },
-  {
-    title: "Evaluating RAG Agents at Scale",
-    topic: "NLP",
-    description:
-      "A benchmark + harness for evaluating multi-step retrieval agents across factuality, hallucination, and grounding.",
-    methodology: "Adversarial eval set + LLM-as-judge with calibrated rubrics.",
-    tech: ["LangChain", "Anthropic Claude", "Postgres"],
-    link: "https://arxiv.org/abs/0000.00003",
+      "Selected among the Top 10 finalists, demonstrating innovation and problem-solving skills.",
   },
 ];
 
 export const education = [
   {
-    degree: "M.S. Computer Science",
-    institution: "IISc Bangalore",
-    focus: ["AI", "Machine Learning", "Systems"],
-    period: "2021 — 2023",
-    thesis: "Sample-Efficient RL for Sparse Reward Environments",
-  },
-  {
-    degree: "B.E. Computer Science",
-    institution: "NIT Trichy",
-    focus: ["CS", "Mathematics", "Systems"],
-    period: "2017 — 2021",
-    thesis: "Graph Runtimes for TypeScript Data Pipelines",
+    degree: "BSc (Hons) in Management & Information Technology",
+    institution: "University of Kelaniya",
+    department: "Department of Industrial Management",
+    focus: [
+      "Data Analysis",
+      "Software Development",
+      "Database Systems",
+      "Business & Management",
+      "Technology & Innovation",
+    ],
+    period: "2025 – 2028",
+    note: "Expected completion: 2028",
   },
 ];
 
-export const activity = {
-  totalCommits: 4823,
-  totalPRs: 412,
-  totalIssues: 89,
-  totalStars: 4312,
-  topLanguages: [
-    { name: "Python", value: 44 },
-    { name: "TypeScript", value: 28 },
-    { name: "Rust", value: 11 },
-    { name: "C++", value: 9 },
-    { name: "Other", value: 8 },
-  ],
-  // 52 weeks of dummy activity data
-  weeks: Array.from({ length: 52 }, (_, w) =>
-    Array.from({ length: 7 }, (_, d) => ({
-      w,
-      d,
-      count: Math.floor(((Math.sin(w * 0.7 + d) + 1) / 2) * 18 + (w % 3 === 0 ? 4 : 0)),
-    }))
-  ).flat(),
-  streak: 187,
-};
-
-// Sidebar navigation
 export const navItems = [
   { id: "hero", cellId: "01", label: "introduce", tag: "py", type: "code", isSub: false },
   { id: "about", cellId: "02", label: "about", tag: "md", type: "md", isSub: false },
   { id: "skills", cellId: "03", label: "capabilities", tag: "py", type: "code", isSub: false },
-  { id: "thinking", cellId: "3.5", label: "thinking", tag: "note", type: "note", isSub: true },
-  { id: "experience", cellId: "04", label: "experience", tag: "log", type: "code", isSub: false },
-  { id: "ai_lab", cellId: "4.5", label: "ai_lab", tag: "lab", type: "lab", isSub: true },
-  { id: "projects", cellId: "05", label: "projects", tag: "sys", type: "code", isSub: false },
-  { id: "research", cellId: "06", label: "research", tag: "doc", type: "md", isSub: false },
-  { id: "education", cellId: "07", label: "education", tag: "edu", type: "md", isSub: false },
-  { id: "activity", cellId: "08", label: "activity", tag: "git", type: "code", isSub: false },
-  { id: "contact", cellId: "09", label: "connect", tag: "io", type: "code", isSub: false },
+  { id: "projects", cellId: "04", label: "projects", tag: "sys", type: "code", isSub: false },
+  { id: "education", cellId: "05", label: "education", tag: "edu", type: "md", isSub: false },
+  { id: "achievements", cellId: "06", label: "achievements", tag: "log", type: "md", isSub: false },
+  { id: "contact", cellId: "07", label: "connect", tag: "io", type: "code", isSub: false },
 ];
 
 export const bootSequence = [
   { line: ">>> python portfolio.py", delay: 0 },
   { line: "", delay: 200 },
   { line: "Initializing Nuha Nizar...", delay: 250 },
-  { line: "Loading skills........ ✓", delay: 350 },
-  { line: "Loading projects...... ✓", delay: 500 },
-  { line: "Loading experience.... ✓", delay: 650 },
-  { line: "Loading research...... ✓", delay: 800 },
-  { line: "", delay: 900 },
-  { line: "Portfolio ready.", delay: 1100 },
-  { line: "", delay: 1300 },
-  { line: ">>> run()", delay: 1500 },
+  { line: "Loading education (University of Kelaniya)... ✓", delay: 350 },
+  { line: "Loading skills & interests... ✓", delay: 500 },
+  { line: "Loading projects & achievements... ✓", delay: 650 },
+  { line: "", delay: 800 },
+  { line: "Runtime ready.", delay: 1000 },
+  { line: "", delay: 1200 },
+  { line: ">>> run()", delay: 1400 },
 ];
 
 export const commands = [
   { id: "hero", label: "go to introduce", shortcut: "g h" },
   { id: "about", label: "go to about", shortcut: "g a" },
   { id: "skills", label: "go to capabilities", shortcut: "g s" },
-  { id: "thinking", label: "go to thinking", shortcut: "g t" },
-  { id: "experience", label: "go to experience", shortcut: "g e" },
-  { id: "ai_lab", label: "go to ai lab", shortcut: "g ai" },
   { id: "projects", label: "go to projects", shortcut: "g p" },
-  { id: "research", label: "go to research", shortcut: "g r" },
   { id: "education", label: "go to education", shortcut: "g ed" },
-  { id: "activity", label: "go to activity", shortcut: "g ac" },
+  { id: "achievements", label: "go to achievements", shortcut: "g ac" },
   { id: "contact", label: "go to connect", shortcut: "g c" },
   { id: "github", label: "open github", shortcut: "gh" },
   { id: "linkedin", label: "open linkedin", shortcut: "li" },
-  { id: "run_nuha", label: "run_nuha()", shortcut: "⌘⏎" },
-  { id: "hire", label: "hire nuha", shortcut: "!" },
+  { id: "hire", label: "connect / hire", shortcut: "!" },
   { id: "help", label: "show help", shortcut: "?" },
-  { id: "restart", label: "restart kernel", shortcut: "r" },
-  { id: "surprise", label: "surprise me", shortcut: "🎲" },
   { id: "theme", label: "toggle theme", shortcut: "t" },
   { id: "glow", label: "cycle key glow gradient", shortcut: "k" },
+  { id: "bg", label: "toggle background (grid / stars)", shortcut: "b" },
 ];
 
-export const personalityAnnotations: Array<{ id: string; section: string; text: string; tone?: "warm" | "wry" | "quiet" }> = [
-  { id: "p1", section: "hero", text: "things I enjoy building at 2am", tone: "warm" },
-  { id: "p2", section: "about", text: "currently learning: rust + cuda", tone: "quiet" },
-  { id: "p3", section: "skills", text: "if you're reading this, hi 👋", tone: "warm" },
-  { id: "p4", section: "ai_lab", text: "this is what training feels like from the inside", tone: "quiet" },
-  { id: "p5", section: "projects", text: "probably overfitting at epoch 32, but the curve looks cinematic", tone: "wry" },
-  { id: "p6", section: "contact", text: "I take my coffee the way I take my code: dark, fast, slightly bitter", tone: "wry" },
+export const personalityAnnotations: Array<{
+  id: string;
+  section: string;
+  text: string;
+  tone?: "warm" | "wry" | "quiet";
+}> = [
+  { id: "p1", section: "hero", text: "Department of Industrial Management · Kelaniya", tone: "warm" },
+  { id: "p2", section: "about", text: "combining management insight with data driven decision making", tone: "quiet" },
+  { id: "p3", section: "skills", text: "Data Analysis · Software · Databases · Management", tone: "warm" },
+  { id: "p5", section: "projects", text: "team projects, database architecture, and full stack systems", tone: "wry" },
+  { id: "p6", section: "contact", text: "open to data analysis and software development opportunities", tone: "quiet" },
 ];
 
 export const skillsGraph = {
   center: { id: "nuha", label: "NUHA", weight: 100 },
   domains: [
-    { id: "ai", label: "AI", weight: 92, tools: ["PyTorch", "Transformers", "LangChain", "Diffusion", "RL"] },
-    { id: "ml", label: "ML", weight: 90, tools: ["PyTorch", "TensorFlow", "JAX", "scikit-learn", "NumPy"] },
-    { id: "sw", label: "Software", weight: 88, tools: ["Python", "TypeScript", "Rust", "C++", "Go"] },
-    { id: "web", label: "Web", weight: 78, tools: ["Next.js", "React", "Three.js", "Tailwind", "Framer"] },
-    { id: "data", label: "Data", weight: 85, tools: ["Pandas", "NumPy", "dbt", "Airflow", "SQL"] },
-    { id: "cloud", label: "Cloud", weight: 80, tools: ["AWS", "Azure", "Docker", "Kubernetes", "GCP"] },
-    { id: "research", label: "Research", weight: 84, tools: ["PyTorch", "JAX", "TPU", "W&B", "Triton"] },
+    {
+      id: "data",
+      label: "Data Analysis",
+      weight: 92,
+      tools: ["Data Analysis", "MySQL", "PostgreSQL", "Database Design"],
+    },
+    {
+      id: "sw",
+      label: "Software Dev",
+      weight: 88,
+      tools: ["Java", "C++", "OOP", "Debugging"],
+    },
+    {
+      id: "web",
+      label: "Web Systems",
+      weight: 86,
+      tools: ["React.js", "Node.js", "REST API", "Git & GitHub"],
+    },
+    {
+      id: "db",
+      label: "Databases",
+      weight: 90,
+      tools: ["MySQL", "PostgreSQL", "Relational Models"],
+    },
+    {
+      id: "biz",
+      label: "Management",
+      weight: 94,
+      tools: ["Business & Mgmt", "Decision Making", "Innovation"],
+    },
   ],
 };
