@@ -134,20 +134,6 @@ export const projects = [
     ],
     images: [
       {
-        id: "presentation",
-        title: "Project presentation",
-        tag: "On stage",
-        src: "/projects/task-management/presentation.png",
-        description: "Presenting the problem, solution, and product flow to a live audience.",
-      },
-      {
-        id: "team",
-        title: "Team",
-        tag: "Team",
-        src: "/projects/task-management/team.png",
-        description: "Team photograph from the collaboration event.",
-      },
-      {
         id: "tasks-table",
         title: "All Tasks Directory & Filters",
         tag: "Task Table View",
@@ -181,17 +167,33 @@ export const projects = [
 export const achievements = [
   {
     title: "Top 10 Finalist",
+    event: "Trinova Youth Innovation Competition",
+    org: "CINEC Campus",
+    description:
+      "Selected among the Top 10 finalists at CINEC Campus. Pitched a 3D foot-scan and custom insole solution on stage as part of a collaboration with FRYM Intimates.",
+    images: [
+      {
+        id: "presentation",
+        title: "On-stage pitch",
+        tag: "Presentation",
+        src: "/achievements/trinova/presentation.png",
+        description: "Presenting the problem and solution at Trinova Youth Innovation Competition.",
+      },
+      {
+        id: "team",
+        title: "Team",
+        tag: "Team",
+        src: "/achievements/trinova/team.png",
+        description: "Team photograph from the CINEC Campus × FRYM Intimates collaboration at Trinova.",
+      },
+    ],
+  },
+  {
+    title: "Top 10 Finalist",
     event: "IdeaSprint",
     org: "University of Kelaniya",
     description:
       "Selected among the Top 10 finalists in an innovation-focused competition.",
-  },
-  {
-    title: "Top 10 Finalist",
-    event: "Trinova Youth Innovation Competition",
-    org: "CINEC Campus",
-    description:
-      "Selected among the Top 10 finalists, demonstrating innovation and problem-solving skills.",
   },
 ];
 

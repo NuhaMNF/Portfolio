@@ -3,6 +3,7 @@
 import { useBackgroundMode } from "@/lib/backgroundMode";
 import { Boxes, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { playSwitch } from "@/lib/sound";
 
 export function BackgroundModeToggle() {
   const { mode, setMode } = useBackgroundMode();
@@ -18,7 +19,10 @@ export function BackgroundModeToggle() {
         type="button"
         role="radio"
         aria-checked={mode === "boxes"}
-        onClick={() => setMode("boxes")}
+        onClick={() => {
+          if (mode !== "boxes") playSwitch();
+          setMode("boxes");
+        }}
         data-cursor="view"
         title="3D Isometric Grid Background"
         className={`relative flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10.5px] font-medium transition-colors duration-200 ${
@@ -43,7 +47,10 @@ export function BackgroundModeToggle() {
         type="button"
         role="radio"
         aria-checked={mode === "stars"}
-        onClick={() => setMode("stars")}
+        onClick={() => {
+          if (mode !== "stars") playSwitch();
+          setMode("stars");
+        }}
         data-cursor="view"
         title="3D Cosmic Starfield Background"
         className={`relative flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10.5px] font-medium transition-colors duration-200 ${

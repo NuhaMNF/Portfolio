@@ -4,6 +4,7 @@ import { useTheme } from "@/lib/hooks/useTheme";
 import { toggleStoredTheme } from "@/lib/theme";
 import { Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { playSwitch } from "@/lib/sound";
 
 interface ThemeToggleProps {
   compact?: boolean;
@@ -26,7 +27,10 @@ export function ThemeToggle({
       <button
         type="button"
         data-cursor="view"
-        onClick={() => toggleStoredTheme()}
+        onClick={() => {
+          playSwitch();
+          toggleStoredTheme();
+        }}
         aria-label={`Switch to ${nextLabel} mode (Press T)`}
         title={`Toggle theme (${nextLabel} mode) · Shortcut: T`}
         className={cn(
@@ -67,7 +71,10 @@ export function ThemeToggle({
       <button
         type="button"
         data-cursor="view"
-        onClick={() => toggleStoredTheme()}
+        onClick={() => {
+          playSwitch();
+          toggleStoredTheme();
+        }}
         aria-label={`Switch to ${nextLabel} mode (Press T)`}
         title={`Switch to ${nextLabel} mode (Press T)`}
         className={cn(
@@ -88,7 +95,10 @@ export function ThemeToggle({
     <button
       type="button"
       data-cursor="view"
-      onClick={() => toggleStoredTheme()}
+      onClick={() => {
+        playSwitch();
+        toggleStoredTheme();
+      }}
       aria-label={`Switch to ${nextLabel} mode (Press T)`}
       title={`Toggle theme · Shortcut: T`}
       className={cn(

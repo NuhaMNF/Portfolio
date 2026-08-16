@@ -9,6 +9,7 @@ import { EasterEggOverlay } from "@/components/ui/EasterEggOverlay";
 import { StatusBar } from "@/components/system/StatusBar";
 import { BoxFieldBackground } from "@/components/ui/BoxFieldBackground";
 import { ThemeController } from "@/components/system/ThemeController";
+import { ToastContainer } from "@/components/ui/ToastNotification";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NotebookStatus />
         <CommandPalette />
         <EasterEggOverlay />
+        <ToastContainer />
         <div className="relative z-[1] lg:pl-[296px] pb-[24px]">{children}</div>
         <StatusBar />
       </body>

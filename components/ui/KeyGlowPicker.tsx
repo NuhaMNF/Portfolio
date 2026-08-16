@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useKeyGradient } from "@/lib/keyGradients";
 import { Sparkles, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { playSelect } from "@/lib/sound";
 
 interface KeyGlowPickerProps {
   className?: string;
@@ -35,14 +36,17 @@ export function KeyGlowPicker({
 
       {/* 5 Swatches */}
       <div className="flex items-center gap-2">
-        {presets.map((p) => {
+        {presets.map((p, idx) => {
           const isSelected = p.id === currentId;
           return (
             <button
               key={p.id}
               type="button"
               data-cursor="run"
-              onClick={() => setGradient(p.id)}
+              onClick={() => {
+                playSelect(idx);
+                setGradient(p.id);
+              }}
               aria-label={`Select ${p.name} glow preset (${p.tag})`}
               title={`${p.name} · ${p.tag}\n${p.description}`}
               className={cn(

@@ -12,8 +12,6 @@ import {
   Table,
   SlidersHorizontal,
   Bell,
-  Presentation,
-  Users,
 } from "lucide-react";
 import { GithubIcon } from "@/components/ui/BrandIcons";
 import Image from "next/image";
@@ -41,26 +39,6 @@ export function Projects() {
 
   const views = [
     {
-      id: "presentation",
-      label: "Presentation",
-      title: "Project presentation",
-      icon: Presentation,
-      tag: "On stage",
-      src: "/projects/task-management/presentation.png",
-      caption: "Presenting the problem, solution, and product flow to a live audience.",
-      kind: "photo" as const,
-    },
-    {
-      id: "team",
-      label: "Team",
-      title: "Team",
-      icon: Users,
-      tag: "Event",
-      src: "/projects/task-management/team.png",
-      caption: "Team photograph from the collaboration event.",
-      kind: "photo" as const,
-    },
-    {
       id: "tasks-table",
       label: "Tasks Directory",
       title: "All Tasks Directory & Filters",
@@ -68,7 +46,6 @@ export function Projects() {
       tag: "Table View",
       src: "/projects/task-management/tasks-table.jpg",
       caption: "Interactive table with status/priority filtering, role assignment tags, and deadline tracking.",
-      kind: "ui" as const,
     },
     {
       id: "task-details",
@@ -78,7 +55,6 @@ export function Projects() {
       tag: "Modal Editor",
       src: "/projects/task-management/task-details.jpg",
       caption: "Task modal editor featuring dynamic assignee selection, due date picker, and collaborative comments thread.",
-      kind: "ui" as const,
     },
     {
       id: "notifications",
@@ -88,7 +64,6 @@ export function Projects() {
       tag: "Activity Hub",
       src: "/projects/task-management/notifications.jpg",
       caption: "Real-time activity audit feed tracking task assignment changes and team status updates.",
-      kind: "ui" as const,
     },
   ];
 
@@ -207,9 +182,7 @@ export function Projects() {
                   <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
                 </div>
                 <div className="rounded-md border border-[var(--rule-soft)] bg-[var(--surface-2)]/70 px-4 py-1 text-[11px] text-[var(--fg-soft)]">
-                  {views[activeTab].kind === "photo"
-                    ? views[activeTab].title
-                    : "https://app.taskmanagement.local/workspace/tasks"}
+                  https://app.taskmanagement.local/workspace/tasks
                 </div>
                 <span className="metric text-[var(--accent)] font-medium text-[10px]">
                   {String(activeTab + 1).padStart(2, "0")} / {String(views.length).padStart(2, "0")}
@@ -218,9 +191,7 @@ export function Projects() {
 
               {/* Image Canvas with Fade Animation */}
               <div
-                className={`group relative w-full cursor-zoom-in overflow-hidden bg-black/90 ${
-                  views[activeTab].kind === "photo" ? "aspect-[16/10]" : "aspect-[16/9]"
-                }`}
+                className="group relative aspect-[16/9] w-full cursor-zoom-in overflow-hidden bg-black/90"
                 onClick={() => setLightboxImg(views[activeTab].src)}
               >
                 <AnimatePresence mode="wait">
@@ -236,9 +207,7 @@ export function Projects() {
                       src={views[activeTab].src}
                       alt={views[activeTab].title}
                       fill
-                      className={`transition-transform duration-500 group-hover:scale-[1.02] ${
-                        views[activeTab].kind === "photo" ? "object-cover" : "object-contain"
-                      }`}
+                      className="object-contain transition-transform duration-500 group-hover:scale-[1.02]"
                       sizes="(max-width: 1200px) 100vw, 1200px"
                       priority
                     />
@@ -264,52 +233,6 @@ export function Projects() {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Event photos */}
-          <div className="mt-10 mb-4 flex items-end justify-between gap-4">
-            <div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">
-                From the event
-              </div>
-              <p className="mt-1 text-[14px] text-[var(--fg-soft)]">
-                Stage presentation and the team photograph, shown beside the product screens.
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {views
-              .filter((v) => v.kind === "photo")
-              .map((photo) => (
-                <button
-                  key={photo.id}
-                  type="button"
-                  onClick={() => {
-                    setActiveTab(views.findIndex((v) => v.id === photo.id));
-                    setLightboxImg(photo.src);
-                  }}
-                  className="group overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--surface-2)] text-left shadow-md transition-colors hover:border-[var(--accent)]/40"
-                >
-                  <div className="relative aspect-[16/10] w-full overflow-hidden">
-                    <Image
-                      src={photo.src}
-                      alt={photo.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <div>
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)]">
-                        {photo.tag}
-                      </div>
-                      <div className="mt-0.5 text-[14px] text-[var(--fg)]">{photo.title}</div>
-                    </div>
-                    <Maximize2 className="h-4 w-4 text-[var(--fg-faint)]" />
-                  </div>
-                </button>
-              ))}
           </div>
 
           {/* Deep-Dive Feature Breakdown Grid */}

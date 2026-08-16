@@ -7,6 +7,9 @@ import { profile } from "@/lib/data";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { Mail, Command, Sparkles, Menu, X, Clock, MapPin } from "lucide-react";
 import { useBackgroundMode } from "@/lib/backgroundMode";
+import { SoundToggle } from "@/components/ui/SoundToggle";
+import { playSwitch } from "@/lib/sound";
+import { copyEmailToClipboard } from "@/components/ui/ToastNotification";
 
 /**
  * 2-Layered Inset Floating Sidebar:
@@ -121,16 +124,22 @@ export function NotebookExplorer() {
                   <Clock className="h-3 w-3 text-[var(--accent)]" />
                   <span className="tabular-nums font-medium text-[var(--fg)]">{time || "21:48:00"}</span>
                 </span>
-                <button
-                  type="button"
-                  onClick={toggleMode}
-                  title="Toggle Starfield / Grid (B)"
-                  data-cursor="view"
-                  className="flex items-center gap-1 rounded bg-[var(--surface-2)] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[var(--accent)] hover:text-[var(--fg)] transition-colors border border-[var(--rule-soft)] shadow-2xs"
-                >
-                  <Sparkles className="h-2.5 w-2.5" />
-                  <span>{mode === "stars" ? "Stars" : "Grid"}</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSwitch();
+                      toggleMode();
+                    }}
+                    title="Toggle Starfield / Grid (B)"
+                    data-cursor="view"
+                    className="flex items-center gap-1 rounded bg-[var(--surface-2)] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[var(--accent)] hover:text-[var(--fg)] transition-colors border border-[var(--rule-soft)] shadow-2xs"
+                  >
+                    <Sparkles className="h-2.5 w-2.5" />
+                    <span>{mode === "stars" ? "Stars" : "Grid"}</span>
+                  </button>
+                  <SoundToggle variant="icon" />
+                </div>
               </div>
 
               {/* Social Action Triggers */}
@@ -155,14 +164,15 @@ export function NotebookExplorer() {
                 >
                   <LinkedinIcon className="h-3.5 w-3.5" />
                 </a>
-                <a
-                  href={`mailto:${profile.email}`}
+                <button
+                  type="button"
+                  onClick={() => copyEmailToClipboard(profile.email)}
                   data-cursor="view"
-                  title="Email Nuha"
+                  title="Copy Email (nuhanizar16@gmail.com)"
                   className="btn-glass flex h-8 flex-1 items-center justify-center rounded-lg text-[var(--fg-mute)] hover:text-[var(--fg)] transition-colors shadow-xs"
                 >
                   <Mail className="h-3.5 w-3.5" />
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -249,12 +259,16 @@ export function NotebookExplorer() {
                   >
                     <LinkedinIcon className="h-3.5 w-3.5" />
                   </a>
-                  <a
-                    href={`mailto:${profile.email}`}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      copyEmailToClipboard(profile.email);
+                      setOpen(false);
+                    }}
                     className="btn-glass flex h-8 flex-1 items-center justify-center rounded-lg text-[var(--fg-mute)]"
                   >
                     <Mail className="h-3.5 w-3.5" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </motion.div>

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
-import { Send, CheckCircle2, Mail, ArrowUpRight } from "lucide-react";
+import { Send, CheckCircle2, Mail, ArrowUpRight, Calendar } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
+import { CopyEmailButton, MeetingLinkButton } from "@/components/ui/QuickContactActions";
 
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -131,25 +132,48 @@ export function Contact() {
 
           {/* Direct Channels */}
           <div className="space-y-4">
-            <a
-              href={`mailto:${profile.email}`}
-              data-cursor="view"
-              className="group flex items-center justify-between rounded-xl border border-[var(--rule)] bg-[var(--surface)]/70 p-5 backdrop-blur-md transition-all hover:border-[var(--accent)]/40 hover:shadow-md"
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] text-[var(--accent)]">
+            {/* Quick Action Banner */}
+            <div className="rounded-xl border border-[var(--rule)] bg-[var(--surface-2)]/60 p-4 backdrop-blur-md">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-faint)] mb-2">
+                // Fast Connect Options
+              </div>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <MeetingLinkButton />
+                <CopyEmailButton variant="pill" />
+              </div>
+            </div>
+
+            {/* Email Directly Card with Copy Action */}
+            <div className="group flex items-center justify-between rounded-xl border border-[var(--rule)] bg-[var(--surface)]/70 p-5 backdrop-blur-md transition-all hover:border-[var(--accent)]/40 hover:shadow-md">
+              <a
+                href={`mailto:${profile.email}`}
+                data-cursor="view"
+                className="flex items-center gap-3.5 min-w-0 flex-1"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] text-[var(--accent)]">
                   <Mail className="h-5 w-5" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-faint)]">Email Directly</div>
-                  <div className="font-medium text-[15px] text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors">
+                  <div className="font-medium text-[15px] text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors truncate">
                     {profile.email}
                   </div>
                 </div>
+              </a>
+              <div className="flex items-center gap-2 pl-2 shrink-0">
+                <CopyEmailButton variant="chip" />
+                <a
+                  href={`mailto:${profile.email}`}
+                  data-cursor="view"
+                  title="Open mail client"
+                  className="btn-glass flex h-7 w-7 items-center justify-center rounded-md text-[var(--fg-faint)] hover:text-[var(--accent)] transition-colors"
+                >
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
               </div>
-              <ArrowUpRight className="h-4 w-4 text-[var(--fg-faint)] group-hover:text-[var(--accent)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            </div>
 
+            {/* GitHub Card */}
             <a
               href={profile.github}
               target="_blank"
@@ -171,6 +195,7 @@ export function Contact() {
               <ArrowUpRight className="h-4 w-4 text-[var(--fg-faint)] group-hover:text-[var(--accent)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
 
+            {/* LinkedIn Card */}
             <a
               href={profile.linkedin}
               target="_blank"

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GithubIcon } from "@/components/ui/BrandIcons";
 import { X, CheckCircle2, ArrowUpRight, Layers } from "lucide-react";
+import { playModalOpen, playModalClose } from "@/lib/sound";
 import Image from "next/image";
 
 type Project = {
@@ -38,9 +39,13 @@ export function ProjectDetailModal({
 
   useEffect(() => {
     if (!project) return;
+    playModalOpen();
     setSelectedImg(0);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        playModalClose();
+        onClose();
+      }
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -85,7 +90,10 @@ export function ProjectDetailModal({
                 <span className="text-[var(--fg-mute)]">{project.year}</span>
               </div>
               <button
-                onClick={onClose}
+                onClick={() => {
+                  playModalClose();
+                  onClose();
+                }}
                 aria-label="Close modal"
                 className="btn-glass inline-flex h-8 w-8 items-center justify-center rounded-lg text-[var(--fg-mute)] hover:text-[var(--fg)] transition-colors"
               >
@@ -241,7 +249,10 @@ export function ProjectDetailModal({
                 )}
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={() => {
+                    playModalClose();
+                    onClose();
+                  }}
                   className="btn-glass px-4 py-2 font-mono text-[12px] text-[var(--fg-mute)] rounded-lg"
                 >
                   Close

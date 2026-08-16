@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { applyTheme, getStoredTheme, toggleStoredTheme } from "@/lib/theme";
 import { getStoredBackgroundMode, setBackgroundMode } from "@/lib/backgroundMode";
+import { isSoundMuted, setSoundMuted } from "@/lib/sound";
 
 function isTypingTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -28,6 +29,9 @@ export function ThemeController() {
         e.preventDefault();
         const cur = getStoredBackgroundMode();
         setBackgroundMode(cur === "boxes" ? "stars" : "boxes");
+      } else if (e.key === "m" || e.key === "M") {
+        e.preventDefault();
+        setSoundMuted(!isSoundMuted());
       }
     };
 

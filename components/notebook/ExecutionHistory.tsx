@@ -6,6 +6,7 @@ import { navItems } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { useActiveSection } from "@/lib/hooks/useActiveSection";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import { playNavigate } from "@/lib/sound";
 import {
   Compass,
   User,
@@ -51,6 +52,7 @@ export function ExecutionHistory({ onNavigate }: ExecutionHistoryProps) {
 
   const onClick = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
+    playNavigate();
     const el = document.getElementById(id);
     if (!el) return;
     el.scrollIntoView({

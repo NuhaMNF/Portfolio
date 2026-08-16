@@ -6,6 +6,7 @@ import { profile, stats } from "@/lib/data";
 import { ArrowRight, Sparkles, GraduationCap, Award, FolderGit2 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import { CopyEmailButton, MeetingLinkButton } from "@/components/ui/QuickContactActions";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -106,41 +107,36 @@ export function Hero() {
               initial={reduced ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: EASE, delay: 0.65 }}
-              className="mt-9 flex flex-wrap items-center gap-4"
+              className="mt-9 flex flex-wrap items-center gap-3.5"
             >
               <a
                 href="#projects"
                 data-cursor="view"
-                className="btn-glass btn-glass--accent group inline-flex min-h-11 items-center gap-2.5 px-6 font-mono text-[12.5px] rounded-md shadow-sm"
+                className="btn-glass btn-glass--accent group inline-flex min-h-11 items-center gap-2.5 px-6 font-mono text-[12.5px] rounded-xl shadow-sm"
               >
                 <span>View Projects</span>
                 <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
               </a>
-              <a
-                href="#contact"
-                data-cursor="view"
-                className="btn-glass inline-flex min-h-11 items-center gap-2 px-5 font-mono text-[12.5px] text-[var(--fg-soft)] rounded-md"
-              >
-                <span>Get in Touch</span>
-              </a>
+              <MeetingLinkButton />
             </motion.div>
 
-            {/* Social Links */}
+            {/* Quick Email Copy & Social Links */}
             <motion.div
               initial={reduced ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, ease: EASE, delay: 0.75 }}
-              className="mt-8 flex items-center gap-2"
+              className="mt-7 flex flex-wrap items-center gap-3"
             >
-              <SocialLink href={profile.github} label="GitHub">
-                <GithubIcon className="h-4 w-4" />
-              </SocialLink>
-              <SocialLink href={profile.linkedin} label="LinkedIn">
-                <LinkedinIcon className="h-4 w-4" />
-              </SocialLink>
-              <SocialLink href={`mailto:${profile.email}`} label="Email">
-                <span className="font-mono text-[12px]">@</span>
-              </SocialLink>
+              <CopyEmailButton variant="pill" />
+
+              <div className="flex items-center gap-2">
+                <SocialLink href={profile.github} label="GitHub">
+                  <GithubIcon className="h-4 w-4" />
+                </SocialLink>
+                <SocialLink href={profile.linkedin} label="LinkedIn">
+                  <LinkedinIcon className="h-4 w-4" />
+                </SocialLink>
+              </div>
             </motion.div>
           </div>
 
