@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0a0b;
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --accent: #fbbf24;
+  --accent-2: #10b981;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --font-sans: var(--font-sans), "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+/* Subtle graph paper background available globally */
+.bg-paper {
+  background-color: #0a0a0b;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0b;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 6px;
+  border: 2px solid #0a0a0b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Selection */
+::selection {
+  background: rgba(251, 191, 36, 0.3);
+  color: #fef3c7;
+}
+
+/* Hide default cursor on desktop where we use custom cursor */
+@media (pointer: fine) {
+  a,
+  button,
+  [data-cursor] {
+    cursor: none;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus rings */
+:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.6);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Smooth font for code */
+code,
+pre {
+  font-family: var(--font-mono);
+}
