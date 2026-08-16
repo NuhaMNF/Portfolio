@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { commands } from "@/lib/data";
 import { useCommandPalette } from "@/lib/hooks/useCommandPalette";
+import { getStoredKeyGradient, setKeyGradient, KEY_GRADIENTS } from "@/lib/keyGradients";
 import { cn } from "@/lib/utils";
 
 const GHOST = "try: help, projects, hire, run_nuha";
@@ -11,7 +12,7 @@ const GHOST = "try: help, projects, hire, run_nuha";
 const GROUPS: Record<string, string[]> = {
   navigate: ["hero", "about", "skills", "experience", "ai_lab", "projects", "research", "education", "activity", "contact"],
   actions: ["github", "linkedin", "hire", "surprise"],
-  system: ["help", "restart", "run_nuha", "theme"],
+  system: ["help", "restart", "run_nuha", "theme", "glow"],
 };
 
 export function CommandPalette() {
@@ -80,6 +81,13 @@ export function CommandPalette() {
     }
     if (id === "theme") {
       window.dispatchEvent(new Event("nuha:toggle-theme"));
+      return;
+    }
+    if (id === "glow") {
+      const current = getStoredKeyGradient();
+      const idx = KEY_GRADIENTS.findIndex((p) => p.id === current);
+      const next = KEY_GRADIENTS[(idx + 1) % KEY_GRADIENTS.length].id;
+      setKeyGradient(next);
       return;
     }
     const el = document.getElementById(id);

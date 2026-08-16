@@ -6,6 +6,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useTheme } from "@/lib/hooks/useTheme";
+import { useKeyGradient, type KeyGradientPreset } from "@/lib/keyGradients";
 import {
   gridForViewport,
   KEY_D,
@@ -17,12 +18,6 @@ import {
 } from "@/components/ui/boxFieldLayout";
 
 const REST_COLOR = new THREE.Color("#07060c");
-const GRAD_LEFT = new THREE.Color("#4f7dff");
-const GRAD_MID = new THREE.Color("#c026d3");
-const GRAD_RIGHT = new THREE.Color("#fb7185");
-const LIGHT_GRAD_LEFT = new THREE.Color("#3d6ae8");
-const LIGHT_GRAD_MID = new THREE.Color("#7c4db8");
-const LIGHT_GRAD_RIGHT = new THREE.Color("#c45a6a");
 const LIGHT_CLEAR = "#f6f4f0";
 const INFLUENCE_RADIUS_FULL = 0.95;
 const INFLUENCE_RADIUS_MEDIUM = 1.85;
@@ -85,18 +80,19 @@ function useCoarsePointer() {
   );
 }
 
-function makeKeyMaterial(light: boolean) {
+function makeKeyMaterial(light: boolean, preset: KeyGradientPreset) {
+  const colors = light ? preset.light : preset.dark;
   return new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
-        side: THREE.DoubleSide,
+    side: THREE.DoubleSide,
     toneMapped: false,
     uniforms: {
       uHalf: { value: new THREE.Vector3(KEY_W * 0.5, KEY_H * 0.5, KEY_D * 0.5) },
       uRest: { value: REST_COLOR.clone() },
-      uLeft: { value: (light ? LIGHT_GRAD_LEFT : GRAD_LEFT).clone() },
-      uMid: { value: (light ? LIGHT_GRAD_MID : GRAD_MID).clone() },
-      uRight: { value: (light ? LIGHT_GRAD_RIGHT : GRAD_RIGHT).clone() },
+      uLeft: { value: new THREE.Color(colors.left) },
+      uMid: { value: new THREE.Color(colors.mid) },
+      uRight: { value: new THREE.Color(colors.right) },
       uLight: { value: light ? 1 : 0 },
     },
     vertexShader: /* glsl */ `
@@ -153,7 +149,7 @@ function makeKeyMaterial(light: boolean) {
   });
 }
 
-function makeGlowTexture(light: boolean) {
+function makeGlowTexture(light: boolean, preset: KeyGradientPreset) {
   const size = 128;
   const canvas = document.createElement("canvas");
   canvas.width = size;
@@ -161,15 +157,12 @@ function makeGlowTexture(light: boolean) {
   const g = canvas.getContext("2d");
   if (!g) return null;
   const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  if (light) {
-    grad.addColorStop(0, "rgba(90, 130, 230, 0.85)");
-    grad.addColorStop(0.28, "rgba(124, 77, 184, 0.35)");
-    grad.addColorStop(1, "rgba(196, 90, 106, 0)");
-  } else {
-    grad.addColorStop(0, "rgba(240, 171, 252, 0.95)");
-    grad.addColorStop(0.22, "rgba(232, 121, 249, 0.4)");
-    grad.addColorStop(1, "rgba(168, 85, 247, 0)");
-  }
+  const colors = light ? preset.light : preset.dark;
+
+  grad.addColorStop(0, colors.glowCore);
+  grad.addColorStop(0.28, colors.glowMid);
+  grad.addColorStop(1, colors.glowEdge);
+
   g.fillStyle = grad;
   g.fillRect(0, 0, size, size);
   const tex = new THREE.CanvasTexture(canvas);
@@ -180,6 +173,8 @@ function makeGlowTexture(light: boolean) {
 export function BoxFieldCanvas() {
   const theme = useTheme();
   const light = theme === "light";
+  const { preset } = useKeyGradient();
+
   return (
     <div
       aria-hidden
@@ -202,7 +197,7 @@ export function BoxFieldCanvas() {
         }}
       >
         <ThemeSync light={light} />
-        <BoxFieldScene light={light} />
+        <BoxFieldScene light={light} preset={preset} />
         <EffectComposer multisampling={0}>
           <Bloom
             mipmapBlur
@@ -225,7 +220,13 @@ function ThemeSync({ light }: { light: boolean }) {
   return null;
 }
 
-function BoxFieldScene({ light }: { light: boolean }) {
+function BoxFieldScene({
+  light,
+  preset,
+}: {
+  light: boolean;
+  preset: KeyGradientPreset;
+}) {
   const reduced = useReducedMotion();
   const coarse = useCoarsePointer();
   const activeRef = useRef(true);
@@ -287,9 +288,9 @@ function BoxFieldScene({ light }: { light: boolean }) {
 
   return (
     <>
-      <StarPoints light={light} />
-      <KeyField specs={specs} reduced={reduced} light={light} />
-      <CursorGlow reduced={reduced} light={light} />
+      <StarPoints light={light} preset={preset} />
+      <KeyField specs={specs} reduced={reduced} light={light} preset={preset} />
+      <CursorGlow reduced={reduced} light={light} preset={preset} />
     </>
   );
 }
@@ -298,10 +299,12 @@ function KeyField({
   specs,
   reduced,
   light,
+  preset,
 }: {
   specs: KeySpec[];
   reduced: boolean;
   light: boolean;
+  preset: KeyGradientPreset;
 }) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const simRef = useRef<{
@@ -324,9 +327,17 @@ function KeyField({
   }, [specs]);
 
   const material = useMemo(() => {
-    const mat = makeKeyMaterial(light);
-    return mat;
-  }, [light]);
+    return makeKeyMaterial(light, preset);
+  }, [light, preset]);
+
+  useLayoutEffect(() => {
+    const colors = light ? preset.light : preset.dark;
+    material.uniforms.uLeft.value.set(colors.left);
+    material.uniforms.uMid.value.set(colors.mid);
+    material.uniforms.uRight.value.set(colors.right);
+    material.uniforms.uLight.value = light ? 1 : 0;
+    invalidateFn?.();
+  }, [light, preset, material]);
 
   useEffect(() => {
     return () => {
@@ -406,12 +417,26 @@ function KeyField({
   );
 }
 
-function CursorGlow({ reduced, light }: { reduced: boolean; light: boolean }) {
+function CursorGlow({
+  reduced,
+  light,
+  preset,
+}: {
+  reduced: boolean;
+  light: boolean;
+  preset: KeyGradientPreset;
+}) {
   const group = useRef<THREE.Group>(null);
   const mat = useRef<THREE.SpriteMaterial>(null);
   const sphereMat = useRef<THREE.MeshBasicMaterial>(null);
-  const tex = useMemo(() => makeGlowTexture(light), [light]);
+  const tex = useMemo(() => makeGlowTexture(light, preset), [light, preset]);
   const opacity = useRef(0);
+
+  useLayoutEffect(() => {
+    if (sphereMat.current) {
+      sphereMat.current.color.set(light ? preset.light.sphere : preset.dark.sphere);
+    }
+  }, [light, preset]);
 
   useFrame((_, dt) => {
     const g = group.current;
@@ -435,7 +460,7 @@ function CursorGlow({ reduced, light }: { reduced: boolean; light: boolean }) {
         <sphereGeometry args={[0.16, 20, 20]} />
         <meshBasicMaterial
           ref={sphereMat}
-          color={light ? "#5b7ce8" : "#f5d0fe"}
+          color={light ? preset.light.sphere : preset.dark.sphere}
           transparent
           opacity={0}
           toneMapped={false}
@@ -458,7 +483,13 @@ function CursorGlow({ reduced, light }: { reduced: boolean; light: boolean }) {
   );
 }
 
-function StarPoints({ light }: { light: boolean }) {
+function StarPoints({
+  light,
+  preset,
+}: {
+  light: boolean;
+  preset: KeyGradientPreset;
+}) {
   const geometry = useMemo(() => {
     const count = 140;
     const positions = new Float32Array(count * 3);
@@ -486,7 +517,7 @@ function StarPoints({ light }: { light: boolean }) {
   return (
     <points geometry={geometry} frustumCulled={false}>
       <pointsMaterial
-        color="#c4b5fd"
+        color={preset.dark.left}
         size={1.35}
         sizeAttenuation={false}
         transparent

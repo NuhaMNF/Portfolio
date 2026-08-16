@@ -406,6 +406,7 @@ export const commands = [
   { id: "restart", label: "restart kernel", shortcut: "r" },
   { id: "surprise", label: "surprise me", shortcut: "🎲" },
   { id: "theme", label: "toggle theme", shortcut: "t" },
+  { id: "glow", label: "cycle key glow gradient", shortcut: "k" },
 ];
 
 export const personalityAnnotations: Array<{ id: string; section: string; text: string; tone?: "warm" | "wry" | "quiet" }> = [
