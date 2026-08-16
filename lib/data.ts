@@ -16,13 +16,9 @@ export const profile = {
 export const heroClassCode = `class NuhaNizar:
     name = "Nuha Nizar"
     role = "AI Engineer & Developer"
-    interests = [
-        "Artificial Intelligence",
-        "Machine Learning",
-        "Software Engineering",
-        "Creative Tech",
-        "Research",
-    ]
+
+    def build(self, idea):
+        return f"{idea} → Intelligence → Impact"
 
     def introduce(self):
         return "Building intelligent things with code."
