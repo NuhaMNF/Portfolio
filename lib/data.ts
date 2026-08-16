@@ -5,7 +5,7 @@ export const profile = {
   role: "Management & IT Undergraduate",
   initials: "NN",
   avatar: "/profile.png",
-  email: "nuhanizar16@gmail.com",
+  email: "nuhanizar999@gmail.com",
   location: "University of Kelaniya, LK",
   tagline:
     "Data analysis, software, and decisions from structured information.",

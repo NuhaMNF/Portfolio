@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { profile } from "@/lib/data";
 import { Send, Mail, ArrowUpRight, CheckCircle2, RotateCcw, Loader2, Sparkles } from "lucide-react";
@@ -9,6 +10,11 @@ import { CopyEmailButton, MeetingLinkButton } from "@/components/ui/QuickContact
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { playSelect } from "@/lib/sound";
 import { showToast } from "@/components/ui/ToastNotification";
+
+const ParticleMail = dynamic(
+  () => import("@/components/ui/ParticleMail").then((m) => m.ParticleMail),
+  { ssr: false, loading: () => null },
+);
 
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -241,6 +247,7 @@ export function Contact() {
 
           {/* Direct Channels Column */}
           <div className="space-y-4">
+            <ParticleMail />
             {/* Quick Action Banner */}
             <div className="rounded-2xl border border-[var(--rule)] bg-[var(--surface-2)]/60 p-5 backdrop-blur-md">
               <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-faint)] mb-2.5">

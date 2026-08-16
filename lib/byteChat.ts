@@ -8,7 +8,8 @@ export type ByteAction =
   | { type: "open"; url: string }
   | { type: "trick"; name: "roll" | "boost" | "dance" }
   | { type: "pet" }
-  | { type: "tour"; enabled: boolean };
+  | { type: "tour"; enabled: boolean }
+  | { type: "laser"; id: string; label: string };
 
 export type ByteReply = {
   text: string;
@@ -159,6 +160,37 @@ export function replyToByte(input: string): ByteReply {
       emotion: "curious",
       action: { type: "scroll", id: "projects" },
       chips: ["Skills", "Any awards?", "GitHub"],
+    };
+  }
+
+  if (
+    has(t, "schema", "ddl", "tables") ||
+    t.includes("postgres schema") ||
+    t.includes("sql schema")
+  ) {
+    return {
+      text: "Locking onto the PostgreSQL schema inspector.",
+      emotion: "curious",
+      action: { type: "laser", id: "project-schema", label: "PostgreSQL schema" },
+      chips: ["What's the project?", "Aim contact", "Skills"],
+    };
+  }
+
+  if (has(t, "aim", "laser", "pointer", "spotlight") && has(t, "contact", "form", "email")) {
+    return {
+      text: "Laser on the contact form.",
+      emotion: "curious",
+      action: { type: "laser", id: "contact", label: "Contact form" },
+      chips: ["Copy her email", "Aim schema", "Who is Nuha?"],
+    };
+  }
+
+  if (has(t, "aim schema", "point at schema", "show schema")) {
+    return {
+      text: "Laser on the schema tab.",
+      emotion: "curious",
+      action: { type: "laser", id: "project-schema", label: "PostgreSQL schema" },
+      chips: ["What's the project?", "Aim contact"],
     };
   }
 

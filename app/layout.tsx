@@ -11,6 +11,7 @@ import { BoxFieldBackground } from "@/components/ui/BoxFieldBackground";
 import { ThemeController } from "@/components/system/ThemeController";
 import { ToastContainer } from "@/components/ui/ToastNotification";
 import { RoboPet } from "@/components/ui/RoboPet";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="min-h-full bg-[var(--bg)] font-sans text-[var(--fg)] selection:bg-[var(--accent)]/25 selection:text-[var(--fg)]"
         suppressHydrationWarning
       >
+        <LoadingScreen />
         <ThemeController />
         <BoxFieldBackground />
         <CoordRails />

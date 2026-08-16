@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { applyTheme, getStoredTheme, toggleStoredTheme } from "@/lib/theme";
 import { getStoredBackgroundMode, setBackgroundMode } from "@/lib/backgroundMode";
 import { isSoundMuted, setSoundMuted } from "@/lib/sound";
+import { toggleRadioPlayback } from "@/lib/radioAudio";
 
 function isTypingTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -32,6 +33,9 @@ export function ThemeController() {
       } else if (e.key === "m" || e.key === "M") {
         e.preventDefault();
         setSoundMuted(!isSoundMuted());
+      } else if (e.key === "r" || e.key === "R") {
+        e.preventDefault();
+        toggleRadioPlayback();
       }
     };
 

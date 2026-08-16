@@ -574,28 +574,24 @@ html[data-theme="light"] .status-bar {
    DISPLAY TYPOGRAPHY
    ============================================================ */
 .display {
-  font-family: var(--font-display);
-  font-weight: 350;
-  letter-spacing: -0.035em;
-  line-height: 0.9;
-  font-feature-settings: "ss01", "ss02";
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
 }
 
 .display-huge {
-  font-family: var(--font-display);
-  font-weight: 350;
-  letter-spacing: -0.045em;
-  line-height: 0.86;
-  font-feature-settings: "ss01", "ss02";
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
 }
 
 .hero-display {
-  font-family: var(--font-display);
-  font-weight: 350;
-  letter-spacing: -0.052em;
-  line-height: 0.78;
-  font-feature-settings: "ss01", "ss02";
-  font-variation-settings: "opsz" 144, "SOFT" 40, "WONK" 1;
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
 }
 
 .hero-code .code-frame {
@@ -607,7 +603,7 @@ html[data-theme="light"] .status-bar {
 }
 
 .display-italic {
-  font-family: var(--font-display);
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
   font-style: italic;
   font-weight: 400;
   letter-spacing: -0.02em;

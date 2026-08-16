@@ -15,11 +15,13 @@ export interface ToastMessage {
 
 export function showToast(title: string, description?: string, icon: "check" | "copy" | "sparkle" = "check") {
   if (typeof window === "undefined") return;
-  window.dispatchEvent(
-    new CustomEvent("nuha:toast", {
-      detail: { id: Math.random().toString(36), title, description, icon },
-    })
-  );
+  queueMicrotask(() => {
+    window.dispatchEvent(
+      new CustomEvent("nuha:toast", {
+        detail: { id: Math.random().toString(36), title, description, icon },
+      })
+    );
+  });
 }
 
 export async function copyEmailToClipboard(email = profile.email) {

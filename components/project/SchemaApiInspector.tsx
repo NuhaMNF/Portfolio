@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Database, Server, Copy, Check, Terminal, Key, Shield, ArrowRight } from "lucide-react";
 import { playSelect } from "@/lib/sound";
@@ -74,7 +74,7 @@ const API_ENDPOINTS = [
           title: "Implement PostgreSQL Notification Audit Log",
           priority: "high",
           status: "in_progress",
-          assignee: { name: "Nuha Nizar", email: "nuhanizar16@gmail.com" },
+          assignee: { name: "Nuha Nizar", email: "nuhanizar999@gmail.com" },
           dueDate: "2025-09-30",
         },
         {
@@ -82,7 +82,7 @@ const API_ENDPOINTS = [
           title: "Design Responsive Tasks Table with Priority Badges",
           priority: "medium",
           status: "completed",
-          assignee: { name: "Nuha Nizar", email: "nuhanizar16@gmail.com" },
+          assignee: { name: "Nuha Nizar", email: "nuhanizar999@gmail.com" },
           dueDate: "2025-09-15",
         },
       ],
@@ -140,6 +140,12 @@ const API_ENDPOINTS = [
 
 export function SchemaApiInspector() {
   const [activeTab, setActiveTab] = useState<TabMode>("schema");
+
+  useEffect(() => {
+    const aimSchema = () => setActiveTab("schema");
+    window.addEventListener("byte:aim-schema", aimSchema);
+    return () => window.removeEventListener("byte:aim-schema", aimSchema);
+  }, []);
   const [selectedTable, setSelectedTable] = useState<number>(1); // Default to 'tasks' table
   const [selectedEndpoint, setSelectedEndpoint] = useState<number>(0);
   const [copied, setCopied] = useState<string | null>(null);
@@ -202,7 +208,7 @@ CREATE INDEX idx_notif_recipient ON notifications(recipient_id, is_read);`;
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--surface)] shadow-2xl backdrop-blur-xl">
+    <div id="project-schema" className="overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--surface)] shadow-2xl backdrop-blur-xl">
       {/* Top Header & Sub-Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--rule)] bg-[var(--surface-2)]/80 px-5 py-3.5">
         <div className="flex items-center gap-2">

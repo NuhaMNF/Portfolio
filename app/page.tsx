@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
+import { DecisionSimulator } from "@/components/interactive/DecisionSimulator";
 import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
 import { Education } from "@/components/sections/Education";
@@ -7,6 +8,7 @@ import { Achievements } from "@/components/sections/Achievements";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
 import { SectionDivider } from "@/components/ui/SectionDivider";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export default function Home() {
   return (
@@ -15,16 +17,18 @@ export default function Home() {
       <SectionDivider />
       <About />
       <SectionDivider />
-      <Skills />
+      <ScrollReveal><DecisionSimulator /></ScrollReveal>
       <SectionDivider />
-      <Projects />
+      <ScrollReveal><Skills /></ScrollReveal>
       <SectionDivider />
-      <Education />
+      <ScrollReveal><Projects /></ScrollReveal>
       <SectionDivider />
-      <Achievements />
+      <ScrollReveal><Education /></ScrollReveal>
       <SectionDivider />
-      <Contact />
-      <Footer />
+      <ScrollReveal><Achievements /></ScrollReveal>
+      <SectionDivider />
+      <ScrollReveal><Contact /></ScrollReveal>
+      <ScrollReveal><Footer /></ScrollReveal>
     </main>
   );
 }

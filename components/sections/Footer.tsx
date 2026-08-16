@@ -49,10 +49,16 @@ export function Footer() {
                 <span className="text-[var(--fg-faint)]">⌘K</span> Command Menu
               </li>
               <li>
-                <span className="text-[var(--fg-faint)]">T</span> Toggle Theme
+                <span className="text-[var(--fg-faint)]">T</span> Dark / Light
               </li>
               <li>
-                <span className="text-[var(--fg-faint)]">K</span> Cycle Glow
+                <span className="text-[var(--fg-faint)]">B</span> Stars / Grid
+              </li>
+              <li>
+                <span className="text-[var(--fg-faint)]">R</span> Cyber Radio
+              </li>
+              <li>
+                <span className="text-[var(--fg-faint)]">M</span> Sound Mute
               </li>
             </ul>
           </div>

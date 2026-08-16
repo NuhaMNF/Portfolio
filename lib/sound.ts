@@ -218,13 +218,142 @@ export function playDroidChirp(
       playTone(659.25, "sine", 0.09, 0.07);
       setTimeout(() => playTone(880, "sine", 0.14, 0.08), 60);
     } else if (type === "dance") {
-      playTone(392, "triangle", 0.05, 0.07);
-      setTimeout(() => playTone(523, "triangle", 0.05, 0.06), 90);
-      setTimeout(() => playTone(659, "sine", 0.07, 0.07), 170);
-      setTimeout(() => playTone(784, "sine", 0.1, 0.06), 250);
+      playTone(440, "triangle", 0.04, 0.08);
+      setTimeout(() => playTone(554.37, "triangle", 0.04, 0.08), 60);
+      setTimeout(() => playTone(659.25, "triangle", 0.04, 0.08), 120);
+      setTimeout(() => playTone(880, "sine", 0.08, 0.09), 180);
     } else if (type === "dance_beat") {
       playTone(330, "triangle", 0.035, 0.055);
       setTimeout(() => playTone(494, "sine", 0.04, 0.05), 70);
     }
   } catch {}
+}
+
+/** Sci-Fi Soundboard: Laser Zap */
+export function playLaserZap() {
+  if (isSoundMuted()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(2400, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.14);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.14);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.14);
+  } catch {}
+}
+
+/** Sci-Fi Soundboard: Space Warble */
+export function playSpaceWarble() {
+  if (isSoundMuted()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = 650;
+
+    lfo.type = "sine";
+    lfo.frequency.value = 18; // 18Hz vibrato
+
+    lfoGain.gain.value = 180;
+    lfo.connect(osc.frequency);
+
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    lfo.start();
+    osc.start();
+    lfo.stop(ctx.currentTime + 0.28);
+    osc.stop(ctx.currentTime + 0.28);
+  } catch {}
+}
+
+/** Sci-Fi Soundboard: 8-Bit Power Up */
+export function playPowerUp() {
+  if (isSoundMuted()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const notes = [220, 330, 440, 660, 880, 1320];
+    notes.forEach((freq, idx) => {
+      setTimeout(() => {
+        playTone(freq, "triangle", 0.05, 0.07);
+      }, idx * 35);
+    });
+  } catch {}
+}
+
+/** Sci-Fi Soundboard: R2 Trill */
+export function playR2Trill() {
+  if (isSoundMuted()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const pitches = [750, 1100, 950, 1350, 850, 1200, 1450];
+    pitches.forEach((freq, idx) => {
+      setTimeout(() => {
+        playTone(freq, "sine", 0.04, 0.06);
+      }, idx * 28);
+    });
+  } catch {}
+}
+
+/** Sci-Fi Soundboard: Cyber Bass Drop */
+export function playCyberBass() {
+  if (isSoundMuted()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(140, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(32, ctx.currentTime + 0.35);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.35);
+  } catch {}
+}
+
+/** Sci-Fi Soundboard: 8-bit chime */
+export function playEightBitChime() {
+  if (isSoundMuted()) return;
+  const notes = [523.25, 659.25, 783.99, 1046.5];
+  notes.forEach((freq, idx) => {
+    setTimeout(() => playTone(freq, "square", 0.07, 0.045), idx * 70);
+  });
+}
+
+/** Celebratory Level Up Fanfare */
+export function playLevelUpFanfare() {
+  if (isSoundMuted()) return;
+  const chords = [
+    { freq: 523.25, time: 0 },
+    { freq: 659.25, time: 80 },
+    { freq: 783.99, time: 160 },
+    { freq: 1046.5, time: 260 },
+    { freq: 1318.5, time: 380 },
+  ];
+  chords.forEach(({ freq, time }) => {
+    setTimeout(() => {
+      playTone(freq, "triangle", 0.22, 0.09);
+    }, time);
+  });
 }

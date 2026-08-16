@@ -17,6 +17,7 @@ import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { CopyEmailButton, MeetingLinkButton } from "@/components/ui/QuickContactActions";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { MultilingualGreeting } from "@/components/ui/MultilingualGreeting";
 import Image from "next/image";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -36,14 +37,25 @@ export function Hero() {
           {/* ========================================================= */}
           <div>
             {/* Section Tag */}
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <motion.div
+                initial={reduced ? false : { opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: EASE }}
+                className="flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)]"
+              >
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
+                <span>01 / Introduce</span>
+              </motion.div>
+            </div>
+
+            {/* Multilingual Dynamic Greeting */}
             <motion.div
-              initial={reduced ? false : { opacity: 0, y: -6 }}
+              initial={reduced ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: EASE }}
-              className="mb-6 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)]"
+              transition={{ duration: 0.6, ease: EASE, delay: 0.05 }}
             >
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
-              <span>01 / Introduce</span>
+              <MultilingualGreeting />
             </motion.div>
 
             {/* Large Editorial Headline */}
