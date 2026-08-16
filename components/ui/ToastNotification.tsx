@@ -62,7 +62,7 @@ export function ToastContainer() {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none fixed bottom-6 right-6 z-[200] flex flex-col gap-2 select-none"
+      className="pointer-events-none fixed bottom-24 right-6 z-[200] flex flex-col gap-2 select-none"
     >
       <AnimatePresence>
         {toasts.map((t) => (

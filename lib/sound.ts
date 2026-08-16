@@ -165,3 +165,19 @@ export function playModalClose() {
   playTone(659.25, "sine", 0.08, 0.05);
   setTimeout(() => playTone(440, "sine", 0.1, 0.04), 40);
 }
+
+/** Short two-note chirps for Byte. Quiet on purpose. */
+export function playByteChirp(kind: "wake" | "talk" | "copy") {
+  if (isSoundMuted()) return;
+  if (kind === "wake") {
+    playTone(720, "sine", 0.05, 0.045);
+    setTimeout(() => playTone(960, "sine", 0.07, 0.038), 42);
+    return;
+  }
+  if (kind === "copy") {
+    playTone(680, "sine", 0.05, 0.04);
+    setTimeout(() => playTone(910, "sine", 0.08, 0.035), 48);
+    return;
+  }
+  playTone(610 + Math.random() * 90, "triangle", 0.028, 0.028);
+}

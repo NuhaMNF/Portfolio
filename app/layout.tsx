@@ -10,6 +10,7 @@ import { StatusBar } from "@/components/system/StatusBar";
 import { BoxFieldBackground } from "@/components/ui/BoxFieldBackground";
 import { ThemeController } from "@/components/system/ThemeController";
 import { ToastContainer } from "@/components/ui/ToastNotification";
+import { RoboPet } from "@/components/ui/RoboPet";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CommandPalette />
         <EasterEggOverlay />
         <ToastContainer />
+        <RoboPet />
         <div className="relative z-[1] lg:pl-[296px] lg:pb-[24px]">{children}</div>
         <StatusBar />
       </body>
