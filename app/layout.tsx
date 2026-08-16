@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { NotebookSidebar } from "@/components/notebook/NotebookSidebar";
+import { NotebookProgressBar } from "@/components/notebook/NotebookProgressBar";
 import { CommandPalette } from "@/components/notebook/CommandPalette";
 import { EasterEggOverlay } from "@/components/ui/EasterEggOverlay";
 import { BootTerminalClient } from "@/components/system/BootTerminalClient";
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <BootTerminalClient />
         <CustomCursor />
         <NotebookSidebar />
+        <NotebookProgressBar />
         <CommandPalette />
         <EasterEggOverlay />
         <div className="lg:pl-[220px]">{children}</div>
