@@ -12,13 +12,13 @@ export function Experience() {
     <section className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
         <NotebookCell cellId="4" threshold={0.12}>
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock
                 code={`experience = [\n    { "role": "AI Engineer", "company": "Lumen Labs", "period": "2025 — Present" },\n    { "role": "ML Engineer", "company": "Northwind AI", "period": "2023 — 2025" },\n    { "role": "Software Engineer", "company": "PenguinByte", "period": "2021 — 2023" },\n    { "role": "Research Intern", "company": "IISc Bangalore", "period": "2020 — 2021" },\n]\nfor cell in experience:\n    cell.execute()`}
                 className="mt-4"
               />
-              <OutputBlock cellId="4" visible={executed} tone="default">
+              <OutputBlock cellId="4" visible={run} tone="default">
                 <div className="space-y-3">
                   {experience.map((job, i) => (
                     <motion.div

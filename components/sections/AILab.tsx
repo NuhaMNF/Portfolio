@@ -17,13 +17,13 @@ export function AILab() {
       <div className="absolute inset-0 -z-10 opacity-[0.04] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
       <div className="mx-auto max-w-5xl">
         <NotebookCell cellId="4.5" threshold={0.1}>
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock
                 code={`from nuha.ai_lab import *\n\nmodel = NeuralNetwork()\nmodel.compile(optimizer="adam", loss="sparse_categorical_crossentropy")\nhistory = model.fit(dataset, epochs=50, verbose=1)`}
                 className="mt-4"
               />
-              <OutputBlock cellId="4.5" visible={executed} tone="default">
+              <OutputBlock cellId="4.5" visible={run} tone="default">
                 <div className="mb-4 flex items-center gap-2 font-mono text-[12px] text-zinc-500">
                   <FlaskConical className="h-3.5 w-3.5" />
                   ai_lab.ipynb — synthesized training metrics (not a real run)

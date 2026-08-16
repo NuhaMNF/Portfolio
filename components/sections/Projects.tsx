@@ -50,13 +50,13 @@ export function Projects() {
     <section id="projects" className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
         <NotebookCell cellId="5" threshold={0.08}>
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock
                 code={`projects = [\n    LumenRAG(...),\n    Cetacea(...),\n    Tideline(...),\n    Meridian(...),\n    Graphite(...),\n]\nprojects.run_all()`}
                 className="mt-4"
               />
-              <OutputBlock cellId="5" visible={executed} tone="default">
+              <OutputBlock cellId="5" visible={run} tone="default">
                 <div className="relative">
                   <CodeAnnotation id="p5" className="absolute -right-1 -top-8 hidden md:block" align="right" />
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

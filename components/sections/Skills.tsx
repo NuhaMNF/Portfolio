@@ -22,10 +22,10 @@ export function Skills() {
     <section id="skills" className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
         <NotebookCell cellId="3">
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock code={skillsCode} className="mt-4" />
-              <OutputBlock cellId="3" visible={executed} tone="default">
+              <OutputBlock cellId="3" visible={run} tone="default">
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <SkillsRadar />
                   <div className="flex flex-col gap-6">

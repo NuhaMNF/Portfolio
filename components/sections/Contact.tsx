@@ -45,13 +45,13 @@ export function Contact() {
     <section id="contact" className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
         <NotebookCell cellId="9">
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock
                 code={`connect(\n    email=True,\n    linkedin=True,\n    github=True,\n)`}
                 className="mt-4"
               />
-              <OutputBlock cellId="9" visible={executed} tone="result">
+              <OutputBlock cellId="9" visible={run} tone="result">
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                   <div>
                     <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300">

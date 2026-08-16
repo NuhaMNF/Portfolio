@@ -15,10 +15,10 @@ export function About() {
       <div className="mx-auto max-w-5xl">
         <CodeAnnotation id="p2" className="mb-3 block" align="left" />
         <NotebookCell cellId="2">
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock code={aboutDict} className="mt-4" />
-              <OutputBlock cellId="2" visible={executed} tone="default">
+              <OutputBlock cellId="2" visible={run} tone="default">
                 <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
                   <div>
                     <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300">

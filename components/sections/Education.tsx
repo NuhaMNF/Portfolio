@@ -12,13 +12,13 @@ export function Education() {
     <section className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
         <NotebookCell cellId="7">
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock
                 code={`education = [\n    { "degree": "M.S. Computer Science", "institution": "IISc Bangalore" },\n    { "degree": "B.E. Computer Science", "institution": "NIT Trichy" },\n]`}
                 className="mt-4"
               />
-              <OutputBlock cellId="7" visible={executed} tone="default">
+              <OutputBlock cellId="7" visible={run} tone="default">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {education.map((edu, i) => (
                     <motion.div

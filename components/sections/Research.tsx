@@ -21,10 +21,10 @@ export function Research() {
       <div className="absolute inset-0 -z-10 opacity-[0.04] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
       <div className="mx-auto max-w-5xl">
         <NotebookCell cellId="6">
-          {(executed) => (
+          {(executed, status, run) => (
             <>
               <CodeBlock code={researchCode} className="mt-4" />
-              <OutputBlock cellId="6" visible={executed} tone="default">
+              <OutputBlock cellId="6" visible={run} tone="default">
                 <CodeAnnotation id="p3" variant="block" className="mb-4" align="left" />
                 <div className="mb-4 flex items-center gap-2 font-mono text-[12px] text-zinc-500">
                   <FlaskConical className="h-3.5 w-3.5" />
